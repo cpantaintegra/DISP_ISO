@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/template/platform/MainTamplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="head">
+        <title>Mantenimiento Triaje</title>    
+    </ui:define>
+    <ui:define name="body">
+        <ui:insert name="header">
+            <ui:include src="../template/platform/header.xhtml"/>
+            <script type="text/javascript">
+                //<![CDATA[
+                function start() {
+                    PF('statusDialog').show();
+                }
+
+                function stop() {
+                    PF('statusDialog').hide();
+                }
+                //]]>
+            </script>
+        </ui:insert>
+        <div class="container-fluid">
+            <h:form id="forma" class="form-horizontal" style="text-align: center;" >
+                <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
+                <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
+                    <p:graphicImage value="#{FacesContext.getCurrentInstance().getExternalContext()}/resources/images/ajaxloadingbar.gif" />
+                </p:dialog>
+                <div>
+                    <h:outputText value="#{triajeMB.mostrarTurno()}" style="font: 48px bold;background-color: white"/>
+                </div>
+                <div>
+                    <p:commandButton value="Llamar" action="#{triajeMB.llamar()}" update=":forma:mensajesGrowl,:forma:dtDatos,:forma" process="forma"  rendered="#{!triajeMB.condicionintentos()}"/>
+                    <p:spacer width="10"/>
+                    <p:commandButton value="Abandonar" action="#{triajeMB.abandonar()}" update=":forma:dtDatos,:forma" process="forma" rendered="#{triajeMB.dispAgendamiento.estado=='L'?'false':'true'}"/>
+                    <p:spacer width="10"/>
+                    <p:commandButton value="Inicio atención" onclick="PF('wdlgIngresar').show();" actionListener="#{triajeMB.inicioAtencion()}" update=":frmIng,:forma:dtDatos,:forma" rendered="#{triajeMB.dispAgendamiento.estado=='L'?'true':'false'}"/> 
+                    <p:spacer width="10"/>
+                    <p:commandButton value="Finalizar" actionListener="#{triajeMB.finalizar()}" rendered="#{triajeMB.condicionintentos()}" update=":forma:dtDatos,:forma" process="forma" />
+                </div>
+                
+                <br/>
+                
+                <p:dataTable id="dtDatos" var="t" rowKey="#{t.idAgendamiento}" value="#{triajeMB.listDispAgendamiento}" scrollable="true" scrollHeight="600" >
+                    <p:column headerText="Turno/Paciente" style="width: 10%;#{t.estado=='L'?'background-color: yellow':t.estado=='D'?'background-color: greenyellow':''}" >
+                        <h:outputText value="#{t.idCliente==null?t.turno:t.idCliente.apaterno.concat(' ').concat(t.idCliente.amaterno).concat(' ').concat(t.idCliente.nombre)}" />
+                    </p:column>
+                    <p:column headerText="Especialidad" style="width: 25%;#{t.estado=='L'?'background-color: yellow':t.estado=='D'?'background-color: greenyellow':''}">
+                        <h:outputText value="#{t.idEspecialidad.nombre}" />
+                    </p:column>
+                    <p:column headerText="Consultorio" style="width: 25%;#{t.estado=='L'?'background-color: yellow':t.estado=='D'?'background-color: greenyellow':''}" >
+                        <h:outputText value="#{t.idMedicoPersonal.idConsultorio.nombre}"/>
+                    </p:column>
+                    <p:column headerText="Médico" style="width: 30%;#{t.estado=='L'?'background-color: yellow':t.estado=='D'?'background-color: greenyellow':''}" >
+                        <h:outputText value="#{t.idMedicoPersonal.apaterno.concat(' ').concat(t.idMedicoPersonal.amaterno).concat(' ').concat(t.idMedicoPersonal.nombre)}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+            
+            <p:dialog id="dlgIngresar" header="Triaje" widgetVar="wdlgIngresar" closable="false">
+                <h:form id="frmIng" style="text-align: center">
+                    <h:panelGrid columns="4" style="text-align: left">
+                        <p:outputLabel for="ingPresionArterial" value="Presión Arterial: "/>
+                        <p:inputText id="ingPresionArterial" value="#{triajeMB.dispTriaje.presionArterial}"/>
+
+                        <p:outputLabel for="ingTemperatura" value="Temperatura:" />
+                        <p:inputText id="ingTemperatura" value="#{triajeMB.dispTriaje.temperatura}"/>
+
+                        <p:outputLabel for="ingFrecuenciaCardiaca" value="Frecuencia Cardiaca: "/>
+                        <p:inputText id="ingFrecuenciaCardiaca" value="#{triajeMB.dispTriaje.frecuenciaCardiaca}"/>
+                        
+                        <p:outputLabel for="ingFrecuenciaRespiratoria" value="Frecuencia Respiratoria: "/>
+                        <p:inputText id="ingFrecuenciaRespiratoria" value="#{triajeMB.dispTriaje.frecuenciaRespiratoria}"/>
+
+                        <p:outputLabel for="ingSaturacion" value="Saturación:" />
+                        <p:inputText id="ingSaturacion" value="#{triajeMB.dispTriaje.saturacion}"/>
+                        
+                        <p:outputLabel for="ingPeso" value="Peso:" />
+                        <p:inputText id="ingPeso" value="#{triajeMB.dispTriaje.peso}"/>
+                        
+                        <p:outputLabel for="ingTalla" value="Talla:" />
+                        <p:inputText id="ingTalla" value="#{triajeMB.dispTriaje.talla}"/>
+                        
+                        <p:outputLabel for="ingIMC" value="IMC:" />
+                        <p:inputText id="ingIMC" value="#{triajeMB.dispTriaje.imc}"/>
+
+                        <p:outputLabel/>
+                        <p:outputLabel/>
+                    </h:panelGrid>
+                    <p:commandButton value="#{triajeMB.labelMant}" actionListener="#{triajeMB.guardar()}" update=":forma:dtDatos,:forma:mensajesGrowl,:frmIng" oncomplete="PF'wdlgIngresar'.hide();" process=":frmIng"/>
+                </h:form>
+            </p:dialog>
+            <p:poll interval="5"  listener="#{triajeMB.refreshListAgendamiento()}" update=":forma:dtDatos,:forma:mensajesGrowl"/>
+        </div>
+    </ui:define>
+</ui:composition>

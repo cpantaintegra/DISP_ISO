@@ -1,0 +1,229 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/template/platform/MainTamplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="head">
+        <title>Mantenimiento Reporte Agendamiento</title>    
+    </ui:define>
+    <ui:define name="body">
+        <!--<ui:insert name="dialog">
+            <ui:include src="../dispensario/disp_registro_cliente.xhtml"/>
+        </ui:insert>-->
+        <ui:insert name="header">
+            <ui:include src="../template/platform/header.xhtml"/>
+            <script type="text/javascript">
+                PrimeFaces.locales['es'] = {
+                    closeText: 'Cerrar',
+                    prevText: 'Anterior',
+                    nextText: 'Siguiente',
+                    monthNames: ['Enero','Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                    monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+                    dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+                    dayNamesShort: ['Dom','Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                    dayNamesMin: ['D','L','M','X','J','V','S'],
+                    weekHeader: 'Semana',
+                    firstDay: 1,
+                    isRTL: false,
+                    showMonthAfterYear: false,
+                    yearSuffix: '',
+                    timeOnlyTitle: 'Sólo hora',
+                    timeText: 'Tiempo',
+                    hourText: 'Hora',
+                    minuteText: 'Minuto',
+                    secondText: 'Segundo',
+                    currentText: 'Fecha actual',
+                    ampm: false,
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día',
+                    today: 'Hoy',
+                    clear: 'Claro',
+                    allDayText : 'Todo el día',
+                    messages: {  //optional for Client Side Validation
+                        'javax.faces.component.UIInput.REQUIRED': '{0}: Error de validación: se necesita un valor.',
+                        'javax.faces.converter.IntegerConverter.INTEGER': '{2}: \'{0}\' debe ser un número formado por uno o varios dígitos.',
+                        'javax.faces.converter.IntegerConverter.INTEGER_detail': '{2}: \'{0}\' debe ser un número entre -2147483648 y 2147483647. Ejemplo: {1}',
+                        'javax.faces.converter.DoubleConverter.DOUBLE': '{2}: \'{0}\' debe ser un número formado por uno o varios dígitos.',
+                        'javax.faces.converter.DoubleConverter.DOUBLE_detail': '{2}: \'{0}\' debe ser un número entre 4.9E-324 y 1.7976931348623157E308  Ejemplo: {1}',
+                        'javax.faces.converter.BigDecimalConverter.DECIMAL': '{2}: \'{0}\' debe ser un número decimal positivo o negativo.',
+                        'javax.faces.converter.BigDecimalConverter.DECIMAL_detail': '{2}: \'{0}\' debe ser un número decimal positivo o negativo formado por cero o más dígitos, que pueden incluir a continuación una coma decimal y una fracción.  Ejemplo: {1}',
+                        'javax.faces.converter.BigIntegerConverter.BIGINTEGER': '{2}: \'{0}\' debe ser un número formado por uno o varios dígitos.',
+                        'javax.faces.converter.BigIntegerConverter.BIGINTEGER_detail': '{2}: \'{0}\' debe ser un número formado por uno o varios dígitos. Ejemplo: {1}',
+                        'javax.faces.converter.ByteConverter.BYTE': '{2}: \'{0}\' debe ser un número entre 0 y 255.',
+                        'javax.faces.converter.ByteConverter.BYTE_detail': '{2}: \'{0}\' debe ser un número entre 0 y 255.  Ejemplo: {1}',
+                        'javax.faces.converter.CharacterConverter.CHARACTER': '{1}: \'{0}\' debe ser un carácter válido.',
+                        'javax.faces.converter.CharacterConverter.CHARACTER_detail': '{1}: \'{0}\' debe ser un carácter ASCII válido.',
+                        'javax.faces.converter.ShortConverter.SHORT': '{2}: \'{0}\' debe ser un número formado por uno o varios dígitos.',
+                        'javax.faces.converter.ShortConverter.SHORT_detail': '{2}: \'{0}\' debe ser un número entre -32768 y 32767 Ejemplo: {1}',
+                        'javax.faces.converter.BooleanConverter.BOOLEAN': '{1}: \'{0}\' debe ser \'true\' o \'false\'',
+                        'javax.faces.converter.BooleanConverter.BOOLEAN_detail': '{1}: \'{0}\' debe ser \'true\' o \'false\'.  Cualquier valor diferente a \'true\' se evaluará como \'false\'.',
+                        'javax.faces.validator.LongRangeValidator.MAXIMUM': '{1}: Error de validación: el valor es mayor que el máximo permitido de \'{0}\'',
+                        'javax.faces.validator.LongRangeValidator.MINIMUM': '{1}: Error de validación: el valor es inferior que el mínimo permitido de \'{0}\'',
+                        'javax.faces.validator.LongRangeValidator.NOT_IN_RANGE': '{2}: Error de validación: el atributo especificado no está entre los valores esperados {0} y {1}.',
+                        'javax.faces.validator.LongRangeValidator.TYPE={0}': 'Error de validación: el valor no tiene el tipo correcto.',
+                        'javax.faces.validator.DoubleRangeValidator.MAXIMUM': '{1}: Error de validación: el valor es mayor que el máximo permitido de \'{0}\'',
+                        'javax.faces.validator.DoubleRangeValidator.MINIMUM': '{1}: Error de validación: el valor es inferior que el mínimo permitido de \'{0}\'',
+                        'javax.faces.validator.DoubleRangeValidator.NOT_IN_RANGE': '{2}: Error de validación: el atributo especificado no está entre los valores esperados {0} y {1}',
+                        'javax.faces.validator.DoubleRangeValidator.TYPE={0}': 'Error de validación: el valor no tiene el tipo correcto.',
+                        'javax.faces.converter.FloatConverter.FLOAT': '{2}: \'{0}\' debe ser un número formado por uno o varios dígitos.',
+                        'javax.faces.converter.FloatConverter.FLOAT_detail': '{2}: \'{0}\' debe ser un número entre 1.4E-45 y 3.4028235E38  Ejemplo: {1}',
+                        'javax.faces.converter.DateTimeConverter.DATE': '{2}: \'{0}\' no se ha podido reconocer como fecha.',
+                        'javax.faces.converter.DateTimeConverter.DATE_detail': '{2}: \'{0}\' no se ha podido reconocer como fecha. Ejemplo: {1}',
+                        'javax.faces.converter.DateTimeConverter.TIME': '{2}: \'{0}\' no se ha podido reconocer como hora.',
+                        'javax.faces.converter.DateTimeConverter.TIME_detail': '{2}: \'{0}\' no se ha podido reconocer como hora. Ejemplo: {1}',
+                        'javax.faces.converter.DateTimeConverter.DATETIME': '{2}: \'{0}\' no se ha podido reconocer como fecha y hora.',
+                        'javax.faces.converter.DateTimeConverter.DATETIME_detail': '{2}: \'{0}\' no se ha podido reconocer como fecha y hora. Ejemplo: {1}',
+                        'javax.faces.converter.DateTimeConverter.PATTERN_TYPE': '{1}: debe especificarse el atributo \'pattern\' o \'type\' para convertir el valor \'{0}\'', 
+                        'javax.faces.converter.NumberConverter.CURRENCY': '{2}: \'{0}\' no se ha podido reconocer como un valor de divisa.',
+                        'javax.faces.converter.NumberConverter.CURRENCY_detail': '{2}: \'{0}\' no se ha podido reconocer como un valor de divisa. Ejemplo: {1}',
+                        'javax.faces.converter.NumberConverter.PERCENT': '{2}: \'{0}\' no se ha podido reconocer como porcentaje.',
+                        'javax.faces.converter.NumberConverter.PERCENT_detail': '{2}: \'{0}\' no se ha podido reconocer como porcentaje. Ejemplo: {1}',
+                        'javax.faces.converter.NumberConverter.NUMBER': '{2}: \'{0}\' no se ha podido reconocer como fecha.',
+                        'javax.faces.converter.NumberConverter.NUMBER_detail': '{2}: \'{0}\' no es un número. Ejemplo: {1}',
+                        'javax.faces.converter.NumberConverter.PATTERN': '{2}: \'{0}\' no es un patrón numérico.',
+                        'javax.faces.converter.NumberConverter.PATTERN_detail': '{2}: \'{0}\' no es un patrón numérico. Ejemplo: {1}',
+                        'javax.faces.validator.LengthValidator.MINIMUM': '{1}: Error de validación: el largo es inferior que el mínimo permitido de \'{0}\'',
+                        'javax.faces.validator.LengthValidator.MAXIMUM': '{1}: Error de validación: el largo es mayor que el máximo permitido de \'{0}\'',
+                        'javax.faces.validator.RegexValidator.PATTERN_NOT_SET': 'Se debe establecer el patrón de Regex.',
+                        'javax.faces.validator.RegexValidator.PATTERN_NOT_SET_detail': 'El patrón Regex debe establecerse en un valor no vacío.',
+                        'javax.faces.validator.RegexValidator.NOT_MATCHED': 'El patrón Regex no coincide',
+                        'javax.faces.validator.RegexValidator.NOT_MATCHED_detail': 'El patrón Regex de \'{0}\' no coincide',
+                        'javax.faces.validator.RegexValidator.MATCH_EXCEPTION': 'Error en expresión regular.',
+                        'javax.faces.validator.RegexValidator.MATCH_EXCEPTION_detail': 'Error en expresión regular, \'{0}\'',
+                        //optional for bean validation integration in client side validation
+                        'javax.faces.validator.BeanValidator.MESSAGE': '{0}',
+                        'javax.validation.constraints.AssertFalse.message': 'debe ser falso',
+                        'javax.validation.constraints.AssertTrue.message': 'debe ser verdadero',
+                        'javax.validation.constraints.DecimalMax.message': 'debe ser menor que o igual a {0}',
+                        'javax.validation.constraints.DecimalMin.message': 'debe ser mayor que o igual a {0}',
+                        'javax.validation.constraints.Digits.message': 'valor numérico fuera de los límites',
+                        'javax.validation.constraints.Future.message': 'debe ser una fecha futura',
+                        'javax.validation.constraints.Max.message': 'debe ser menor que o igual a {0}',
+                        'javax.validation.constraints.Min.message': 'debe ser mayor que o igual a {0}',
+                        'javax.validation.constraints.NotNull.message': 'no debe ser nulo',
+                        'javax.validation.constraints.Null.message': 'debe ser nulo',
+                        'javax.validation.constraints.Past.message': 'debe ser una fecha pasada',
+                        'javax.validation.constraints.Pattern.message': 'debe coincidir con "{0}"',
+                        'javax.validation.constraints.Size.message': 'el tamaño debe estar entre {0} y {1}'
+                    }
+                };
+            </script>
+            
+            <script type="text/javascript">
+              function toggle(id) {
+                var element = document.getElementById(id);
+                if(element.style.display == 'block') {
+                  element.style.display = 'none';
+                } else {
+                  element.style.display = 'block'
+                }
+              }
+            </script>
+        </ui:insert>
+        <div class="container-fluid">
+            <h:form id="forma" class="form-horizontal" >
+                <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
+                
+                <p:commandButton value="Generar reporte" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="background-color: #1b6d85" icon="fa fa-fw fa-download" actionListener="#{reportesMB.cargaArchivo()}">
+                    <p:fileDownload value="#{reportesMB.file}" />
+                </p:commandButton>
+                <br/>
+                <br/>
+                <p:panelGrid id="pnlColumnas" style="width: 100%; text-align: center" columns="8" >
+                    <p:commandButton value="Paciente" action="#{reportesMB.ocultarNombrePaciente()}" update=":forma:dtDatos,:forma:pnlColumnas" style="width: 100%; #{reportesMB.colNombrePaciente==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Especialidad" action="#{reportesMB.ocultarEspecialidad()}" update=":forma:dtDatos,:forma:pnlColumnas" style="width: 100%; #{reportesMB.colEspecialidad==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Servicio" action="#{reportesMB.ocultarServicio()}" update=":forma:dtDatos,:forma:pnlColumnas" style="width: 100%; #{reportesMB.colServicio==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Diagnostico" action="#{reportesMB.ocultarDiagnostico()}" update=":forma:dtDatos,:forma:pnlColumnas" style="width: 100%; #{reportesMB.colDiagnostico==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Motivo Consulta" action="#{reportesMB.ocultarMotivoConsulta()}" update=":forma:dtDatos,:forma:pnlColumnas" style="width: 100%; #{reportesMB.colMotivoConsulta==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Fecha" action="#{reportesMB.ocultarFecha()}" update=":forma:dtDatos,:forma:pnlColumnas" style="width: 100%; #{reportesMB.colFecha==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Fecha Llamada" action="#{reportesMB.ocultarFechaLlamada()}" update=":forma:dtDatos,:forma:pnlColumnas" style="width: 100%; #{reportesMB.colFechaLlamada==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Fecha Inicio Atención" action="#{reportesMB.ocultarFechaInicioAtencion()}" update=":forma:dtDatos,:forma:pnlColumnas" style="width: 100%; #{reportesMB.colFechaInicioAtencion==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Fecha Atendido" action="#{reportesMB.ocultarFechaAtendido()}" update=":forma:dtDatos,:forma:pnlColumnas" style="width: 100%; #{reportesMB.colFechaAtendido==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Fecha Llamada Médico" action="#{reportesMB.ocultarFechaLlamarMedico()}" update=":forma:dtDatos,:forma:pnlColumnas" style="width: 100%; #{reportesMB.colFechaLlamarMedico==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Fecha Inicio Médico" action="#{reportesMB.ocultarFechaInicioMedico()}" update=":forma:dtDatos,:forma:pnlColumnas" style="width: 100%; #{reportesMB.colFechaInicioMedico==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Fecha Atendido Médico" action="#{reportesMB.ocultarFechaAtendidoMedico()}" update=":forma:dtDatos,:forma:pnlColumnas" style="width: 100%; #{reportesMB.colFechaAtendidoMedico==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Estado" action="#{reportesMB.ocultarEstado()}" update=":forma:dtDatos,:forma:pnlColumnas" style="width: 100%; #{reportesMB.colEstado==true?'':'background-color: yellow; color: black'}"/>
+                </p:panelGrid>
+                <br/>
+                <h:panelGrid columns="9" style="text-align: center" >
+                    <p:outputLabel value="Desde" style="font: 24px bold;background-color: white"/>
+                    <p:calendar value="#{reportesMB.fechaini}" locale="es" showOn="button" style="width: 800px; font-size: 48px">
+                    </p:calendar>
+                    <p:outputLabel value="Hasta" style="font: 24px bold;background-color: white"/>
+                    <p:calendar value="#{reportesMB.fechafin}" locale="es" showOn="button" style="width: 800px; font-size: 48px">
+                    </p:calendar>
+                    <p:outputLabel value="Estado" style="font: 24px bold;background-color: white"/>
+                    <p:selectOneMenu value="#{reportesMB.estadoObj}" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                        <f:selectItems value="#{reportesMB.listaEstado}" var="estado" itemLabel="#{estado.detalle}" itemValue="#{estado}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Pagado" style="font: 24px bold;background-color: white"/>
+                    <p:selectOneMenu value="#{reportesMB.pagado}" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter">
+                        <f:selectItem itemValue="All" itemLabel="Todo"/>
+                        <f:selectItem itemValue="0" itemLabel="No definido"/>
+                        <f:selectItem itemValue="Si" itemLabel="Si"/>
+                        <f:selectItem itemValue="No" itemLabel="No"/>
+                    </p:selectOneMenu>
+                    <p:commandButton icon="fa fa-search" update=":forma:dtDatos" actionListener="#{reportesMB.searchByFilter()}" />
+                </h:panelGrid>
+                <br/>
+                <p:dataTable id="dtDatos" widgetVar="consultaWidget" value="#{reportesMB.lstAgendaDiagnostico}" selectionMode="single" reflow="true" lazy="true" resizableColumns="true"
+                             var="a" rowKey="#{a.id_agendamiento}" paginator="true" paginatorPosition="both" scrollable="true" 
+                             paginatorTemplate="#{messages.tem_paginator}" currentPageReportTemplate="#{messages.tem_page_report}" style="width:100%;"
+                             rowsPerPageTemplate="#{messages.num_page_size_tem}" rows="#{messages.num_page_size}" emptyMessage="#{messages.lbl_no_data_found}" rendered="#{!reportesMB.consultar}">
+
+                    <p:column id="colNombrePaciente" visible="#{reportesMB.colNombrePaciente}" headerText="Paciente" filterBy="#{a.nombPaciente}" filterMatchMode="contains" filterStyle="display:none" width="200" >
+                        <h:outputText value="#{a.nombPaciente}"/>
+                    </p:column>
+                    <p:column id="colEspecialidad" visible="#{reportesMB.colEspecialidad}" headerText="Especialidad" filterBy="#{a.especialidad}" filterMatchMode="contains" filterStyle="display:none" width="200" >
+                        <h:outputText value="#{a.especialidad}"/>
+                    </p:column>
+                    <p:column id="colServicio" visible="#{reportesMB.colServicio}" headerText="Servicio" filterBy="#{a.servicio}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.servicio}"/>
+                    </p:column>
+                    <p:column id="colDiagnostico" visible="#{reportesMB.colDiagnostico}" headerText="Diagnostico" filterBy="#{a.diagnostico}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.diagnostico}"/>
+                    </p:column>
+                    <p:column id="colMotivoConsulta" visible="#{reportesMB.colMotivoConsulta}" headerText="Motivo Consulta" filterBy="#{a.motivoConsulta}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.motivoConsulta}"/>
+                    </p:column>
+                    <p:column id="colFecha" visible="#{reportesMB.colFecha}" headerText="Fecha Reserva" filterBy="#{a.fecha}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.fecha.toLocaleString()}"/>
+                    </p:column>
+                    <p:column id="colFechaLlamada" visible="#{reportesMB.colFechaLlamada}" headerText="Fecha lamada" filterBy="#{a.fechaLlamada}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.fechaLlamada.toLocaleString()}"/>
+                    </p:column>
+                    <p:column id="colFechaInicioAtencion" visible="#{reportesMB.colFechaInicioAtencion}" headerText="Fecha Inicio Atención" filterBy="#{a.fechaInicioAtencion}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.fechaInicioAtencion.toLocaleString()}"/>
+                    </p:column>
+                    <p:column id="colFechaAtendido" visible="#{reportesMB.colFechaAtendido}" headerText="Fecha Atendido" filterBy="#{a.fechaAtendido}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.fechaAtendido.toLocaleString()}"/>
+                    </p:column>
+                    <p:column id="colFechaLlamarMedico" visible="#{reportesMB.colFechaLlamarMedico}" headerText="Fecha Llamar Médico" filterBy="#{a.fechaLlamarMedico}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.fechaLlamarMedico.toLocaleString()}"/>
+                    </p:column>
+                    <p:column id="colFechaInicioMedico" visible="#{reportesMB.colFechaInicioMedico}" headerText="Fecha Inicio Médico" filterBy="#{a.fechaInicioMedico}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.fechaInicioMedico.toLocaleString()}"/>
+                    </p:column>
+                    <p:column id="colFechaAtendidoMedico" visible="#{reportesMB.colFechaAtendidoMedico}" headerText="Fecha Atendido Médico" filterBy="#{a.fechaAtendidoMedico}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.fechaAtendidoMedico.toLocaleString()}"/>
+                    </p:column>
+                    <p:column id="colEstado" visible="#{reportesMB.colEstado}" headerText="Estado" filterMatchMode="exact" filterBy="#{a.estado}" filterStyle="display:none" width="200">
+                        <!--<f:facet name="filter">
+                            <p:selectOneMenu value="{reportesMB.estadoObj}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                                <f:selectItems value="{reportesMB.listaEstado}" var="estado" itemLabel="{estado.detalle}" itemValue="{estado}"/>
+                            </p:selectOneMenu>
+                        </f:facet>-->
+                        <p:outputLabel value="#{a.estado}">
+                            <f:converter converterId="estadoAgendaConverter"/>
+                        </p:outputLabel>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

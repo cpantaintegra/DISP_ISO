@@ -1,0 +1,22 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Visor</title>
+</h:head>
+<h:body style="overflow: hidden">
+    <h:form id="forma" style=" text-align: center; width: 100%; height: 100%; background-color: #15428B;" >
+        <p:dataTable id="dtDatos" var="t" rowKey="#{t.idAgendamiento}" value="#{visorMB.listDispAgendamiento}" scrollable="true" style="text-align: center;" scrollHeight="400">
+            <p:column headerText="CONSULTORIO" style="width: 50%;text-align: center;font: 60px bold;#{visorMB.estadoAgendamineto(t)==true?'background-color: red;color:white':''}">
+                <h:outputText value="#{t.idMedicoPersonal.idConsultorio.codigo}" style="font: 60px bold;text-align: center;"/>
+            </p:column>
+            <p:column headerText="TURNO" style="width: 50%;text-align: center;font: 60px bold;#{visorMB.estadoAgendamineto(t)==true?'background-color: red;color:white':''}" >
+                <h:outputText value="#{t.turno!=0?visorMB.mostrarTurno(t):t.idCliente.apaterno.concat(' ').concat(t.idCliente.amaterno).concat(' ').concat(t.idCliente.nombre)}" style="font: 60px bold;text-align: center;"/>
+            </p:column>
+        </p:dataTable>
+    </h:form>
+    <p:poll interval="1"  listener="#{visorMB.refreshListAgendamiento()}" update=":forma"/>
+</h:body>
+</ui:composition>

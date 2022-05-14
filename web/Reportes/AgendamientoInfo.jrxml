@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AgendamientoInfo" pageWidth="595" pageHeight="400" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1b8bd222-f36a-4303-b0f2-1ec9f55d77c8">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySQLDISP"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="agendamientoID" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT UPPER(CONCAT_WS(' ',c.apaterno,c.amaterno, c.nombre)) AS nombPaciente,UPPER(CONCAT_WS(' ',m.apaterno,m.amaterno, m.nombre)) AS nombMedico,
+em.nomb_comercial, em.nomb_juridico, em.logo_ruta, UPPER(es.nombre) AS especialidad, 
+UPPER(s.nombre) AS servicio, a.fecha, a.costo
+FROM disp_agendamiento a, disp_especialidad es, is_empresa em, disp_cliente c, disp_servicio s,disp_medico_personal m
+WHERE a.id_cliente = c.id_cliente 
+AND m.id_medico_personal = a.id_medico_personal
+AND m.id_especialidad = es.id_especialidad
+AND a.id_empresa = em.id_empresa 
+AND a.id_especialidad = es.id_especialidad
+AND a.id_servicio = s.id_servicio
+AND a.id_agendamiento = $P{agendamientoID} ]]>
+	</queryString>
+	<field name="nombPaciente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nombPaciente"/>
+	</field>
+	<field name="nombMedico" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nombMedico"/>
+	</field>
+	<field name="nomb_comercial" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomb_comercial"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_empresa"/>
+	</field>
+	<field name="nomb_juridico" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomb_juridico"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_empresa"/>
+	</field>
+	<field name="logo_ruta" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="logo_ruta"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_empresa"/>
+	</field>
+	<field name="especialidad" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="especialidad"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_especialidad"/>
+	</field>
+	<field name="servicio" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="servicio"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_servicio"/>
+	</field>
+	<field name="fecha" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="fecha"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_agendamiento"/>
+	</field>
+	<field name="costo" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="costo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_agendamiento"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="146" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="166" backcolor="#38C0FF" uuid="ad8784a6-71f8-4823-baed-4f614549e4c6"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont">
+				<reportElement mode="Transparent" x="160" y="25" width="415" height="70" backcolor="#38C0FF" uuid="040273f7-07c6-4d8d-8543-6326070b2535"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="29" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomb_comercial}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle" onErrorType="Blank">
+				<reportElement mode="Transparent" x="-10" y="0" width="150" height="130" uuid="486ecd6a-f2e7-4c1f-a881-a9ea560c6631"/>
+				<imageExpression><![CDATA[$F{logo_ruta}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="203" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="90" width="180" height="30" uuid="d46b2c0b-cca6-42c8-8155-c0c8a7f6b714">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[CLIENTE:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="30" width="180" height="30" uuid="e70108ae-e82f-4f7b-9a9f-6fee536fbfa2">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[ESPECIALIDAD:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="180" height="30" uuid="cfe80c5f-f44d-4186-84d4-1e7071efe1ce">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[SERVICIO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="120" width="180" height="30" uuid="1ce8b2cb-8efa-4718-a47b-8da3128c7b59">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[MEDICO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="150" width="180" height="30" uuid="e0569f4d-5c8a-4b5a-a5a7-8cfeeead3b97">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[COSTO:]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="210" y="30" width="270" height="30" uuid="0c16db65-a397-4b8a-9a7f-e40ec5cbbe04"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{especialidad}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="210" y="60" width="270" height="30" uuid="844887fa-8441-4dd1-9c8e-70a4841827f2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{servicio}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="210" y="90" width="270" height="30" uuid="9658d577-87fc-4b62-b13b-10992f7f16e6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombPaciente}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="210" y="120" width="270" height="30" uuid="184e3de6-f5c6-4a40-b760-b086bfb49817"/>
+				<textElement verticalAlignment="Middle">
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombMedico}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="210" y="150" width="270" height="30" uuid="4aa1bc22-6cc6-4210-b3cd-9b3124905761"/>
+				<textElement verticalAlignment="Middle">
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{costo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+</jasperReport>

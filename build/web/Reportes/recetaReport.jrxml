@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="recetaReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a6eb2215-4335-4950-aef2-1c87156eaeac">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySQLDISP"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="recetaID" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT r.id_receta AS recetaNum,r.observaciones, m.descripcion,dr.dosis,dr.duracion,dr.cantidad, m.nombre AS nombMedicamento,
+e.nomb_comercial, e.direccion, e.telefono1, e.logo_ruta AS logoEmpresa, c.nombre AS ciudad,u.logo_ruta AS logoUsuario,
+UPPER(CONCAT_WS(' ',cli.apaterno,cli.amaterno, cli.nombre)) AS nombPaciente, TIMESTAMPDIFF(YEAR,cli.fecha_nacimiento,CURDATE()) AS edad,
+UPPER(CONCAT_WS(' ',med.apaterno,med.amaterno, med.nombre)) AS nombMedico, esp.nombre AS especialidad,
+res.motivo_consulta, IF(res.proxima_cita IS NULL,'CITA ABIERTA',res.proxima_cita) AS proximaCita
+FROM disp_receta r, disp_detalle_receta dr, disp_medicamento m, is_empresa e, is_ciudad c,
+disp_agendamiento a, disp_cliente cli, disp_medico_personal med, disp_especialidad esp,
+disp_resultado res, is_usuarios u
+WHERE dr.id_receta = r.id_receta AND
+m.id_medicamento = dr.id_medicamento AND
+e.id_empresa = r.id_empresa AND 
+c.id_ciudad = r.id_ciudad AND
+a.id_agendamiento = r.id_agendamiento AND
+cli.id_cliente = a.id_cliente AND 
+med.id_medico_personal = a.id_medico_personal AND 
+esp.id_especialidad = med.id_especialidad AND 
+res.id_agendamiento = a.id_agendamiento AND
+u.id_usuarios = med.id_usuario AND
+r.id_receta = $P{recetaID}]]>
+	</queryString>
+	<field name="recetaNum" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="recetaNum"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_receta"/>
+	</field>
+	<field name="observaciones" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="observaciones"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_receta"/>
+	</field>
+	<field name="descripcion" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descripcion"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_medicamento"/>
+	</field>
+	<field name="dosis" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="dosis"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_detalle_receta"/>
+	</field>
+	<field name="duracion" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="duracion"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_detalle_receta"/>
+	</field>
+	<field name="cantidad" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="cantidad"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_detalle_receta"/>
+	</field>
+	<field name="nombMedicamento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nombMedicamento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_medicamento"/>
+	</field>
+	<field name="nomb_comercial" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomb_comercial"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_empresa"/>
+	</field>
+	<field name="direccion" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="direccion"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_empresa"/>
+	</field>
+	<field name="telefono1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="telefono1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_empresa"/>
+	</field>
+	<field name="logoEmpresa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="logoEmpresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_empresa"/>
+	</field>
+	<field name="ciudad" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ciudad"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_ciudad"/>
+	</field>
+	<field name="logoUsuario" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="logoUsuario"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_usuarios"/>
+	</field>
+	<field name="nombPaciente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nombPaciente"/>
+	</field>
+	<field name="edad" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="edad"/>
+	</field>
+	<field name="nombMedico" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nombMedico"/>
+	</field>
+	<field name="especialidad" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="especialidad"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_especialidad"/>
+	</field>
+	<field name="motivo_consulta" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="motivo_consulta"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_resultado"/>
+	</field>
+	<field name="proximaCita" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="proximaCita"/>
+	</field>
+	<background>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
+	</background>
+	<title>
+		<band height="220" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="30" y="140" width="60" height="20" uuid="488e99ba-b7a4-4bbb-9d2b-15ff9f60da27">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Paciente:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="160" width="60" height="20" uuid="0f6af64a-5f0a-4669-a8c3-62beded183e4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Edad:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="180" width="60" height="20" uuid="365e71fa-e294-4a0f-ad09-b48da33741a0">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="200" width="60" height="20" uuid="15fcef2e-dd2b-48f7-b36c-56ab004eb77b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Ciudad:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="340" y="140" width="60" height="20" uuid="4061787a-59b0-4820-9fb2-dc86fd6f891f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Orden #:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="340" y="160" width="60" height="20" uuid="be99489e-2b96-4810-a838-87b79eeda003">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[P.V.P.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="170" y="200" width="60" height="20" uuid="6c7d1305-2050-4534-84e1-43550fe3f45c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Telefono:]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="90" y="140" width="140" height="20" uuid="1207bcdc-da71-4295-b1a7-599287ded528"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombPaciente}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="90" y="160" width="140" height="20" uuid="fbc795bb-5d66-456e-80db-53d939b8c111"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{edad}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" pattern="MMMMM dd, yyyy">
+				<reportElement x="90" y="180" width="140" height="20" uuid="0d09842e-2e80-461a-a3e1-e60b084ea0c5"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="90" y="200" width="70" height="20" uuid="aa4cb7a5-949d-4e83-bc5f-0e3bd5f96446"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ciudad}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="230" y="200" width="100" height="20" uuid="2be4e2c2-f2a2-4f37-a91b-e6907e1057b0"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{telefono1}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle" onErrorType="Icon">
+				<reportElement x="0" y="0" width="550" height="130" uuid="4f21843c-86e5-4d00-8336-46eace7813f1">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{logoUsuario}]]></imageExpression>
+			</image>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="400" y="140" width="72" height="20" uuid="3d5ed839-663c-4927-97d4-b76937b4113f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{recetaNum}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="20" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="140" height="20" uuid="b8b789e1-2a34-42ac-8002-e4a03cc2a9bc">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[MOTIVO DE LA CONSULTA:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="140" y="0" width="410" height="20" uuid="005b0dd1-2da8-42b5-84d7-acc9c744d771">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{motivo_consulta}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="330" height="20" uuid="74e68ca1-bac0-4b28-8599-6d281cd233db">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="39eef356-b49b-4c84-9a18-061e831c11da"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Medicamento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="0" width="60" height="20" uuid="cf4322b5-507a-4275-8253-7fd05a2cdc9f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7ceb43e0-bb4b-42ea-af68-0a1bb078fd76"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="0" width="90" height="20" uuid="75be7de8-a1be-491a-81f2-4b3ce61f17ad">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="126596bc-9487-4f50-9fb2-172bcdb027f1"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[dosis]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="0" width="70" height="20" uuid="a375f921-23c6-4053-a232-5cffc3f6e783">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f984a214-7b77-4a19-b442-2d41dcf7e37b"/>
+				</reportElement>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[duracion]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="330" y="0" width="60" height="20" uuid="2c686e62-6670-4e40-85c2-0c35c5d0e3d7">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7ceb43e0-bb4b-42ea-af68-0a1bb078fd76"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="390" y="0" width="90" height="20" uuid="e717f2ca-64f9-44d4-9c64-50c8dc2bcb4a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="126596bc-9487-4f50-9fb2-172bcdb027f1"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{dosis}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="480" y="0" width="70" height="20" uuid="0922890e-b86a-4a2e-a73e-ea1ae41970cc">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f984a214-7b77-4a19-b442-2d41dcf7e37b"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{duracion}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="330" height="20" uuid="a9cd0f20-488e-4705-b0ab-99b66b335c7b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="10d95391-0e08-4d5d-879c-09a640395f79"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombMedicamento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="93" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="bd91864e-1578-4893-a940-fc68b4ca97b7">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Proxima cita]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="322" y="22" width="180" height="20" uuid="699eefc8-73a9-4115-b3cb-923d17457c06"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombMedico}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="322" y="42" width="180" height="20" uuid="9a8ece95-a150-4b24-ab3a-3b0acd48f3d6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{especialidad}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="100" y="0" width="130" height="20" uuid="8143b861-0ca3-4eb5-b50f-74a033e0eaf9"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{proximaCita}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="70" width="150" height="20" uuid="410f8965-785e-45f8-97e5-18a8f66c040c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIONES:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="302" y="2" width="241" height="21" uuid="ea69d04d-e655-40bf-9e5d-23d1d78eeaee"/>
+				<textElement verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[_________________________________________________]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="150" y="70" width="400" height="20" uuid="c3658984-0a80-48a8-bf43-f80f768c289c"/>
+				<textElement verticalAlignment="Middle">
+					<font isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observaciones}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

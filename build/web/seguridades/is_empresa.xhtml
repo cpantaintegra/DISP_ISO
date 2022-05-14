@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/template/platform/MainTamplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="head">
+        <title>Mantenimiento Empresa</title>    
+    </ui:define>
+    <ui:define name="body">
+        <ui:insert name="header">
+            <ui:include src="../template/platform/header.xhtml"/>
+        </ui:insert>
+        <div class="container-fluid">
+            
+            <h:form id="forma" class="form-horizontal" >
+                <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
+                <p:commandButton value="Nuevo Registro" icon="pi pi-arrow-down" onclick="PF('wdlgIngresar').show();" actionListener="#{empresa.redireccionar()}" update=":frmIng" rendered="#{!empresa.ingresar}"/> 
+                <br/>
+                <p:dataTable id="dtDatos" widgetVar="consultaWidget" value="#{empresa.all}" selectionMode="single" lazy="true" resizableColumns="true"
+                             var="e" rowKey="#{e.idEmpresa}" paginator="true" paginatorPosition="both" scrollable="true" 
+                            paginatorTemplate="#{messages.tem_paginator}" currentPageReportTemplate="#{messages.tem_page_report}" style="width:100%;"
+                            rowsPerPageTemplate="#{messages.num_page_size_tem}" rows="#{messages.num_page_size}" emptyMessage="#{messages.lbl_no_data_found}" rendered="#{!empresa.consultar}">
+                    
+                    <p:ajax event="rowSelect" onstart="PF('wdlgIngresar').show();" listener="#{empresa.onRowDblClckSelect}" update="dtDatos,:frmIng" global="false" disabled="#{empresa.editar}"/>
+                    
+                    <f:facet name="header">
+                        <p:outputPanel>
+                            <h:outputText value="Búsqueda por: Nombre y Detalle " />
+                            <p:inputText id="globalFilter" title="Presione ENTER para filtrar los datos" style="width:150px; text-transform: uppercase;" maxlength="50"
+                                         onkeypress=" if (event.which == 13 || event.keyCode == 13){PF('consultaWidget').filter()} "
+                                         value="#{empresa.filtroConsulta}"  />  
+                        <p:spacer width="5px;" />
+                        <p:commandButton icon="fa fa-search" oncomplete="PF('consultaWidget').filter()" />
+                        </p:outputPanel>
+                    </f:facet>
+                    
+                    <p:column headerText="Nombre Comercial" filterBy="#{e.nombComercial}" filterMatchMode="contains" filterStyle="display:none" width="200">
+                        <h:outputText value="#{e.nombComercial}" style="#{(e.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Nombre Juridico" filterBy="#{e.nombJuridico}" filterMatchMode="contains" filterStyle="display:none" width="200">
+                        <h:outputText value="#{e.nombJuridico}" style="#{(e.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Detalle" filterBy="#{e.detalle}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{e.detalle}" style="#{(e.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="RUC" filterBy="#{e.ruc}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{e.ruc}" style="#{(e.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Telefono 1" filterBy="#{e.telefono1}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{e.telefono1}" style="#{(e.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Telefono 2" filterBy="#{e.telefono2}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{e.telefono2}" style="#{(e.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Telefono 3" filterBy="#{e.telefono3}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{e.telefono3}" style="#{(e.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Direccion" filterBy="#{e.direccion}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{e.direccion}" style="#{(e.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Lleva SRI" filterMatchMode="exact" filterBy="#{e.facSri}" filterStyle="display:none" width="200">
+                        <f:facet name="filter">
+                            <p:selectOneMenu value="#{empresa.sriObj}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                                <f:selectItems value="#{empresa.listaFacSri}" var="sri" itemLabel="#{sri.detalle}" itemValue="#{sri}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <p:outputLabel value="#{e.facSri}" style="#{(e.estado=='A'?'':'color: red')}">
+                             <f:converter converterId="sriConverter"/>
+                         </p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Flujo Completo" filterMatchMode="exact" filterBy="#{e.flujoCompleto}" filterStyle="display:none" width="200">
+                        <p:outputLabel value="#{e.flujoCompleto}" style="#{(e.estado=='A'?'':'color: red')}">
+                             <f:converter converterId="sriConverter"/>
+                         </p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Estado" filterMatchMode="exact" filterBy="#{e.estado}" filterStyle="display:none" width="200">
+                        <f:facet name="filter">
+                            <p:selectOneMenu value="#{empresa.estadoObj}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                                <f:selectItems value="#{empresa.listaEstado}" var="estado" itemLabel="#{estado.detalle}" itemValue="#{estado}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <p:outputLabel value="#{e.estado}" style="#{(e.estado=='A'?'':'color: red')}">
+                             <f:converter converterId="estadoConverter"/>
+                         </p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Usuario Ingreso" filterMatchMode="contains" filterStyle="display:none" width="200">
+                        <h:outputText value="#{e.usuarioIngreso}" style="#{(e.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Fecha Ingreso" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{e.fechaIngreso}" style="#{(e.estado=='A'?'':'color: red')}" />
+                    </p:column>
+                    <p:column headerText="Usuario Modificacion" filterMatchMode="contains" filterStyle="display:none" width="200">
+                        <h:outputText value="#{e.usuarioModificacion}" title="#{e.usuarioModificacion}" style="#{(e.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Fecha Modificacion" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{e.fechaModificacion}" title="#{e.fechaModificacion}" style="#{(e.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Eliminar" width="200"> 
+                        <p:commandButton value="Eliminar" onclick="PF('wdlgConfirmacion').show();" rendered="#{!empresa.eliminarBl}">
+                            <f:setPropertyActionListener value="#{e}" target="#{empresa.isEmpresa}" />
+                        </p:commandButton>
+                    </p:column>
+               </p:dataTable>   
+                                
+                <p:dialog header="Confirmacion" widgetVar="wdlgConfirmacion" id="dlgConfirmacion"> 
+                    <h:form>
+                    <p:commandButton value="Si" actionListener="#{empresa.eliminar()}" oncomplete="PF'wdlgConfirmacion'.hide();" update=":forma:mensajesGrowl"/>
+                    <p:commandButton value="No" immediate="true" oncomplete="PF'wdlgConfirmacion'.hide();"/>
+                    </h:form>
+                </p:dialog>               
+            </h:form>            
+            
+            <p:dialog id="dlgIngresar" header="Empresa" widgetVar="wdlgIngresar" width="900">
+                <h:form id="frmIng" style="text-align: center">
+                    <h:panelGrid columns="4" style="text-align: left">
+
+                   <p:outputLabel for="ingNombreComercial" value="Nombre Comercial: "/>
+                   <p:inputText id="ingNombreComercial" required="true" value="#{empresa.isEmpresa.nombComercial}"/>     
+
+                   <p:outputLabel for="ingNombreJuridico" value="Nombre Juridico: "/>
+                   <p:inputText id="ingNombreJuridico" required="true" value="#{empresa.isEmpresa.nombJuridico}"/>
+                   
+                   <p:outputLabel for="ingDetalle" value="Detalle:" />
+                   <p:inputText id="ingDetalle" required="false" value="#{empresa.isEmpresa.detalle}"/> 
+                   
+                   <p:outputLabel for="ingRuc" value="Ruc:" />
+                   <p:inputText id="ingRuc" required="false" value="#{empresa.isEmpresa.ruc}"/> 
+                   
+                   <p:outputLabel for="ingTelefono1" value="Telefono 1:" />
+                   <p:inputText id="ingTelefono1" required="false" value="#{empresa.isEmpresa.telefono1}"/>
+                   
+                   <p:outputLabel for="ingTelefono2" value="Telefono 2:" />
+                   <p:inputText id="ingTelefono2" required="false" value="#{empresa.isEmpresa.telefono2}"/>
+                   
+                   <p:outputLabel for="ingTelefono3" value="Telefono 3:" />
+                   <p:inputText id="ingTelefono3" required="false" value="#{empresa.isEmpresa.telefono3}"/>
+                   
+                   <p:outputLabel for="ingDireccion" value="Direccion:" />
+                   <p:inputText id="ingDireccion" required="false" value="#{empresa.isEmpresa.direccion}"/>
+                   
+                   <p:outputLabel value="Ciudad: "/>
+                   <p:selectOneMenu value="#{empresa.ciudadObj}" effect="clip" filter="true" autoWidth="false" converter="ConverterGeneric">
+                       <f:selectItems value="#{empresa.listaCiudad}" var="c" itemLabel="#{c.nombre}" itemValue="#{c}"/>
+                    </p:selectOneMenu>
+                   
+                   <p:outputLabel value="Sector: "/>
+                   <p:selectOneMenu value="#{empresa.sectorObj}" effect="clip" filter="true" autoWidth="false" converter="ConverterGeneric">
+                       <f:selectItems value="#{empresa.listaSector}" var="s" itemLabel="#{s.nombre}" itemValue="#{s}"/>
+                    </p:selectOneMenu>
+                   
+                   <p:outputLabel value="Lleva SRI:"/>
+                   <p:selectOneMenu style="width:190px" value="#{empresa.isEmpresa.facSri}" id="ingSRI">
+                        <f:selectItem itemValue="S" itemLabel="SI"/>
+                        <f:selectItem itemValue="N" itemLabel="NO"/>
+                    </p:selectOneMenu> 
+                   
+                   <p:outputLabel value="Flujo completo:"/>
+                   <p:selectOneMenu style="width:190px" value="#{empresa.isEmpresa.flujoCompleto}" id="ingFlujo">
+                        <f:selectItem itemValue="S" itemLabel="SI"/>
+                        <f:selectItem itemValue="N" itemLabel="NO"/>
+                    </p:selectOneMenu> 
+                    <p:outputLabel value="Estado:"/>
+                    <p:selectOneMenu style="width:190px" value="#{empresa.isEmpresa.estado}" id="ingEstado">
+                        <f:selectItem itemValue="A" itemLabel="Activo"/>
+                        <f:selectItem itemValue="I" itemLabel="Inactivo"/>
+                    </p:selectOneMenu>                    
+                    
+                    <f:facet name="footer">
+                        <h:panelGrid columns="1">
+                            <p:outputLabel id="nombArchCargado" value="#{empresa.NArchivo}"/>
+                            <p:fileUpload fileUploadListener="#{empresa.handleFileUpload}" mode="advanced" dragDropSupport="false" 
+                            multiple="false" update=":forma:mensajesGrowl,nombArchCargado" fileLimit="1" />
+                        </h:panelGrid>
+                    </f:facet>
+                </h:panelGrid>
+                    <p:commandButton value="#{empresa.labelMant}" actionListener="#{empresa.guardar()}" update=":forma:mensajesGrowl,:frmIng,:forma:dtDatos" process=":frmIng"/>
+                </h:form>
+            </p:dialog>
+        </div>
+    </ui:define>
+</ui:composition>
+

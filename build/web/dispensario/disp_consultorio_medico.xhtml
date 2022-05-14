@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/template/platform/MainTamplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="head">
+        <title>Mantenimiento Consultorio Medico</title>    
+    </ui:define>
+    <ui:define name="body">
+        <ui:insert name="header">
+            <ui:include src="../template/platform/header.xhtml"/>
+        </ui:insert>
+        <div class="container-fluid">
+            <script type="text/javascript">
+                function handleDrop(event, ui) {
+                    var droppedCar = ui.draggable;
+
+                    droppedCar.fadeOut('fast');
+                }
+            </script>
+            <h:form id="forma" class="form-horizontal" >
+                <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
+                <p:commandButton value="Nuevo Registro" icon="pi pi-arrow-down" onclick="PF('wdlgIngresar').show();" actionListener="#{medicoPersonalMB.redireccionarCosnultorioMedico()}" update=":frmIng" rendered="#{!medicoPersonalMB.ingresar}"/> 
+                <br/>
+                <p:dataTable id="dtDatos" widgetVar="consultaWidget" value="#{medicoPersonalMB.all}" selectionMode="single" reflow="true" lazy="true" resizableColumns="true"
+                             var="r" rowKey="#{r.idMedicoPersonal}" paginator="true" paginatorPosition="both" scrollable="true" 
+                             paginatorTemplate="#{messages.tem_paginator}" currentPageReportTemplate="#{messages.tem_page_report}" style="width:100%;"
+                             rowsPerPageTemplate="#{messages.num_page_size_tem}" rows="#{messages.num_page_size}" emptyMessage="#{messages.lbl_no_data_found}" rendered="#{!medicoPersonalMB.consultar}">
+
+                    <p:ajax event="rowSelect" onstart="PF('wdlgIngresar').show();" listener="#{medicoPersonalMB.onRowDblClckSelectCosnultorio}" update=":frmIng" global="false" disabled="#{medicoPersonalMB.editar}"/>
+
+                    <f:facet name="header">
+                        <p:outputPanel>
+                            <h:outputText value="Búsqueda por:" />
+                            <p:inputText id="globalFilter" title="Presione ENTER para filtrar los datos" style="width:150px; text-transform: uppercase;" maxlength="50"
+                                         onkeypress=" if (event.which == 13 || event.keyCode == 13) {
+                                                     PF('consultaWidget').filter()
+                                                 }
+                                                 "
+                                         value="#{medicoPersonalMB.filtroConsulta}"  />  
+                            <p:spacer width="5px;" />
+                            <p:commandButton icon="fa fa-search" oncomplete="PF('consultaWidget').filter()" />
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:column headerText="Cosnultorio" filterBy="#{r.idConsultorio.nombre}" filterMatchMode="contains" filterStyle="display:none" width="200" >
+                        <h:outputText value="#{r.idConsultorio.nombre}" style="#{(r.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+
+                    <p:column headerText="Médico" filterBy="#{r.apaterno.concat(' ').concat(r.amaterno).concat(' ').concat(r.nombre)}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{r.apaterno.concat(' ').concat(r.amaterno).concat(' ').concat(r.nombre)}" style="#{(r.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+
+                    <p:column headerText="Estado" filterMatchMode="exact" filterBy="#{r.estado}" filterStyle="display:none" width="200">
+                        <f:facet name="filter">
+                            <p:selectOneMenu value="#{medicoPersonalMB.estadoObj}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                                <f:selectItems value="#{medicoPersonalMB.listaEstado}" var="estado" itemLabel="#{estado.detalle}" itemValue="#{estado}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <p:outputLabel value="#{r.estado}" style="#{(r.estado=='A'?'':'color: red')}">
+                            <f:converter converterId="estadoConverter"/>
+                        </p:outputLabel>
+                    </p:column>
+
+                    <p:column headerText="Usuario Ingreso" filterMatchMode="contains" filterStyle="display:none" width="200">
+                        <h:outputText value="#{r.usuarioIngreso}" style="#{(r.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Fecha Ingreso" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{r.fechaIngreso}" style="#{(r.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Usuario Modificación" filterMatchMode="contains" filterStyle="display:none" width="200">
+                        <h:outputText value="#{r.usuarioModificacion.toLocaleString()}" title="#{r.usuarioModificacion}" style="#{(r.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Fecha Modificación" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{r.fechaModificacion.toLocaleString()}" title="#{r.fechaModificacion}" style="#{(r.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Eliminar" width="200" rendered="#{!medicoPersonalMB.eliminarBl}"> 
+                        <p:commandButton value="Eliminar" onclick="PF('wdlgConfirmacion').show();" >
+                            <f:setPropertyActionListener value="#{r}" target="#{medicoPersonalMB.dispMedicoPersonal}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>   
+
+                <p:dialog header="Confirmación" widgetVar="wdlgConfirmacion" id="dlgConfirmacion"> 
+                    <h:form>
+                        <p:commandButton value="Si" actionListener="#{medicoPersonalMB.eliminar()}" oncomplete="PF'wdlgConfirmacion'.hide();" update=":forma:mensajesGrowl"/>
+                        <p:commandButton value="No" immediate="true" oncomplete="PF'wdlgConfirmacion'.hide();"/>
+                    </h:form>
+                </p:dialog>               
+            </h:form>
+
+
+            <p:dialog id="dlgIngresar" header="Consultorios" widgetVar="wdlgIngresar" width="900" >
+                <h:form id="frmIng" style="width: 100%;text-align: center">
+                    <h:panelGrid columns="2" style="text-align: left">     
+                        <p:outputLabel for="ingNombre" value="Nombre: "/>
+                        <p:autoComplete id="ingNombre" inputStyle="font: 24px bold;" value="#{medicoPersonalMB.medico}" placeholder="Nombre del medico" completeMethod="#{medicoPersonalMB.completeText}" forceSelection="true" effect="fade" scrollHeight="250">
+                            <p:ajax event="itemSelect" listener="#{medicoPersonalMB.onItemSelect}" update=":frmIng"/>
+                        </p:autoComplete>
+                    </h:panelGrid>
+                    
+                    <h:panelGrid id="pnl" columns="2" style="width: 100%;text-align: left">
+                        <p:fieldset id="availableCarsField" legend="Consultorios del sistema" style="width: 400px;">
+                            <p:outputPanel id="dropArea1">
+                                <h:outputText value="!!!Agregue aquí!!!" rendered="#{empty medicoPersonalMB.listConsultorio}" style="font-size:24px;" />
+                                <p:dataTable id="availableCars" var="car" value="#{medicoPersonalMB.listConsultorio}" rendered="#{not empty medicoPersonalMB.listConsultorio}"
+                                             scrollable="true" >
+                                    <p:column headerText="Nombre">
+                                        <h:outputText value="#{car.nombre}" />
+                                    </p:column>
+                                    <p:column headerText="Detalle">
+                                        <h:outputText value="#{car.detalle}" />
+                                    </p:column>
+                                    <p:column width="15%">
+                                        <h:outputText id="dragIcon" styleClass="fa fa-fw fa-arrow-circle-right" />
+                                        <p:draggable for="dragIcon" revert="true" helper="clone"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:outputPanel>
+                        </p:fieldset>
+                        <p:fieldset id="selectedCars" legend="Consultorios asosciados" style="width: 400px">
+                            <p:outputPanel id="dropArea" >
+                                <h:outputText value="!!!Agregue aquí!!!" rendered="#{empty medicoPersonalMB.listConsultorioDrop}" style="font-size:24px;" />
+                                <p:dataTable id="selectedCarsTable" var="car" value="#{medicoPersonalMB.listConsultorioDrop}" rendered="#{not empty medicoPersonalMB.listConsultorioDrop}"
+                                             scrollable="true" >
+                                    <p:column width="15%">
+                                        <h:outputText id="dragIcon" styleClass="fa fa-fw fa-arrow-circle-left" />
+                                        <p:draggable for="dragIcon" revert="true" helper="clone"/>
+                                    </p:column>
+                                    <p:column headerText="Nombre">
+                                        <h:outputText value="#{car.nombre}" />
+                                    </p:column>
+                                    <p:column headerText="Detalle">
+                                        <h:outputText value="#{car.detalle}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:outputPanel>
+                        </p:fieldset>
+                        <p:droppable for="selectedCars" tolerance="touch" activeStyleClass="ui-state-highlight" datasource="availableCars" onDrop="handleDrop">
+                            <p:ajax listener="#{medicoPersonalMB.onCarDrop}" update="dropArea availableCars dropArea1 selectedCarsTable" />
+                        </p:droppable>
+                        <p:droppable for="availableCarsField" tolerance="touch" activeStyleClass="ui-state-highlight" datasource="selectedCarsTable" onDrop="handleDrop">
+                            <p:ajax listener="#{medicoPersonalMB.onCarDrop1}" update="dropArea1 selectedCarsTable dropArea availableCars" />
+                        </p:droppable>
+                    </h:panelGrid>
+                    <p:commandButton value="#{medicoPersonalMB.labelMant}" actionListener="#{medicoPersonalMB.asignarConsultorio()}" update=":forma:mensajesGrowl,:frmIng,:forma:dtDatos" process=":frmIng"/>
+                </h:form>
+            </p:dialog>
+        </div>
+    </ui:define>
+</ui:composition>

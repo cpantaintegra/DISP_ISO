@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/template/platform/MainTamplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="head">
+        <title>Mantenimiento Antecedentes</title>    
+    </ui:define>
+    <ui:define name="body">
+        <ui:insert name="header">
+            <ui:include src="../template/platform/header.xhtml"/>
+        </ui:insert>
+        <div class="container-fluid">
+            <h:form id="forma" class="form-horizontal" style="text-align: left;" >
+                <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
+
+                <div style="text-align: center;">
+                    <p:outputLabel value="Antecedentes #{antecedentesMB.nombreCliente()}" style="font: 64px bold;" />
+                </div>
+                <p:commandButton value="REGRESAR" onclick="history.go(-1);return false;" style="font: 24px bold;font-family: sans-serif"/> 
+                <br/>
+                <p:commandButton value="Nuevo Registro" icon="fa fa-fw fa-plus-circle" actionListener="#{antecedentesMB.redireccionar()}" onclick="PF('wdlgIngresarAntecedentes').show();" update=":frmIngresarAntecedentes" rendered="#{!antecedentesMB.ingresar}" style="background-color: #d58512" /> 
+                
+                <p:dataTable id="dtDatos" widgetVar="consultaWidget" value="#{antecedentesMB.all}" selectionMode="single" reflow="true" lazy="true" resizableColumns="true"
+                             var="ante" rowKey="#{ante.idAntecedentes}" paginator="true" paginatorPosition="both" scrollable="true" 
+                             paginatorTemplate="#{messages.tem_paginator}" currentPageReportTemplate="#{messages.tem_page_report}" style="width:100%;"
+                             rowsPerPageTemplate="#{messages.num_page_size_tem}" rows="#{messages.num_page_size}" emptyMessage="#{messages.lbl_no_data_found}" rendered="#{!antecedentesMB.consultar}">
+                    
+                    <p:ajax event="rowSelect" oncomplete="PF('wdlgIngresarAntecedentes').show();" update=":frmIngresarAntecedentes" listener="#{antecedentesMB.onRowDblClckSelect}" disabled="#{antecedentesMB.editar}"/>
+                    
+                    <p:column headerText="Antecedentes Personales" >
+                        <h:outputText value="#{ante.antePersonales}" title="#{ante.antePersonales}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Antecedentes Familiares" >
+                        <h:outputText value="#{ante.anteFamiliares}" title="#{ante.anteFamiliares}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Antecedentes Oftalmológicos" >
+                        <h:outputText value="#{ante.anteOftalmologicos}" title="#{ante.anteOftalmologicos}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Intervenciones Quirúrgicas" >
+                        <h:outputText value="#{ante.interQuirurgicas}" title="#{ante.interQuirurgicas}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Alergias" >
+                        <h:outputText value="#{ante.alergias}" title="#{ante.alergias}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Medicamentos" >
+                        <h:outputText value="#{ante.medicamentos}" title="#{ante.medicamentos}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Tabaco" >
+                        <h:outputText value="#{ante.tabaco}" title="#{ante.tabaco}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Alcohol" >
+                        <h:outputText value="#{ante.alcohol}" title="#{ante.alcohol}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Anestésicos" >
+                        <h:outputText value="#{ante.anestesicos}" title="#{ante.anestesicos}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Coagulación" >
+                        <h:outputText value="#{ante.coagulacion}"  title="#{ante.coagulacion}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Usuario Ingreso" filterMatchMode="contains" filterStyle="display:none" >
+                        <h:outputText value="#{ante.usuarioIngreso}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Fecha Ingreso" filterMatchMode="contains" filterStyle="display:none" >
+                        <h:outputText value="#{ante.fechaIngreso.toLocaleString()}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Usuario Modificación" filterMatchMode="contains" filterStyle="display:none" >
+                        <h:outputText value="#{ante.usuarioModificacion}" title="#{ante.usuarioModificacion}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Fecha Modificación" filterMatchMode="contains" filterStyle="display:none" >
+                        <h:outputText value="#{ante.fechaModificacion.toLocaleString()}" title="#{ante.fechaModificacion}" style="#{(ante.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog id="dlgIngresarAntecedentes" header="Ingresar Antecedentes" widgetVar="wdlgIngresarAntecedentes" closable="true" height="700" modal="true">
+                <h:form id="frmIngresarAntecedentes" class="form-horizontal" style="text-align: left;" >
+                    <div style="text-align: center;">
+                        <p:outputLabel value="Antecedentes del Paciente #{antecedentesMB.dispCliente.apaterno.concat(' ').concat(antecedentesMB.dispCliente.amaterno).concat(' ').concat(antecedentesMB.dispCliente.nombre)}" style="font: 64px bold;" />
+                    </div>
+                    <br/>
+                    <h:panelGrid columns="1" style="text-align: left; width: 90%; margin-left: 5%; height: 100%"  >
+                        <p:outputLabel for="ingPersonales" value="Antecedentes Personales: " style="font: 24px sans-serif; background-color: white"/>
+                        <br/>
+                        <p:inputTextarea id="ingPersonales" value="#{antecedentesMB.dispAntecedentes.antePersonales}" rows="5" style="text-align: left; width: 100%" />  
+                        <br/>
+                        <p:outputLabel for="ingFamiliares" value="Antecedentes Familiares:" style="font: 24px sans-serif; background-color: white" />
+                        <br/>
+                        <p:inputTextarea id="ingFamiliares" value="#{antecedentesMB.dispAntecedentes.anteFamiliares}" rows="5" style="text-align: left; width: 100%"/>
+                        <br/>
+                        <p:outputLabel for="ingOftalmoloficos" value="Antecedentes Oftalmológicos " style="font: 24px sans-serif; background-color: white"/>
+                        <br/>
+                        <p:inputTextarea id="ingOftalmoloficos" value="#{antecedentesMB.dispAntecedentes.anteOftalmologicos}" rows="5" style="text-align: left; width: 100%" /> 
+                        <br/>
+                        <p:outputLabel for="ingInterQuirurgicas" value="Intervenciones Quirúrgicas" style="font: 24px sans-serif; background-color: white"/>
+                        <br/>
+                        <p:inputNumber id="ingInterQuirurgicas" decimalPlaces="0" thousandSeparator="" value="#{antecedentesMB.dispAntecedentes.interQuirurgicas}" style="text-align: left; width: 100%"/>
+                        <br/>
+                        <p:outputLabel for="ingAlergias" value="Alergias:" style="font: 24px sans-serif;"/>
+                        <br/>
+                        <p:inputTextarea id="ingAlergias" value="#{antecedentesMB.dispAntecedentes.alergias}" rows="5" style="text-align: left; width: 100%"/>
+                        <br/>
+                        <p:outputLabel for="ingMedicamentos" value="Medicamentos:" style="font: 24px sans-serif;"/>
+                        <br/>
+                        <p:inputTextarea id="ingMedicamentos" value="#{antecedentesMB.dispAntecedentes.medicamentos}" rows="5" style="text-align: left; width: 100%"/>
+                        <br/>
+                        <h:panelGrid columns="3" style="text-align: left;">
+                            <p:outputLabel value="Tabaco " style="font: 24px sans-serif; background-color: white" />
+                            <p:spacer width="40"/>
+                            <p:selectOneMenu style="width:190px" value="#{antecedentesMB.dispAntecedentes.tabaco}" id="ingTabaco">
+                                <f:selectItem itemValue="SI" itemLabel="Si"/>
+                                <f:selectItem itemValue="No" itemLabel="No"/>
+                            </p:selectOneMenu> 
+                        </h:panelGrid>
+                        <br/>
+                        <h:panelGrid columns="3" style="text-align: left;">
+                            <p:outputLabel value="Alcohol " style="font: 24px sans-serif; background-color: white" />
+                            <p:spacer width="40"/>
+                            <p:selectOneMenu style="width:190px" value="#{antecedentesMB.dispAntecedentes.alcohol}" id="ingAlcohol">
+                                <f:selectItem itemValue="SI" itemLabel="Si"/>
+                                <f:selectItem itemValue="No" itemLabel="No"/>
+                            </p:selectOneMenu> 
+                        </h:panelGrid>
+                        <br/>
+                        <p:outputLabel for="ingAnestesicos" value="Alergia a anestésicos:" style="font: 24px sans-serif;"/>
+                        <br/>
+                        <p:inputTextarea id="ingAnestesicos" value="#{antecedentesMB.dispAntecedentes.anestesicos}" rows="5" style="text-align: left; width: 100%"/>
+                        <br/>
+                        <h:panelGrid columns="3" style="text-align: left;">
+                            <p:outputLabel value="Coagulación" style="font: 24px sans-serif; background-color: white" />
+                            <p:spacer width="40"/>
+                            <p:selectOneMenu style="width:190px" value="#{antecedentesMB.dispAntecedentes.coagulacion}" id="ingCoagulacion">
+                                <f:selectItem itemValue="SI" itemLabel="Si"/>
+                                <f:selectItem itemValue="No" itemLabel="No"/>
+                            </p:selectOneMenu> 
+                        </h:panelGrid>
+                        <p:commandButton value="#{antecedentesMB.labelMant}" actionListener="#{antecedentesMB.guardar()}" update=":forma:dtDatos,:forma:mensajesGrowl,:forma" oncomplete="PF('wdlgIngresarAntecedentes').hide();" rendered="#{antecedentesMB.editarAntecedentes(antecedentesMB.dispAntecedentes)}"/>
+                        <br/>
+                        <br/>
+                    </h:panelGrid>
+                </h:form> 
+            </p:dialog>
+        </div>
+    </ui:define>
+</ui:composition>

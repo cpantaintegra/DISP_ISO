@@ -1,0 +1,252 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/template/platform/MainTamplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="head">
+        <title>Mantenimiento Cliente</title>    
+    </ui:define>
+    <ui:define name="body">
+        <!--<ui:insert name="dialog">
+            <ui:include src="../dispensario/disp_registro_cliente.xhtml"/>
+        </ui:insert>-->
+        <ui:insert name="header">
+            <ui:include src="../template/platform/header.xhtml"/>
+            <script type="text/javascript">
+                PrimeFaces.locales['es'] = {
+                    closeText: 'Cerrar',
+                    prevText: 'Anterior',
+                    nextText: 'Siguiente',
+                    monthNames: ['Enero','Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                    monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+                    dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+                    dayNamesShort: ['Dom','Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                    dayNamesMin: ['D','L','M','X','J','V','S'],
+                    weekHeader: 'Semana',
+                    firstDay: 1,
+                    isRTL: false,
+                    showMonthAfterYear: false,
+                    yearSuffix: '',
+                    timeOnlyTitle: 'Sólo hora',
+                    timeText: 'Tiempo',
+                    hourText: 'Hora',
+                    minuteText: 'Minuto',
+                    secondText: 'Segundo',
+                    currentText: 'Fecha actual',
+                    ampm: false,
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día',
+                    today: 'Hoy',
+                    clear: 'Claro',
+                    allDayText : 'Todo el día',
+                    messages: {  //optional for Client Side Validation
+                        'javax.faces.component.UIInput.REQUIRED': '{0}: Error de validación: se necesita un valor.',
+                        'javax.faces.converter.IntegerConverter.INTEGER': '{2}: \'{0}\' debe ser un número formado por uno o varios dígitos.',
+                        'javax.faces.converter.IntegerConverter.INTEGER_detail': '{2}: \'{0}\' debe ser un número entre -2147483648 y 2147483647. Ejemplo: {1}',
+                        'javax.faces.converter.DoubleConverter.DOUBLE': '{2}: \'{0}\' debe ser un número formado por uno o varios dígitos.',
+                        'javax.faces.converter.DoubleConverter.DOUBLE_detail': '{2}: \'{0}\' debe ser un número entre 4.9E-324 y 1.7976931348623157E308  Ejemplo: {1}',
+                        'javax.faces.converter.BigDecimalConverter.DECIMAL': '{2}: \'{0}\' debe ser un número decimal positivo o negativo.',
+                        'javax.faces.converter.BigDecimalConverter.DECIMAL_detail': '{2}: \'{0}\' debe ser un número decimal positivo o negativo formado por cero o más dígitos, que pueden incluir a continuación una coma decimal y una fracción.  Ejemplo: {1}',
+                        'javax.faces.converter.BigIntegerConverter.BIGINTEGER': '{2}: \'{0}\' debe ser un número formado por uno o varios dígitos.',
+                        'javax.faces.converter.BigIntegerConverter.BIGINTEGER_detail': '{2}: \'{0}\' debe ser un número formado por uno o varios dígitos. Ejemplo: {1}',
+                        'javax.faces.converter.ByteConverter.BYTE': '{2}: \'{0}\' debe ser un número entre 0 y 255.',
+                        'javax.faces.converter.ByteConverter.BYTE_detail': '{2}: \'{0}\' debe ser un número entre 0 y 255.  Ejemplo: {1}',
+                        'javax.faces.converter.CharacterConverter.CHARACTER': '{1}: \'{0}\' debe ser un carácter válido.',
+                        'javax.faces.converter.CharacterConverter.CHARACTER_detail': '{1}: \'{0}\' debe ser un carácter ASCII válido.',
+                        'javax.faces.converter.ShortConverter.SHORT': '{2}: \'{0}\' debe ser un número formado por uno o varios dígitos.',
+                        'javax.faces.converter.ShortConverter.SHORT_detail': '{2}: \'{0}\' debe ser un número entre -32768 y 32767 Ejemplo: {1}',
+                        'javax.faces.converter.BooleanConverter.BOOLEAN': '{1}: \'{0}\' debe ser \'true\' o \'false\'',
+                        'javax.faces.converter.BooleanConverter.BOOLEAN_detail': '{1}: \'{0}\' debe ser \'true\' o \'false\'.  Cualquier valor diferente a \'true\' se evaluará como \'false\'.',
+                        'javax.faces.validator.LongRangeValidator.MAXIMUM': '{1}: Error de validación: el valor es mayor que el máximo permitido de \'{0}\'',
+                        'javax.faces.validator.LongRangeValidator.MINIMUM': '{1}: Error de validación: el valor es inferior que el mínimo permitido de \'{0}\'',
+                        'javax.faces.validator.LongRangeValidator.NOT_IN_RANGE': '{2}: Error de validación: el atributo especificado no está entre los valores esperados {0} y {1}.',
+                        'javax.faces.validator.LongRangeValidator.TYPE={0}': 'Error de validación: el valor no tiene el tipo correcto.',
+                        'javax.faces.validator.DoubleRangeValidator.MAXIMUM': '{1}: Error de validación: el valor es mayor que el máximo permitido de \'{0}\'',
+                        'javax.faces.validator.DoubleRangeValidator.MINIMUM': '{1}: Error de validación: el valor es inferior que el mínimo permitido de \'{0}\'',
+                        'javax.faces.validator.DoubleRangeValidator.NOT_IN_RANGE': '{2}: Error de validación: el atributo especificado no está entre los valores esperados {0} y {1}',
+                        'javax.faces.validator.DoubleRangeValidator.TYPE={0}': 'Error de validación: el valor no tiene el tipo correcto.',
+                        'javax.faces.converter.FloatConverter.FLOAT': '{2}: \'{0}\' debe ser un número formado por uno o varios dígitos.',
+                        'javax.faces.converter.FloatConverter.FLOAT_detail': '{2}: \'{0}\' debe ser un número entre 1.4E-45 y 3.4028235E38  Ejemplo: {1}',
+                        'javax.faces.converter.DateTimeConverter.DATE': '{2}: \'{0}\' no se ha podido reconocer como fecha.',
+                        'javax.faces.converter.DateTimeConverter.DATE_detail': '{2}: \'{0}\' no se ha podido reconocer como fecha. Ejemplo: {1}',
+                        'javax.faces.converter.DateTimeConverter.TIME': '{2}: \'{0}\' no se ha podido reconocer como hora.',
+                        'javax.faces.converter.DateTimeConverter.TIME_detail': '{2}: \'{0}\' no se ha podido reconocer como hora. Ejemplo: {1}',
+                        'javax.faces.converter.DateTimeConverter.DATETIME': '{2}: \'{0}\' no se ha podido reconocer como fecha y hora.',
+                        'javax.faces.converter.DateTimeConverter.DATETIME_detail': '{2}: \'{0}\' no se ha podido reconocer como fecha y hora. Ejemplo: {1}',
+                        'javax.faces.converter.DateTimeConverter.PATTERN_TYPE': '{1}: debe especificarse el atributo \'pattern\' o \'type\' para convertir el valor \'{0}\'', 
+                        'javax.faces.converter.NumberConverter.CURRENCY': '{2}: \'{0}\' no se ha podido reconocer como un valor de divisa.',
+                        'javax.faces.converter.NumberConverter.CURRENCY_detail': '{2}: \'{0}\' no se ha podido reconocer como un valor de divisa. Ejemplo: {1}',
+                        'javax.faces.converter.NumberConverter.PERCENT': '{2}: \'{0}\' no se ha podido reconocer como porcentaje.',
+                        'javax.faces.converter.NumberConverter.PERCENT_detail': '{2}: \'{0}\' no se ha podido reconocer como porcentaje. Ejemplo: {1}',
+                        'javax.faces.converter.NumberConverter.NUMBER': '{2}: \'{0}\' no se ha podido reconocer como fecha.',
+                        'javax.faces.converter.NumberConverter.NUMBER_detail': '{2}: \'{0}\' no es un número. Ejemplo: {1}',
+                        'javax.faces.converter.NumberConverter.PATTERN': '{2}: \'{0}\' no es un patrón numérico.',
+                        'javax.faces.converter.NumberConverter.PATTERN_detail': '{2}: \'{0}\' no es un patrón numérico. Ejemplo: {1}',
+                        'javax.faces.validator.LengthValidator.MINIMUM': '{1}: Error de validación: el largo es inferior que el mínimo permitido de \'{0}\'',
+                        'javax.faces.validator.LengthValidator.MAXIMUM': '{1}: Error de validación: el largo es mayor que el máximo permitido de \'{0}\'',
+                        'javax.faces.validator.RegexValidator.PATTERN_NOT_SET': 'Se debe establecer el patrón de Regex.',
+                        'javax.faces.validator.RegexValidator.PATTERN_NOT_SET_detail': 'El patrón Regex debe establecerse en un valor no vacío.',
+                        'javax.faces.validator.RegexValidator.NOT_MATCHED': 'El patrón Regex no coincide',
+                        'javax.faces.validator.RegexValidator.NOT_MATCHED_detail': 'El patrón Regex de \'{0}\' no coincide',
+                        'javax.faces.validator.RegexValidator.MATCH_EXCEPTION': 'Error en expresión regular.',
+                        'javax.faces.validator.RegexValidator.MATCH_EXCEPTION_detail': 'Error en expresión regular, \'{0}\'',
+                        //optional for bean validation integration in client side validation
+                        'javax.faces.validator.BeanValidator.MESSAGE': '{0}',
+                        'javax.validation.constraints.AssertFalse.message': 'debe ser falso',
+                        'javax.validation.constraints.AssertTrue.message': 'debe ser verdadero',
+                        'javax.validation.constraints.DecimalMax.message': 'debe ser menor que o igual a {0}',
+                        'javax.validation.constraints.DecimalMin.message': 'debe ser mayor que o igual a {0}',
+                        'javax.validation.constraints.Digits.message': 'valor numérico fuera de los límites',
+                        'javax.validation.constraints.Future.message': 'debe ser una fecha futura',
+                        'javax.validation.constraints.Max.message': 'debe ser menor que o igual a {0}',
+                        'javax.validation.constraints.Min.message': 'debe ser mayor que o igual a {0}',
+                        'javax.validation.constraints.NotNull.message': 'no debe ser nulo',
+                        'javax.validation.constraints.Null.message': 'debe ser nulo',
+                        'javax.validation.constraints.Past.message': 'debe ser una fecha pasada',
+                        'javax.validation.constraints.Pattern.message': 'debe coincidir con "{0}"',
+                        'javax.validation.constraints.Size.message': 'el tamaño debe estar entre {0} y {1}'
+                    }
+                };
+            </script>
+            
+            <script type="text/javascript">
+              function toggle(id) {
+                var element = document.getElementById(id);
+                if(element.style.display == 'block') {
+                  element.style.display = 'none';
+                } else {
+                  element.style.display = 'block'
+                }
+              }
+            </script>
+        </ui:insert>
+        <div class="container-fluid">
+            <h:form id="forma" class="form-horizontal" >
+                <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
+                
+                <p:commandButton value="Generar reporte" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" style="background-color: #1b6d85" icon="fa fa-fw fa-download" actionListener="#{cliente.cargaArchivo()}">
+                    <p:fileDownload value="#{cliente.file}" />
+                </p:commandButton>
+                
+                <br/>
+                <br/>
+                <p:panelGrid style="width: 100%; text-align: center" columns="8" >
+                    <p:commandButton value="#Documento" actionListener="#{cliente.ocultarNumDocumento()}" update=":forma" style="width: 100%; #{cliente.numDocumento==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Tipo Documento" actionListener="#{cliente.ocultarTipoDocumento()}" update=":forma" style="width: 100%; #{cliente.tipoDocumento==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Nombres" actionListener="#{cliente.ocultarNombre()}" update=":forma" style="width: 100%; #{cliente.nombre==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Apellido paterno" actionListener="#{cliente.ocultarApaterno()}" update=":forma" style="width: 100%; #{cliente.paterno==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Apellido materno" actionListener="#{cliente.ocultarAmaterno()}" update=":forma" style="width: 100%; #{cliente.materno==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Móvil" actionListener="#{cliente.ocultarMovil()}" update=":forma" style="width: 100%; #{cliente.movil==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Convencional" actionListener="#{cliente.ocultarConvencional()}" update=":forma" style="width: 100%; #{cliente.convencional==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Dirección" actionListener="#{cliente.ocultarDireccion()}" update=":forma" style="width: 100%; #{cliente.direccion==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Correo" actionListener="#{cliente.ocultarCorreo()}" update=":forma" style="width: 100%; #{cliente.correo==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Fecha de nacimiento" actionListener="#{cliente.ocultarFechaNacimiento()}" update=":forma" style="width: 100%; #{cliente.fechaNacimiento==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Ocupación" actionListener="#{cliente.ocultarOcupacion()}" update=":forma" style="width: 100%; #{cliente.ocupacion==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="PersonaResponsable" actionListener="#{cliente.ocultarResponsable()}" update=":forma" style="width: 100%; #{cliente.personaResponsable==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Sexo" actionListener="#{cliente.ocultarSexo()}" update=":forma" style="width: 100%; #{cliente.sexo==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Estado Civil" actionListener="#{cliente.ocultarEstadoCivil()}" update=":forma" style="width: 100%; #{cliente.estadoCivil==true?'':'background-color: yellow; color: black'}"/>
+                    <p:commandButton value="Estado" actionListener="#{cliente.ocultarEstado()}" update=":forma" style="width: 100%; #{cliente.boolEstado==true?'':'background-color: yellow; color: black'}"/>
+                </p:panelGrid>
+                <!--<p:panelGrid >
+                    <p:panelGrid binding="#{cliente.panel}" />
+                </p:panelGrid>-->
+                <br/>
+                <p:dataTable id="dtDatos" widgetVar="consultaWidget" value="#{cliente.all}" selectionMode="single" reflow="true" lazy="true" resizableColumns="true"
+                             var="cli" rowKey="#{cli.idCliente}" paginator="true" paginatorPosition="both" scrollable="true" 
+                             paginatorTemplate="#{messages.tem_paginator}" currentPageReportTemplate="#{messages.tem_page_report}" style="width:100%;"
+                             rowsPerPageTemplate="#{messages.num_page_size_tem}" rows="#{messages.num_page_size}" emptyMessage="#{messages.lbl_no_data_found}" rendered="#{!cliente.consultar}">
+
+                    <f:facet name="header">
+                        <p:outputPanel>
+                            <h:outputText value="Búsqueda por: Nombres, Apellidos y Cédula " />
+                            <p:inputText id="globalFilter" title="Presione ENTER para filtrar los datos" style="width:150px; text-transform: uppercase;" maxlength="50"
+                                         onkeypress=" if (event.which == 13 || event.keyCode == 13) {PF('consultaWidget').filter()}"
+                                         value="#{cliente.filtroConsulta}"  />  
+                            <p:spacer width="5px;" />
+                            <p:commandButton icon="fa fa-search" oncomplete="PF('consultaWidget').filter()" />
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:column id="colNumDocumento" visible="#{cliente.numDocumento}" headerText="#Documento" filterBy="#{cli.numDocumento}" filterMatchMode="contains" filterStyle="display:none" width="200" >
+                        <h:outputText value="#{cli.numDocumento}" style="#{(cli.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column id="colTipoDocumento" visible="#{cliente.tipoDocumento}" headerText="Tipo Documento" filterMatchMode="exact" filterBy="#{cli.tipoDocumento}" filterStyle="display:none" width="200">
+                        <f:facet name="filter">
+                            <p:selectOneMenu value="#{cliente.tipoDocumentoObj}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                                <f:selectItems value="#{cliente.listaTipoDocumento}" var="tp" itemLabel="#{tp.detalle}" itemValue="#{tp}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <p:outputLabel value="#{cli.tipoDocumento}" style="#{(cli.estado=='A'?'':'color: red')}">
+                            <f:converter converterId="tipoDocumentoConverter"/>
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column id="colNombre" visible="#{cliente.nombre}" headerText="Nombres" filterBy="#{cli.nombre}" filterMatchMode="contains" filterStyle="display:none" width="200" >
+                        <h:outputText value="#{cli.nombre}" style="#{(cli.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column id="colAPaterno" visible="#{cliente.paterno}" headerText="Apellido paterno" filterBy="#{cli.apaterno}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{cli.apaterno}" style="#{(cli.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column id="colAmaterno" visible="#{cliente.materno}" headerText="Apellido materno" filterBy="#{cli.amaterno}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{cli.amaterno}" style="#{(cli.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column id="colMovil" visible="#{cliente.movil}" headerText="Móvil" filterBy="#{cli.celular}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{cli.celular}" style="#{(cli.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column id="colConvencional" visible="#{cliente.convencional}" headerText="Convencional" filterBy="#{cli.telefono}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{cli.telefono}" style="#{(cli.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column id="colDireccion" visible="#{cliente.direccion}" headerText="Dirección" filterBy="#{cli.direccion}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{cli.direccion}" style="#{(cli.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column id="colCorreo" visible="#{cliente.correo}" headerText="Correo" filterBy="#{cli.email}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{cli.email}" style="#{(cli.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column id="colFechaNacimiento" visible="#{cliente.fechaNacimiento}" headerText="Fecha de nacimiento" filterBy="#{cli.fechaNacimiento}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{cli.fechaNacimiento.toLocaleString()}" style="#{(cli.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column id="colSexo" visible="#{cliente.sexo}" headerText="Sexo" filterMatchMode="exact" filterBy="#{cli.estado}" filterStyle="display:none" width="200">
+                        <f:facet name="filter">
+                            <p:selectOneMenu value="#{cliente.sexoObj}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                                <f:selectItems value="#{cliente.listaSexo}" var="estado" itemLabel="#{estado.detalle}" itemValue="#{estado}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <p:outputLabel value="#{cli.sexo}" style="#{(cli.estado=='A'?'':'color: red')}">
+                            <f:converter converterId="sexoConverter"/>
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column id="colEstadoCivil" visible="#{cliente.estadoCivil}" headerText="Estado Civil" filterMatchMode="exact" filterBy="#{cli.estadoCivil}" filterStyle="display:none" width="200">
+                        <f:facet name="filter">
+                            <p:selectOneMenu value="#{cliente.estadoCivilObj}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                                <f:selectItems value="#{cliente.listaEstadoCivil}" var="estCivil" itemLabel="#{estCivil.detalle}" itemValue="#{estCivil}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <p:outputLabel value="#{cli.estadoCivil}" style="#{(cli.estado=='A'?'':'color: red')}">
+                            <f:converter converterId="estadoCivilConverter"/>
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column id="colOcupacion" visible="#{cliente.ocupacion}" headerText="Ocupación" filterBy="#{cli.ocupacion}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{cli.ocupacion}" style="#{(cli.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column id="colResponsable" visible="#{cliente.personaResponsable}" headerText="Persona Responsable" filterBy="#{cli.personaResponsable}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{cli.personaResponsable}" style="#{(cli.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column id="colEstado" visible="#{cliente.boolEstado}" headerText="Estado" filterMatchMode="exact" filterBy="#{cli.estado}" filterStyle="display:none" width="200">
+                        <f:facet name="filter">
+                            <p:selectOneMenu value="#{cliente.estadoObj}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                                <f:selectItems value="#{cliente.listaEstado}" var="estado" itemLabel="#{estado.detalle}" itemValue="#{estado}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <p:outputLabel value="#{cli.estado}" style="#{(cli.estado=='A'?'':'color: red')}">
+                            <f:converter converterId="estadoConverter"/>
+                        </p:outputLabel>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+

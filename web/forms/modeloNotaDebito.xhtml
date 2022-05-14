@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<notaDebito version="1.0.0" id="comprobante">
+    <infoTributaria>
+        <ambiente>1</ambiente> <!--Obligatorio, conforme tabla 5 Numérico 1-->
+        <tipoEmision>1</tipoEmision> <!--Obligatorio, conforme tabla 2 Numérico 1-->
+        <razonSocial>PRUEBA</razonSocial> <!--Obligatorio Alfanumérico Max 300-->
+        <nombreComercial>PRUEBA 2</nombreComercial> <!--Obligatorio cuando corresponda Alfanumérico Max 300-->
+        <ruc>1760013210001</ruc> <!--Obligatorio Numérico 13-->
+
+        <claveAcceso>2103201605176001321000110010010000000011234567814</claveAcceso> <!--Obligatorio Numérico 49-->
+        <codDoc>05</codDoc> <!--Obligatorio conforme tabla 4 Numérico 2-->
+        <estab>001</estab> <!--Obligatorio Numérico 3-->
+        <ptoEmi>001</ptoEmi> <!--Obligatorio Numérico 3-->
+        <secuencial>000000001</secuencial> <!--Obligatorio Numérico 9-->
+        <dirMatriz>SALINAS</dirMatriz> <!--Obligatorio Alfanumérico Max 300-->
+    </infoTributaria>
+    <infoNotaDebito>
+        <fechaEmision>21/03/2016</fechaEmision> <!--Obligatorio Fecha dd/mm/aaaa-->
+        <dirEstablecimiento>PÁEZ</dirEstablecimiento> <!--Obligatorio cuando corresponda Alfanumérico Max 300-->
+        <tipoIdentificacionComprador>04</tipoIdentificacionComprador> <!--Obligatorio Alfanumérico Max 20-->
+        <razonSocialComprador>PRUEBA SRI</razonSocialComprador> <!--Obligatorio Alfanumérico Max 300-->
+        <identificacionComprador>1713328506001</identificacionComprador> <!--Obligatorio Alfanumérico Max 20-->
+        <contribuyenteEspecial>12345</contribuyenteEspecial> <!--Obligatorio cuando corresponda Alfanumérico Max 13-->
+        <obligadoContabilidad>SI</obligadoContabilidad> <!--Obligatorio cuando corresponda Texto SI / NO-->
+        <codDocModificado>01</codDocModificado> <!--Obligatorio, conforme tabla 4 Numérico 2-->
+        <numDocModificado>001-001-112312315</numDocModificado> <!--Obligatorio Numérico 15-->
+        <fechaEmisionDocSustento>21/03/2016</fechaEmisionDocSustento> <!--Obligatorio Fecha dd/mm/aaaa-->
+        <totalSinImpuestos>50.0</totalSinImpuestos> <!--Obligatorio Numérico Max 14-->
+        <impuestos>
+            <impuesto>
+                <codigo>2</codigo> <!--Obligatorio, conforme tabla 17 Numérico 1-->
+                <codigoPorcentaje>2</codigoPorcentaje> <!--Obligatorio, conforme tabla 18 o 19 Numérico Min 1 M ax 4-->
+                <tarifa>12.00</tarifa> <!--Obligatorio Numérico Min 1 M ax 4-->
+                <baseImponible>50.0</baseImponible> <!--Obligatorio Numérico Max 14-->
+                <valor>6.00</valor> <!--Obligatorio Numérico Max 14-->
+            </impuesto>
+        </impuestos>
+        <valorTotal>56.00</valorTotal> <!--Obligatorio Numérico Max 14-->
+    </infoNotaDebito>
+    <pagos>
+        <pago>
+            <formaPago>17</formaPago> <!--Obligatorio, conforme tabla 25 Numérico 2-->
+            <total>56,00</total> <!--Obligatorio Numérico Max 14-->
+            <plazo>15</plazo> <!--Obligatorio, cuando corresponda Numérico Max 14-->
+            <unidadTiempo>dias</unidadTiempo> <!--Obligatorio, cuando corresponda Texto Max 10-->
+        </pago>
+    </pagos>
+    <motivos>
+        <motivo>
+            <razon>Interés por mora</razon> <!--Obligatorio Alfanumérico Max 300-->
+            <valor>50.00</valor> <!--Obligatorio Alfanumérico Max 300-->
+        </motivo>
+    </motivos>
+    <infoAdicional>
+        <campoAdicional nombre="Dirección">AMAZONAS S/N ROCA</campoAdicional> <!--Obligatorio cuando corresponda Alfanumérico Max 300-->
+        <campoAdicional nombre="Email">prueba@sri.gob.ec</campoAdicional> <!--Obligatorio cuando corresponda Alfanumérico Max 300-->
+        <campoAdicional nombre="Teléfono">0222222222222 ext. 3322</campoAdicional> <!--Obligatorio cuando corresponda Alfanumérico Max 300-->
+    </infoAdicional>
+</notaDebito>

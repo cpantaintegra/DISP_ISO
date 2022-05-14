@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/template/platform/MainTamplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="head">
+        <title>Mantenimiento Ingreso Diagnostico</title>    
+    </ui:define>
+    <ui:define name="body">
+        <ui:insert name="header">
+            <ui:include src="../template/platform/header.xhtml"/>
+        </ui:insert>
+        <div class="container-fluid">
+            <h:form id="forma" class="form-horizontal" style="text-align: left;" >
+                <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
+                 <p:focus for="ingEnfermedad"/>
+                <div style="text-align: center;">
+                    <p:outputLabel value="Diagnostico" style="font: 64px bold;" />
+                </div>
+                <br/>
+                <h:panelGrid columns="1" style="text-align: left; width: 90%; margin-left: 5%; height: 100%; background-color: white"  >
+                                        
+                    <h:panelGrid columns="6" style="text-align: left; width: 90%; margin-left: 5%; background-color: white">
+                        <p:outputLabel value="Datos Paciente" style="font: 24px bold, sans-serif; color: black; background-color: white" /> 
+                        <p:outputLabel value=" "/>
+                        <p:outputLabel value=" "/>
+                        <p:outputLabel value=" "/>
+                        <p:outputLabel value=" "/>
+                        <p:outputLabel value=" "/>
+                        <p:outputLabel value="Nombre Completo: "/>
+                        <p:outputLabel value="#{registroDiagnosticoMB.mostrarNombrePaciente(registroDiagnosticoMB.dispAgendamiento)}" style="color: black"/>
+                        <p:outputLabel value="Num Documento: "/>
+                        <p:outputLabel value="#{registroDiagnosticoMB.dispAgendamiento.idCliente.numDocumento}" style="color: black"/>
+                        <p:outputLabel value="Fecha Nacimiento: "/>
+                        <p:outputLabel value="#{registroDiagnosticoMB.dispAgendamiento.idCliente.fechaNacimiento.toLocaleString()}" style="color: black"/>
+                        <p:outputLabel value="Estado Civil: " />
+                        <p:outputLabel value="#{registroDiagnosticoMB.dispAgendamiento.idCliente.estadoCivil}" style="color: black">
+                            <f:converter converterId="estadoCivilConverter"/>
+                        </p:outputLabel>
+                        <p:outputLabel value="Sexo: " />
+                        <p:outputLabel value="#{registroDiagnosticoMB.dispAgendamiento.idCliente.sexo}" style="color: black">
+                            <f:converter converterId="sexoConverter"/>
+                        </p:outputLabel>
+                        <p:outputLabel value="Móvil: "/>
+                        <p:outputLabel value="#{registroDiagnosticoMB.dispAgendamiento.idCliente.celular}" style="color: black"/>
+                        <p:outputLabel value="Dirección: "/>
+                        <p:outputLabel value="#{registroDiagnosticoMB.dispAgendamiento.idCliente.direccion}" style="color: black"/>
+                        <p:outputLabel value="Correo: "/>
+                        <p:outputLabel value="#{registroDiagnosticoMB.dispAgendamiento.idCliente.email}" style="color: black"/>
+                        <p:outputLabel value="Ocupación: "/>
+                        <p:outputLabel value="#{registroDiagnosticoMB.dispAgendamiento.idCliente.ocupacion}" style="color: black"/>
+                        <p:outputLabel value="Persona Responsable: "/>
+                        <p:outputLabel value="#{registroDiagnosticoMB.dispAgendamiento.idCliente.personaResponsable}" style="color: black"/>
+                    </h:panelGrid>
+                    
+                    <br/>
+                    <h:panelGrid columns="3" style="text-align: left;">
+                        <p:outputLabel value="Antecedentes Paciente" style="font: 24px bold, sans-serif; color: black; background-color: white" />
+                        <p:spacer width="40"/>
+                        <p:commandButton value="VER" actionListener="#{registroDiagnosticoMB.redireccionarAntecedentes()}"/>
+                        <p:outputLabel value="Historial Paciente" style="font: 24px bold, sans-serif; color: black;  background-color: white"/>
+                        <p:spacer width="40"/>
+                        <p:commandButton value="VER" actionListener="#{registroDiagnosticoMB.redireccionarHistorial()}"/>
+                    </h:panelGrid>
+                    <br/>
+                    
+                    <p:outputLabel for="ingCodigo" value="Código: " style="font: 24px sans-serif; background-color: white"/>
+                    <br/>
+                    <p:inputText id="ingCodigo" value="#{registroDiagnosticoMB.dispDiagnostico.codigo}" style="text-align: left; width: 100%" />  
+                    <br/>
+                    <p:outputLabel for="ingMotivoConsulta" value="Motivo de Consulta: " style="font: 24px sans-serif; background-color: white"/>
+                    <br/>
+                    <p:inputTextarea id="ingMotivoConsulta" required="true" requiredMessage="Ingrese el motivo de la consulta" value="#{registroDiagnosticoMB.dispResultado.motivoConsulta}" rows="5" style="text-align: left; width: 100%" />  
+                    <br/>
+                    <p:outputLabel for="ingEnfermedad" value="Enfermedad/Detalle:" style="font: 24px sans-serif; background-color: white" />
+                    <br/>
+                    <p:inputTextarea id="ingEnfermedad" required="true" requiredMessage="Ingrese la enfermedad" value="#{registroDiagnosticoMB.dispDiagnostico.enfermedad}" rows="5" style="text-align: left; width: 100%"/>
+                    <br/>
+                    <h:panelGrid columns="3" style="text-align: left;">
+                        <p:outputLabel value="Próxima cita " style="font: 24px sans-serif; background-color: white" />
+                        <p:spacer width="40"/>
+                        <p:calendar id="ingFechaNac" placeholder="Seleccione Fecha" title="Próxima Cita" mindate="1/1/60" navigator="true" value="#{registroDiagnosticoMB.dispResultado.proximaCita}"/>
+                    </h:panelGrid>
+                    <p:commandButton value="Guardar" actionListener="#{registroDiagnosticoMB.guardar('T')}" update=":forma:mensajesGrowl"/>
+                    <br/>
+                    <p:commandButton value="Nueva Receta" actionListener="#{registroDiagnosticoMB.redireccionarRecetas()}" update=":forma:mensajesGrowl"/>
+                    <br/>
+                    <br/>
+                </h:panelGrid>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

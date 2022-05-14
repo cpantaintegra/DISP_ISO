@@ -1,0 +1,96 @@
+package com.Entity;
+
+import com.Entity.DispAgendamiento;
+import com.Entity.DispAntecedentes;
+import com.Entity.DispCliente;
+import com.Entity.DispConsultorio;
+import com.Entity.DispDetalleDiagnostico;
+import com.Entity.DispDetalleFactura;
+import com.Entity.DispDetalleReceta;
+import com.Entity.DispDiagnostico;
+import com.Entity.DispEspecialidad;
+import com.Entity.DispEstudiosMedicos;
+import com.Entity.DispExamen;
+import com.Entity.DispFactura;
+import com.Entity.DispImagen;
+import com.Entity.DispMedicamento;
+import com.Entity.DispMedicoPersonal;
+import com.Entity.DispMuestra;
+import com.Entity.DispOrigen;
+import com.Entity.DispPrecio;
+import com.Entity.DispReceta;
+import com.Entity.DispResultado;
+import com.Entity.DispResultadoDetalle;
+import com.Entity.DispResultadoExamen;
+import com.Entity.DispServicio;
+import com.Entity.DispSolicitudExamen;
+import com.Entity.DispTomaMuestra;
+import com.Entity.DispTriaje;
+import com.Entity.DispUnidadMedica;
+import com.Entity.IsArea;
+import com.Entity.IsEmpresa;
+import com.Entity.IsEmpresaRoles;
+import com.Entity.IsMenu;
+import com.Entity.IsParametros;
+import com.Entity.IsPermisos;
+import com.Entity.IsRoles;
+import com.Entity.IsRolesMenu;
+import com.Entity.IsRolesPermisos;
+import com.Entity.IsUsuarios;
+import java.util.Date;
+import javax.annotation.Generated;
+import javax.persistence.metamodel.CollectionAttribute;
+import javax.persistence.metamodel.SingularAttribute;
+import javax.persistence.metamodel.StaticMetamodel;
+
+@Generated(value="EclipseLink-2.5.1.v20130824-rNA", date="2022-05-12T22:57:53")
+@StaticMetamodel(IsSector.class)
+public class IsSector_ { 
+
+    public static volatile SingularAttribute<IsSector, String> estado;
+    public static volatile CollectionAttribute<IsSector, IsEmpresa> isEmpresaCollection;
+    public static volatile CollectionAttribute<IsSector, IsPermisos> isPermisosCollection;
+    public static volatile CollectionAttribute<IsSector, IsEmpresaRoles> isEmpresaRolesCollection;
+    public static volatile CollectionAttribute<IsSector, IsArea> isAreaCollection;
+    public static volatile CollectionAttribute<IsSector, DispServicio> dispServicioCollection;
+    public static volatile CollectionAttribute<IsSector, DispResultado> dispResultadoCollection;
+    public static volatile CollectionAttribute<IsSector, IsMenu> isMenuCollection;
+    public static volatile CollectionAttribute<IsSector, DispDetalleReceta> dispDetalleRecetaCollection;
+    public static volatile SingularAttribute<IsSector, Integer> idSector;
+    public static volatile CollectionAttribute<IsSector, DispUnidadMedica> dispUnidadMedicaCollection;
+    public static volatile SingularAttribute<IsSector, String> nombre;
+    public static volatile CollectionAttribute<IsSector, IsUsuarios> isUsuariosCollection;
+    public static volatile CollectionAttribute<IsSector, DispFactura> dispFacturaCollection;
+    public static volatile CollectionAttribute<IsSector, DispResultadoExamen> dispResultadoExamenCollection;
+    public static volatile CollectionAttribute<IsSector, DispEspecialidad> dispEspecialidadCollection;
+    public static volatile CollectionAttribute<IsSector, DispOrigen> dispOrigenCollection;
+    public static volatile SingularAttribute<IsSector, String> usuarioIngreso;
+    public static volatile CollectionAttribute<IsSector, DispAgendamiento> dispAgendamientoCollection;
+    public static volatile CollectionAttribute<IsSector, DispMuestra> dispMuestraCollection;
+    public static volatile CollectionAttribute<IsSector, DispConsultorio> dispConsultorioCollection;
+    public static volatile CollectionAttribute<IsSector, DispMedicamento> dispMedicamentoCollection;
+    public static volatile CollectionAttribute<IsSector, DispDiagnostico> dispDiagnosticoCollection;
+    public static volatile CollectionAttribute<IsSector, DispDetalleDiagnostico> dispDetalleDiagnosticoCollection;
+    public static volatile SingularAttribute<IsSector, String> usuarioModificacion;
+    public static volatile CollectionAttribute<IsSector, DispExamen> dispExamenCollection;
+    public static volatile CollectionAttribute<IsSector, DispResultadoDetalle> dispResultadoDetalleCollection;
+    public static volatile CollectionAttribute<IsSector, DispEstudiosMedicos> dispEstudiosMedicosCollection;
+    public static volatile CollectionAttribute<IsSector, DispReceta> dispRecetaCollection;
+    public static volatile CollectionAttribute<IsSector, DispTriaje> dispTriajeCollection;
+    public static volatile CollectionAttribute<IsSector, DispTomaMuestra> dispTomaMuestraCollection;
+    public static volatile SingularAttribute<IsSector, Date> fechaModificacion;
+    public static volatile CollectionAttribute<IsSector, DispAntecedentes> dispAntecedentesCollection;
+    public static volatile CollectionAttribute<IsSector, IsRolesMenu> isRolesMenuCollection;
+    public static volatile CollectionAttribute<IsSector, DispDetalleFactura> dispDetalleFacturaCollection;
+    public static volatile CollectionAttribute<IsSector, DispMedicoPersonal> dispMedicoPersonalCollection;
+    public static volatile CollectionAttribute<IsSector, DispSolicitudExamen> dispSolicitudExamenCollection;
+    public static volatile CollectionAttribute<IsSector, IsRolesPermisos> isRolesPermisosCollection;
+    public static volatile CollectionAttribute<IsSector, DispImagen> dispImagenCollection;
+    public static volatile SingularAttribute<IsSector, String> detalle;
+    public static volatile SingularAttribute<IsSector, Date> fechaIngreso;
+    public static volatile CollectionAttribute<IsSector, IsParametros> isParametrosCollection;
+    public static volatile CollectionAttribute<IsSector, IsRoles> isRolesCollection;
+    public static volatile CollectionAttribute<IsSector, DispPrecio> dispPrecioCollection;
+    public static volatile CollectionAttribute<IsSector, DispCliente> dispClienteCollection;
+
+}

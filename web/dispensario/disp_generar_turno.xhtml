@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/template/platform/MainTamplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="head">
+        <title>Mantenimiento Generar Turno</title>    
+    </ui:define>
+    <ui:define name="body">
+        <ui:insert name="header">
+            <ui:include src="../template/platform/header.xhtml"/>
+            <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+        
+            <script type="text/javascript">
+                    //<![CDATA[
+                function start() {
+                    PF('statusDialog').show();
+                }
+
+                function stop() {
+                    PF('statusDialog').hide();
+                }
+                    //]]>
+            </script> 
+        </ui:insert>
+        
+        <div class="container-fluid">            
+            <h:form id="forma">
+                <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
+                <p:panelGrid columns="4" style="width:100%; height: 800px; text-align: center;align-content: flex-start">
+                    <p:commandButton value="Prueba" actionListener="#{generarTurnoMB.generar()}" style="width:300px; height: 300px;background-color: green;font: 48px serif bold"/>
+                    <p:commandButton value="View"  onclick="PF('wdlgReportShipped').show();" style="width:300px; height: 300px;background-color: green;font: 48px serif bold"/>
+                    <p:commandButton value="View" onclick="PF('wdlgReportShipped').show();" style="width:300px; height: 300px;background-color: green;font: 48px serif bold"/>
+                    <p:commandButton value="View" onclick="PF('wdlgReportShipped').show();" style="width:300px; height: 300px;background-color: green;font: 48px serif bold"/>
+                    <p:commandButton value="View" onclick="PF('wdlgReportShipped').show();" style="width:300px; height: 300px;background-color: green;font: 48px serif bold"/>
+                    <p:commandButton value="View" onclick="PF('wdlgReportShipped').show();" style="width:300px; height: 300px;background-color: green;font: 48px serif bold"/>
+                    <p:commandButton value="View" onclick="PF('wdlgReportShipped').show();" style="width:300px; height: 300px;background-color: green;font: 48px serif bold"/>
+                    <p:commandButton value="View" onclick="PF('wdlgReportShipped').show();" style="width:300px; height: 300px;background-color: green;font: 48px serif bold"/>
+                    <p:commandButton value="View" onclick="PF('wdlgReportShipped').show();" style="width:300px; height: 300px;background-color: green;font: 48px serif bold"/>
+                </p:panelGrid>
+                <p:dataTable binding="#{generarTurnoMB.table}" />  
+            </h:form>
+            
+            <!--<p:dialog header="Shipped Order" widgetVar="wdlgReportShipped" id="dlgReportShipped"> 
+                
+                <f:facet name="header">
+                    <p:outputLabel value="Shipped Order" style="font: 36px bold"/>
+                    <br/>
+                    <p:outputLabel value="This report shows a list of your shipped orders with shipping address."/>
+                </f:facet>
+                <h:form id="frmReportShipped" style="width: 600px">
+                    <h:panelGrid columns="4" style="width: 100%">
+                        <p:outputLabel value="from"/>
+                        <p:calendar placeholder="{reportesMB.hoy}"  value="{reportesMB.fechaini}" showOn="button" style="width: 800px; font-size: 48px">
+                        </p:calendar>
+                        <p:outputLabel value="to"/>
+                        <p:calendar placeholder="{reportesMB.hoy}" value="{reportesMB.fechafin}"  showOn="button" style="width: 800px; font-size: 48px">
+                            <f:param name="fechafin" value="{reportesMB.fechafin}" />
+                        </p:calendar>
+                    </h:panelGrid>
+                    <br/>
+                    <p:outputLabel value="Account"/>
+                    <br/>
+                    <p:selectOneMenu id="cmb" value="{reportesMB.clientStoreObj}" effect="clip" converter="ConverterGeneric" style="width: 100%" >
+                        <f:selectItems value="{reportesMB.listaClienteStore}" var="cli" itemLabel="{cli.detalle}" itemValue="{cli}"/>
+                        <p:ajax event ="change" process="{reportesMB.clientStoreObj}"/>
+                    </p:selectOneMenu>
+                    <br/>
+                    
+                    
+                </h:form>
+                <f:facet name="footer">
+                    <h:form>
+                        <p:commandButton value="Cancel" immediate="true" oncomplete="PF('wdlgReportShipped').hide();"/>
+                        
+                        <p:commandButton value="Generate" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="fa fa-fw fa-file" actionListener="{reportesMB.cargaArchivo()}">
+                            <p:fileDownload value="{reportesMB.file}" />
+                        </p:commandButton> 
+                    </h:form>
+                    
+                </f:facet>
+            </p:dialog>-->
+        </div>
+    </ui:define>
+</ui:composition>

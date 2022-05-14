@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/template/platform/MainTamplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="head">
+        <title>Mantenimiento Menu</title>    
+    </ui:define>
+    <ui:define name="body">
+        <ui:insert name="header">
+            <ui:include src="../template/platform/header.xhtml"/>
+        </ui:insert>
+        <div class="container-fluid">
+            <script type="text/javascript">
+                function handleDrop(event, ui) {
+                    var droppedCar = ui.draggable;
+
+                    droppedCar.fadeOut('fast');
+                }
+            </script>
+            <h:form id="forma" class="form-horizontal" >
+                <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
+                <p:commandButton value="Nuevo Registro" icon="pi pi-arrow-down" onclick="PF('wdlgIngresar').show();" actionListener="#{menuMB.redireccionar()}" update=":frmIng" rendered="#{!menuMB.ingresar}"/> 
+                <br/>
+                <p:dataTable id="dtDatos" widgetVar="consultaWidget" value="#{menuMB.all}" selectionMode="single" reflow="true" lazy="true" resizableColumns="true"
+                             var="a" rowKey="#{a.idMenu}" paginator="true" paginatorPosition="both" scrollable="true" 
+                            paginatorTemplate="#{messages.tem_paginator}" currentPageReportTemplate="#{messages.tem_page_report}" style="width:100%;"
+                            rowsPerPageTemplate="#{messages.num_page_size_tem}" rows="#{messages.num_page_size}" emptyMessage="#{messages.lbl_no_data_found}" rendered="#{!menuMB.consultar}">
+                    
+                    <p:ajax event="rowSelect" onstart="PF('wdlgIngresar').show();" listener="#{menuMB.onRowDblClckSelect}" update=":frmIng" global="false" disabled="#{menuMB.editar}"/>
+                    
+                    <f:facet name="header">
+                        <p:outputPanel>
+                            <h:outputText value="Búsqueda por: Nombre y Detalle " />
+                            <p:inputText id="globalFilter" title="Presione ENTER para filtrar los datos" style="width:150px; text-transform: uppercase;" maxlength="50"
+                                         onkeypress=" if (event.which == 13 || event.keyCode == 13){PF('consultaWidget').filter()} "
+                                         value="#{menuMB.filtroConsulta}"  />  
+                        <p:spacer width="5px;" />
+                        <p:commandButton icon="fa fa-search" oncomplete="PF('consultaWidget').filter()" />
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:column headerText="Menu Padre" filterBy="#{a.idMenuPadre}" filterMatchMode="exact" filterStyle="display:none" width="300">
+                        <f:facet name="filter">
+                            <p:selectOneMenu value="#{menuMB.menuPadreObj}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                                <f:selectItems value="#{menuMB.listaMenuPadre}" var="mp" itemLabel="#{mp.detalle}" itemValue="#{mp}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <p:outputLabel value="#{a.idMenuPadre}" style="#{(a.estado=='A'?'':'color: red')}">
+                             <f:converter converterId="menuPadreConverter"/>
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Nombre" filterBy="#{a.nombre}" filterMatchMode="contains" filterStyle="display:none" width="200" >
+                        <h:outputText value="#{a.nombre}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Detalle" filterBy="#{a.detalle}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.detalle}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Icono" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="(#{a.icono}) --> " style="#{(a.estado=='A'?'':'color: red')}"/>
+                        <p:commandButton icon="#{a.icono}" />
+                    </p:column>
+                    <p:column headerText="Url" filterBy="#{a.url}" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.url}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Orden" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.orden}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Estado" filterMatchMode="exact" filterBy="#{a.estado}" filterStyle="display:none" width="200">
+                        <f:facet name="filter">
+                            <p:selectOneMenu value="#{menuMB.estadoObj}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                                <f:selectItems value="#{menuMB.listaEstado}" var="estado" itemLabel="#{estado.detalle}" itemValue="#{estado}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <p:outputLabel value="#{a.estado}" style="#{(a.estado=='A'?'':'color: red')}">
+                             <f:converter converterId="estadoConverter"/>
+                         </p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Usuario Ingreso" filterMatchMode="contains" filterStyle="display:none" width="200">
+                        <h:outputText value="#{a.usuarioIngreso}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Fecha Ingreso" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.fechaIngreso}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Usuario Modificacion" filterMatchMode="contains" filterStyle="display:none" width="200">
+                        <h:outputText value="#{a.usuarioModificacion}" title="#{a.usuarioModificacion}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Fecha Modificacion" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.fechaModificacion}" title="#{a.fechaModificacion}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Eliminar" width="200" rendered="#{!menuMB.eliminarBl}"> 
+                        <p:commandButton value="Eliminar" onclick="PF('wdlgConfirmacion').show();" >
+                            <f:setPropertyActionListener value="#{a}" target="#{menuMB.isMenu}" />
+                        </p:commandButton>
+                    </p:column>
+               </p:dataTable>   
+                                
+                <p:dialog header="Confirmación" widgetVar="wdlgConfirmacion" id="dlgConfirmacion"> 
+                    <h:form>
+                    <p:commandButton value="Si" actionListener="#{menuMB.eliminar()}" oncomplete="PF'wdlgConfirmacion'.hide();" update=":forma:mensajesGrowl"/>
+                    <p:commandButton value="No" immediate="true"  oncomplete="PF'wdlgConfirmacion'.hide();"/>
+                    </h:form>
+                </p:dialog>               
+            </h:form>
+            
+            
+            <p:dialog id="dlgIngresar" header="Menús" widgetVar="wdlgIngresar" width="900" height="500">
+                <h:form id="frmIng">
+                    <h:panelGrid columns="4">
+                   <p:outputLabel value="Menu Padre: "/>
+                   <p:selectOneMenu value="#{menuMB.menuPadreMantObj}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                       <f:selectItems value="#{menuMB.listaMenuPadreMant}" var="mp" itemLabel="#{mp.detalle}" itemValue="#{mp}"/>
+                    </p:selectOneMenu>
+                    
+                   <p:outputLabel for="ingNombre" value="Nombre: "/>
+                   <p:inputText id="ingNombre" required="true" value="#{menuMB.isMenu.nombre}"/>     
+
+                   <p:outputLabel for="ingDetalle" value="Detalle:" />
+                   <p:inputText id="ingDetalle" required="true" value="#{menuMB.isMenu.detalle}"/> 
+                   
+                   <p:outputLabel for="ingIcono" value="Icono:" />
+                   <p:inputText id="ingIcono" value="#{menuMB.isMenu.icono}"/> 
+                   
+                   <p:outputLabel for="ingUrl" value="Url:" />
+                   <p:inputText id="ingUrl" value="#{menuMB.isMenu.url}"/>
+                   
+                   <p:outputLabel for="ingOrden" value="Orden:" />
+                   <p:inputText id="ingOrden" value="#{menuMB.isMenu.orden}"/>
+                   
+                    <p:outputLabel value="Estado:"/>
+                    <p:selectOneMenu style="width:190px" value="#{menuMB.isMenu.estado}" id="ingEstado">
+                        <f:selectItem itemValue="A" itemLabel="Activo"/>
+                        <f:selectItem itemValue="I" itemLabel="Inactivo"/>
+                    </p:selectOneMenu> 
+                    
+                    <p:outputLabel/>
+                    <p:outputLabel/>
+                </h:panelGrid>
+                <h:panelGrid columns="2" >
+                    <p:fieldset id="availableCarsField" legend="Roles del sistema" style="width: 475px;">
+                        <p:outputPanel id="dropArea1">
+                            <h:outputText value="!!!Agregue aqui!!!" rendered="#{empty menuMB.listRoles}" style="font-size:24px;" />
+                            <p:dataTable id="availableCars" var="car" value="#{menuMB.listRoles}" rendered="#{not empty menuMB.listRoles}"
+                                         scrollable="true" >
+                                <p:column headerText="Id">
+                                    <h:outputText value="#{car.nombre}" />
+                                </p:column>
+                                <p:column headerText="Year">
+                                    <h:outputText value="#{car.detalle}" />
+                                </p:column>
+                                <p:column width="15%">
+                                    <h:outputText id="dragIcon" styleClass="fa fa-fw fa-arrow-circle-right" />
+                                    <p:draggable for="dragIcon" revert="true" helper="clone"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:fieldset>
+                    <p:fieldset id="selectedCars" legend="Roles asosciados" style="width: 475px">
+                        <p:outputPanel id="dropArea" >
+                            <h:outputText value="!!!Agregue aqui!!!" rendered="#{empty menuMB.listRolesDrop}" style="font-size:24px;" />
+                            <p:dataTable id="selectedCarsTable" var="car" value="#{menuMB.listRolesDrop}" rendered="#{not empty menuMB.listRolesDrop}"
+                                         scrollable="true" >
+                                <p:column width="15%">
+                                    <h:outputText id="dragIcon" styleClass="fa fa-fw fa-arrow-circle-left" />
+                                    <p:draggable for="dragIcon" revert="true" helper="clone"/>
+                                </p:column>
+                                <p:column headerText="Id">
+                                    <h:outputText value="#{car.nombre}" />
+                                </p:column>
+                                <p:column headerText="Year">
+                                    <h:outputText value="#{car.detalle}" />
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:fieldset>
+                    <p:droppable for="selectedCars" tolerance="touch" activeStyleClass="ui-state-highlight" datasource="availableCars" onDrop="handleDrop">
+                        <p:ajax listener="#{menuMB.onCarDrop}" update="dropArea availableCars dropArea1 selectedCarsTable" />
+                    </p:droppable>
+                    <p:droppable for="availableCarsField" tolerance="touch" activeStyleClass="ui-state-highlight" datasource="selectedCarsTable" onDrop="handleDrop">
+                        <p:ajax listener="#{menuMB.onCarDrop1}" update="dropArea1 selectedCarsTable dropArea availableCars" />
+                    </p:droppable>
+                    <p:commandButton value="#{menuMB.labelMant}" actionListener="#{menuMB.guardarAct()}" update=":forma:mensajesGrowl,:frmIng,:forma:dtDatos" process=":frmIng"/>
+                </h:panelGrid>
+                </h:form>
+            </p:dialog>
+        </div>
+    </ui:define>
+</ui:composition>
