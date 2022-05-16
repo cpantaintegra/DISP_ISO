@@ -22,42 +22,76 @@ public class DispRecetaFacade extends AbstractFacade<DispReceta> {
         super(DispReceta.class);
     }
 
-    public int countDispReceta(Integer empresa, Integer ciudad, Integer sector, String estado, String filtro) throws Exception {
+    public int countDispReceta(Integer cliente, Integer medico, Integer empresa, Integer ciudad, Integer sector, String estado, String filtro) throws Exception {
         int resp = 0;
         try {
-            String StringQuery = "SELECT COUNT(*) FROM disp_receta WHERE \n"
-                    + "id_empresa = ?1 AND\n"
-                    + "id_ciudad = ?2 AND\n"
-                    + "id_sector = ?3 AND\n"
-                    + "ESTADO = ?4 AND\n"
-                    + "(UPPER(observaciones) LIKE ?5 OR "
-                    + "UPPER(observaciones) IS NULL) order by fecha_ingreso desc";
+            String StringQuery = "SELECT COUNT(*) FROM disp_receta r, disp_agendamiento a, disp_medico_personal m, disp_cliente c WHERE \n"
+                + "r.id_empresa = ?1 AND  "
+                + "r.id_ciudad = ?2 AND "
+                + "r.id_sector = ?3 AND "
+                + "r.ESTADO = ?4 AND "
+                + "r.id_agendamiento = a.id_agendamiento AND "
+                + "a.id_medico_personal = m.id_medico_personal AND "
+                + "a.id_cliente = c.id_cliente AND ";
+                if(cliente!=null){
+                    StringQuery = StringQuery + "c.id_cliente = ?5 AND ";
+                }
+                
+                if(medico!=null){
+                    StringQuery = StringQuery + "m.id_medico_personal = ?6 AND ";
+                }
+                StringQuery = StringQuery + "(UPPER(r.observaciones) LIKE ?7 OR "
+                + "UPPER(r.observaciones) IS NULL) ORDER BY r.fecha_ingreso DESC";
             Query query = this.em.createNativeQuery(StringQuery);
             query.setParameter(1, empresa);
             query.setParameter(2, ciudad);
             query.setParameter(3, sector);
             query.setParameter(4, estado);
-            query.setParameter(5, "%" + ((filtro == null) ? "" : filtro.toUpperCase()) + "%");
+            if(cliente!=null){
+                query.setParameter(5, cliente);
+            }
+
+            if(medico!=null){
+                query.setParameter(6, medico);
+            }
+            query.setParameter(7, "%" + ((filtro == null) ? "" : filtro.toUpperCase()) + "%");
             resp = Integer.valueOf(query.getSingleResult().toString());
         } catch (Exception exception) {
         }
         return resp;
     }
 
-    public List<DispReceta> listaDispReceta(Integer empresa, Integer ciudad, Integer sector, String estado, int startingAt, int maxPerPage, String filtro) throws Exception {
-        String StringQuery = "SELECT * FROM disp_receta WHERE "
-                + "id_empresa = ?1 AND "
-                + "id_ciudad = ?2 AND "
-                + "id_sector = ?3 AND\n"
-                + "ESTADO = ?4 AND\n"
-                + "(UPPER(observaciones) LIKE ?5 OR "
-                + "UPPER(observaciones) IS NULL) order by fecha_ingreso desc";
+    public List<DispReceta> listaDispReceta(Integer cliente, Integer medico, Integer empresa, Integer ciudad, Integer sector, String estado, int startingAt, int maxPerPage, String filtro) throws Exception {
+        String StringQuery = "SELECT r.* FROM disp_receta r, disp_agendamiento a, disp_medico_personal m, disp_cliente c WHERE \n"
+                + "r.id_empresa = ?1 AND  "
+                + "r.id_ciudad = ?2 AND "
+                + "r.id_sector = ?3 AND "
+                + "r.ESTADO = ?4 AND "
+                + "r.id_agendamiento = a.id_agendamiento AND "
+                + "a.id_medico_personal = m.id_medico_personal AND "
+                + "a.id_cliente = c.id_cliente AND ";
+                if(cliente!=null){
+                    StringQuery = StringQuery + "c.id_cliente = ?5 AND ";
+                }
+                
+                if(medico!=null){
+                    StringQuery = StringQuery + "m.id_medico_personal = ?6 AND ";
+                }
+                StringQuery = StringQuery + "(UPPER(r.observaciones) LIKE ?7 OR "
+                + "UPPER(r.observaciones) IS NULL) ORDER BY r.fecha_ingreso DESC";
         Query query = this.em.createNativeQuery(StringQuery, DispReceta.class);
         query.setParameter(1, empresa);
         query.setParameter(2, ciudad);
         query.setParameter(3, sector);
         query.setParameter(4, estado);
-        query.setParameter(5, "%" + ((filtro == null) ? "" : filtro.toUpperCase()) + "%");
+        if(cliente!=null){
+            query.setParameter(5, cliente);
+        }
+        
+        if(medico!=null){
+            query.setParameter(6, medico);
+        }
+        query.setParameter(7, "%" + ((filtro == null) ? "" : filtro.toUpperCase()) + "%");
         query.setFirstResult(startingAt);
         query.setMaxResults(maxPerPage);
         return query.getResultList();

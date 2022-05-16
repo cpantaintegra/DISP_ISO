@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/template/platform/MainTamplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="head">
+        <title>Mantenimiento Examen</title>    
+    </ui:define>
+    <ui:define name="body">
+        <ui:insert name="header">
+            <ui:include src="../template/platform/header.xhtml"/>
+        </ui:insert>
+        <div class="container-fluid">
+            <h:form id="forma" class="form-horizontal" >
+                <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
+                <p:commandButton value="Nuevo Registro" icon="pi pi-arrow-down" onclick="PF('wdlgIngresar').show();" actionListener="#{examenMB.redireccionar()}" update=":frmIng" rendered="#{!examenMB.ingresar}"/> 
+                <p:dataTable id="dtDatos" widgetVar="consultaWidget" value="#{examenMB.all}" selectionMode="single" reflow="true" lazy="true" resizableColumns="true"
+                             var="a" rowKey="#{a.idExamen}" paginator="true" paginatorPosition="both" scrollable="true" 
+                             paginatorTemplate="#{messages.tem_paginator}" currentPageReportTemplate="#{messages.tem_page_report}" style="width:100%;"
+                             rowsPerPageTemplate="#{messages.num_page_size_tem}" rows="#{messages.num_page_size}" emptyMessage="#{messages.lbl_no_data_found}" rendered="#{!examenMB.consultar}">
+
+                    <p:ajax event="rowSelect" onstart="PF('wdlgIngresar').show();" listener="#{examenMB.onRowDblClckSelect}" update=":frmIng" global="false" disabled="#{examenMB.editar}"/>
+
+                    <f:facet name="header">
+                        <p:outputPanel>
+                            <h:outputText value="Búsqueda por: Nombre y Código " />
+                            <p:inputText id="globalFilter" title="Presione ENTER para filtrar los datos" style="width:150px; text-transform: uppercase;" maxlength="50"
+                                         onkeypress=" if (event.which == 13 || event.keyCode == 13) {
+                                                     PF('consultaWidget').filter()
+                                                 }"
+                                         value="#{examenMB.filtroConsulta}"  />  
+                            <p:spacer width="5px;" />
+                            <p:commandButton icon="fa fa-search" oncomplete="PF('consultaWidget').filter()" />
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:column headerText="Nombre" filterBy="#{a.nombre}" filterMatchMode="contains" filterStyle="display:none" width="200" >
+                        <h:outputText value="#{a.nombre}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Descripcion" filterBy="#{a.descripcion}" filterMatchMode="contains" filterStyle="display:none" width="200" >
+                        <h:outputText value="#{a.descripcion}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Ayuno" width="200" >
+                        <h:outputText value="#{a.ayuno==true?'SI':'No'}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Vejiga llena" width="200" >
+                        <h:outputText value="#{a.vejigaLlena==true?'SI':'No'}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Precio" width="200" >
+                        <h:outputText value="#{a.precio}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Estudio Medico" filterBy="#{a.idEstudiosMedicos.nombre}" filterMatchMode="contains" filterStyle="display:none" width="200" >
+                        <h:outputText value="#{a.idEstudiosMedicos.nombre}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Unidad Medica" filterBy="#{a.idUnidadMedica.nombre}" filterMatchMode="contains" filterStyle="display:none" width="200" >
+                        <h:outputText value="#{a.idUnidadMedica.nombre}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Estado" filterMatchMode="exact" filterBy="#{a.estado}" filterStyle="display:none" width="200">
+                        <f:facet name="filter">
+                            <p:selectOneMenu value="#{examenMB.estadoObj}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                                <f:selectItems value="#{examenMB.listaEstado}" var="estado" itemLabel="#{estado.detalle}" itemValue="#{estado}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <p:outputLabel value="#{a.estado}" style="#{(a.estado=='A'?'':'color: red')}">
+                            <f:converter converterId="estadoConverter"/>
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Usuario Ingreso" filterMatchMode="contains" filterStyle="display:none" width="200">
+                        <h:outputText value="#{a.usuarioIngreso}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Fecha Ingreso" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.fechaIngreso.toLocaleString()}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Usuario Modificación" filterMatchMode="contains" filterStyle="display:none" width="200">
+                        <h:outputText value="#{a.usuarioModificacion}" title="#{a.usuarioModificacion}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Fecha Modificación" filterMatchMode="contains" filterStyle="display:none" width="300">
+                        <h:outputText value="#{a.fechaModificacion.toLocaleString()}" title="#{a.fechaModificacion.toLocaleString()}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                    </p:column>
+                    <p:column headerText="Eliminar" width="200" rendered="#{!examenMB.eliminarBl}" visible="false"> 
+                        <p:commandButton value="Eliminar" onclick="PF('wdlgConfirmacion').show();" >
+                            <f:setPropertyActionListener value="#{a}" target="#{examenMB.dispExamen}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>   
+
+                <p:dialog header="Confirmación" widgetVar="wdlgConfirmacion" id="dlgConfirmacion"> 
+                    <h:form>
+                        <p:commandButton value="Si" actionListener="#{examenMB.eliminar()}" oncomplete="PF'wdlgConfirmacion'.hide();" update=":forma:mensajesGrowl"/>
+                        <p:commandButton value="No" immediate="true"  oncomplete="PF'wdlgConfirmacion'.hide();"/>
+                    </h:form>
+                </p:dialog>       
+            </h:form>
+
+            <p:dialog id="dlgIngresar" header="Examen" widgetVar="wdlgIngresar" modal="true">
+                <h:form id="frmIng" style="text-align: center">
+                    <h:panelGrid columns="4" style="text-align: left">
+                        <p:outputLabel for="ingNombre" value="Nombre: "/>
+                        <p:inputText id="ingNombre" required="true" value="#{examenMB.dispExamen.nombre}" />
+                        
+                        <p:outputLabel for="ingDescripcion" value="Descripcion: "/>
+                        <p:inputText id="ingDescripcion" value="#{examenMB.dispExamen.descripcion}" />
+                        
+                        <p:outputLabel for="ingAyuno" value="Ayuno: "/>
+                        <p:selectBooleanCheckbox id="ingAyuno" required="true" value="#{examenMB.dispExamen.ayuno}"/>
+                        
+                        <p:outputLabel for="ingVejiga" value="Vejiga llena: "/>
+                        <p:selectBooleanCheckbox id="ingVejiga" required="true" value="#{examenMB.dispExamen.vejigaLlena}"/>
+                        
+                        <p:outputLabel for="ingPrecio" value="Precio: "/>
+                        <p:inputNumber id="ingPrecio" decimalPlaces="2" decimalSeparator="." thousandSeparator="" value="#{examenMB.dispExamen.precio}" />
+                        
+                        <p:outputLabel value="Estudios Medicos: "/>
+                        <p:selectOneMenu value="#{examenMB.estudiosMedicosObj}" effect="clip" filter="true" autoWidth="false" converter="ConverterGeneric" >
+                            <f:selectItems value="#{examenMB.listDispEstudiosMedicos}" var="est" itemLabel="#{est.nombre}" itemValue="#{est}"/>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Unidad Medica: "/>
+                        <p:selectOneMenu value="#{examenMB.unidadMedicaObj}" effect="clip" filter="true" autoWidth="false" converter="ConverterGeneric" >
+                            <f:selectItems value="#{examenMB.listDispUnidadMedica}" var="uni" itemLabel="#{uni.nombre}" itemValue="#{uni}"/>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Estado:"/>
+                        <p:selectOneMenu style="width:190px" value="#{examenMB.dispExamen.estado}" id="ingEstado">
+                            <f:selectItem itemValue="A" itemLabel="Activo"/>
+                            <f:selectItem itemValue="I" itemLabel="Inactivo"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel/>
+                    </h:panelGrid>
+                    <p:commandButton value="#{examenMB.labelMant}" actionListener="#{examenMB.guardar()}" update=":forma:mensajesGrowl,:frmIng,:forma:dtDatos"/>
+                </h:form>
+            </p:dialog>            
+        </div>
+    </ui:define>
+</ui:composition>

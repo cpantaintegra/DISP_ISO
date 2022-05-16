@@ -1,19 +1,22 @@
 package com.integrasystemsonline.Dispensario;
 
-import com.Entity.DispConsultorio;
-import com.Entity.DispEspecialidad;
+import com.Entity.DispEstudiosMedicos;
+import com.Entity.DispExamen;
+import com.Entity.DispUnidadMedica;
 import com.Entity.IsParametros;
 import com.Entity.IsRolesPermisos;
 import com.Entity.IsUsuarios;
-import com.Session.DispConsultorioFacade;
-import com.Session.DispEspecialidadFacade;
+import com.Session.DispAgendamientoFacade;
+import com.Session.DispEstudiosMedicosFacade;
+import com.Session.DispExamenFacade;
+import com.Session.DispUnidadMedicaFacade;
 import com.Session.IsCiudadFacade;
 import com.Session.IsEmpresaFacade;
 import com.Session.IsParametrosFacade;
 import com.Session.IsRolesPermisosFacade;
 import com.Session.IsSectorFacade;
 import com.integrasystemsonline.Utilidades.Estado;
-import com.integrasystemsonline.Utilidades.LazyConsultorioModel;
+import com.integrasystemsonline.Utilidades.LazyExamenModel;
 import com.integrasystemsonline.Utilidades.Utilidades;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -34,18 +37,21 @@ import javax.transaction.UserTransaction;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.LazyDataModel;
 
-@Named("consultorioMB")
+@Named("examenMB")
 @ViewScoped
-public class ConsultorioMB implements Serializable {
+public class ExamenMB implements Serializable {
 
     @Resource
     UserTransaction userTransaction;
 
     @EJB
-    DispEspecialidadFacade dispEspecialidadFacade;
+    DispExamenFacade dispExamenFacade;
 
     @EJB
-    DispConsultorioFacade dispConsultorioFacade;
+    DispEstudiosMedicosFacade dispEstudiosMedicosFacade;
+
+    @EJB
+    DispUnidadMedicaFacade dispUnidadMedicaFacade;
 
     @EJB
     IsEmpresaFacade isEmpresaFacade;
@@ -64,17 +70,21 @@ public class ConsultorioMB implements Serializable {
 
     private SimpleDateFormat objSDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    private List<DispConsultorio> listDispConsultorio = new ArrayList<>();
+    private List<DispExamen> listDispExamen = new ArrayList<>();
 
-    private DispConsultorio dispConsultorio = new DispConsultorio();
+    private DispExamen dispExamen = new DispExamen();
 
-    private List<DispEspecialidad> listEspecialidad;
+    private List<DispEstudiosMedicos> listDispEstudiosMedicos = new ArrayList<>();
 
-    private DispEspecialidad especialidadObj;
+    private DispEstudiosMedicos estudiosMedicosObj = new DispEstudiosMedicos();
+
+    private List<DispUnidadMedica> listDispUnidadMedica = new ArrayList<>();
+
+    private DispUnidadMedica unidadMedicaObj = new DispUnidadMedica();
 
     private UIData dataTable;
 
-    private LazyDataModel<DispConsultorio> lazyDispConsultorio;
+    private LazyDataModel<DispExamen> lazyDispExamen;
 
     private String filtroConsulta;
 
@@ -83,6 +93,8 @@ public class ConsultorioMB implements Serializable {
     private String estado;
 
     private String labelMant;
+
+    private String labelMantPrecio;
 
     private List<Estado> listaEstado;
 
@@ -145,7 +157,15 @@ public class ConsultorioMB implements Serializable {
                     this.ingresar = false;
                 }
             }
-            this.listEspecialidad = this.dispEspecialidadFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+            this.listDispEstudiosMedicos = this.dispEstudiosMedicosFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+            if (!listDispEstudiosMedicos.isEmpty()) {
+                this.estudiosMedicosObj = this.listDispEstudiosMedicos.get(0);
+            }
+
+            this.listDispUnidadMedica = this.dispUnidadMedicaFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+            if (!listDispUnidadMedica.isEmpty()) {
+                this.estudiosMedicosObj = this.listDispEstudiosMedicos.get(0);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -154,49 +174,67 @@ public class ConsultorioMB implements Serializable {
     public void guardar() throws SystemException {
         FacesMessage msg = null;
         boolean guardar = true;
-        if (this.dispConsultorio.getIdConsultorio() != null) {
+        if (this.dispExamen.getIdExamen() != null) {
             guardar = false;
         }
         try {
             this.userTransaction.begin();
-            if (this.especialidadObj != null) {
-                this.dispConsultorio.setIdEspecialidad(this.especialidadObj);
-                if (guardar) {
-                    this.dispConsultorio.setIdEmpresa(this.usuario.getIdEmpresa());
-                    this.dispConsultorio.setIdCiudad(this.usuario.getIdCiudad());
-                    this.dispConsultorio.setIdSector(this.usuario.getIdSector());
-                    this.dispConsultorio.setUsuarioIngreso(this.usuario.getUsuario());
-                    this.dispConsultorio.setFechaIngreso(this.objSDF.parse(this.objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
-                    this.dispConsultorioFacade.createWithValidator(this.dispConsultorio);
-                    this.dispConsultorioFacade.flush();
+            if (this.estudiosMedicosObj.getIdEstudiosMedicos() != null) {
+                if (this.unidadMedicaObj.getIdUnidadMedica() != null) {
+                    this.dispExamen.setIdEstudiosMedicos(this.estudiosMedicosObj);
+                    this.dispExamen.setIdUnidadMedica(this.unidadMedicaObj);
+                    if (guardar) {
+                        DispExamen examenObj = this.dispExamenFacade.findByNombre(this.dispExamen.getNombre().toUpperCase(), this.estudiosMedicosObj.getIdEstudiosMedicos(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+                        if (examenObj == null) {
+                            this.dispExamen.setEstado("A");
+                            this.dispExamen.setIdEmpresa(this.usuario.getIdEmpresa());
+                            this.dispExamen.setIdCiudad(this.usuario.getIdCiudad());
+                            this.dispExamen.setIdSector(this.usuario.getIdSector());
+                            this.dispExamen.setUsuarioIngreso(this.usuario.getUsuario());
+                            this.dispExamen.setFechaIngreso(this.objSDF.parse(this.objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
+                            this.dispExamenFacade.createWithValidator(this.dispExamen);
+                            this.dispExamenFacade.flush();
+                            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Se realizo la transaccion con exito.");
+                            redireccionar();
+                        } else {
+                            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Examen ya registrado");
+                        }
+                    } else {
+                        this.dispExamen.setUsuarioModificacion(this.usuario.getUsuario());
+                        this.dispExamen.setFechaModificacion(this.objSDF.parse(this.objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
+                        this.dispExamenFacade.editWithValidator(this.dispExamen);
+                        this.dispExamenFacade.flush();
+                        msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Se realizo la transaccion con exito.");
+                        redireccionar();
+                    }
                 } else {
-                    this.dispConsultorio.setUsuarioModificacion(this.usuario.getUsuario());
-                    this.dispConsultorio.setFechaModificacion(this.objSDF.parse(this.objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
-                    this.dispConsultorioFacade.editWithValidator(this.dispConsultorio);
-                    this.dispConsultorioFacade.flush();
+                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Por favor, seleccione la unidad medica");
                 }
-                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Se realizo la transaccion con exito.");
-                redireccionar();
             } else {
-                msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Seleccione una especialidad");
+                msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Por favor, seleccione el estudio medico");
             }
             this.userTransaction.commit();
-            
         } catch (Exception e) {
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", e.toString());
             this.userTransaction.rollback();
         }
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        
+        if (msg != null) {
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
     }
 
     public void redireccionar() {
         try {
-            this.dispConsultorio = new DispConsultorio();
+            this.dispExamen = new DispExamen();
             this.estado = "A";
             this.labelMant = "Ingresar";
-            try {
-                this.especialidadObj = this.listEspecialidad.get(0);
-            } catch (Exception exception) {
+            if (!listDispEstudiosMedicos.isEmpty()) {
+                this.estudiosMedicosObj = this.listDispEstudiosMedicos.get(0);
+            }
+
+            if (!listDispUnidadMedica.isEmpty()) {
+                this.unidadMedicaObj = this.listDispUnidadMedica.get(0);
             }
         } catch (Exception exception) {
         }
@@ -206,9 +244,8 @@ public class ConsultorioMB implements Serializable {
         FacesMessage msg = null;
         try {
             this.userTransaction.begin();
-            this.dispConsultorioFacade.remove(this.dispConsultorio);
-            this.dispConsultorioFacade.flush();
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito", "Eliminado con exito");
+            this.dispExamenFacade.remove(this.dispExamen);
+            this.dispExamenFacade.flush();
             this.userTransaction.commit();
         } catch (Exception e) {
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", e.toString());
@@ -218,23 +255,20 @@ public class ConsultorioMB implements Serializable {
 
     public void onRowDblClckSelect(SelectEvent event) {
         try {
-            this.dispConsultorio = (DispConsultorio) event.getObject();
+            this.dispExamen = (DispExamen) event.getObject();
             this.labelMant = "Actualizar";
-            this.especialidadObj = this.dispConsultorio.getIdEspecialidad();
+            this.estudiosMedicosObj = this.dispExamen.getIdEstudiosMedicos();
+            this.unidadMedicaObj = this.dispExamen.getIdUnidadMedica();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public LazyDataModel<DispConsultorio> getAll() {
-        Integer especialidad = Integer.valueOf(0);
-        if (this.lazyDispConsultorio == null) {
-            if (this.especialidadObj != null) {
-                especialidad = this.especialidadObj.getIdEspecialidad();
-            }
-            this.lazyDispConsultorio = new LazyConsultorioModel(especialidad, this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector(), this.estado);
+    public LazyDataModel<DispExamen> getAll() {
+        if (this.lazyDispExamen == null) {
+            this.lazyDispExamen = new LazyExamenModel(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector(), this.estado);
         }
-        return this.lazyDispConsultorio;
+        return this.lazyDispExamen;
     }
 
     public UIData getDataTable() {
@@ -245,12 +279,12 @@ public class ConsultorioMB implements Serializable {
         this.dataTable = usersDataTable;
     }
 
-    public List<DispConsultorio> getListDispConsultorio() {
-        return this.listDispConsultorio;
+    public List<DispExamen> getListDispExamen() {
+        return this.listDispExamen;
     }
 
-    public void setListDispConsultorio(List<DispConsultorio> listDispConsultorio) {
-        this.listDispConsultorio = listDispConsultorio;
+    public void setListDispExamen(List<DispExamen> listDispExamen) {
+        this.listDispExamen = listDispExamen;
     }
 
     public String getEstado() {
@@ -269,12 +303,12 @@ public class ConsultorioMB implements Serializable {
         this.filtroConsulta = filtroConsulta;
     }
 
-    public DispEspecialidad getEspecialidadObj() {
-        return this.especialidadObj;
+    public DispExamen getDispExamen() {
+        return this.dispExamen;
     }
 
-    public void setEspecialidadObj(DispEspecialidad especialidadObj) {
-        this.especialidadObj = especialidadObj;
+    public void setDispExamen(DispExamen dispExamen) {
+        this.dispExamen = dispExamen;
     }
 
     public IsUsuarios getUsuario() {
@@ -349,19 +383,44 @@ public class ConsultorioMB implements Serializable {
         this.editar = editar;
     }
 
-    public DispConsultorio getDispConsultorio() {
-        return this.dispConsultorio;
+    public List<DispEstudiosMedicos> getListDispEstudiosMedicos() {
+        return this.listDispEstudiosMedicos;
     }
 
-    public void setDispConsultorio(DispConsultorio dispConsultorio) {
-        this.dispConsultorio = dispConsultorio;
+    public void setListDispEstudiosMedicos(List<DispEstudiosMedicos> listDispEstudiosMedicos) {
+        this.listDispEstudiosMedicos = listDispEstudiosMedicos;
     }
 
-    public List<DispEspecialidad> getListEspecialidad() {
-        return this.listEspecialidad;
+    public DispEstudiosMedicos getEstudiosMedicosObj() {
+        return this.estudiosMedicosObj;
     }
 
-    public void setListEspecialidad(List<DispEspecialidad> listEspecialidad) {
-        this.listEspecialidad = listEspecialidad;
+    public void setEstudiosMedicosObj(DispEstudiosMedicos estudiosMedicosObj) {
+        this.estudiosMedicosObj = estudiosMedicosObj;
     }
+
+    public String getLabelMantPrecio() {
+        return this.labelMantPrecio;
+    }
+
+    public void setLabelMantPrecio(String labelMantPrecio) {
+        this.labelMantPrecio = labelMantPrecio;
+    }
+
+    public List<DispUnidadMedica> getListDispUnidadMedica() {
+        return listDispUnidadMedica;
+    }
+
+    public void setListDispUnidadMedica(List<DispUnidadMedica> listDispUnidadMedica) {
+        this.listDispUnidadMedica = listDispUnidadMedica;
+    }
+
+    public DispUnidadMedica getUnidadMedicaObj() {
+        return unidadMedicaObj;
+    }
+
+    public void setUnidadMedicaObj(DispUnidadMedica unidadMedicaObj) {
+        this.unidadMedicaObj = unidadMedicaObj;
+    }
+    
 }

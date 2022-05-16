@@ -41,17 +41,30 @@
                     
                     <p:ajax event="rowSelect" oncomplete="PF('wdlgIngresar').show();" listener="#{recetaMB.onRowDblClckSelect}" update=":frmIng" disabled="#{recetaMB.editar}"/>
                     
-                    <p:column headerText="Paciente" >
-                        
+                    <p:column headerText="Paciente" filterBy="#{rece.idAgendamiento.idCliente}" filterMatchMode="contains" filterStyle="display:none">
+                        <f:facet name="filter">
+                            <p:selectOneMenu value="#{recetaMB.clienteFilter}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                                <f:selectItems value="#{recetaMB.listaCliente}" var="cli" itemLabel="#{cli.detalle}" itemValue="#{cli}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
                         <h:outputText value="#{rece.idAgendamiento.idCliente.apaterno.concat(' ').concat(rece.idAgendamiento.idCliente.amaterno).concat(' ').concat(rece.idAgendamiento.idCliente.nombre)}" title="#{rece.idAgendamiento.idCliente.apaterno.concat(' ').concat(rece.idAgendamiento.idCliente.amaterno).concat(' ').concat(rece.idAgendamiento.idCliente.nombre)}" style="#{(rece.estado=='A'?'':'color: red')}"/>
                     </p:column>
                     <p:column headerText="Fecha de atención" >
                         <h:outputText value="#{rece.idAgendamiento.fechaInicioMedico.toLocaleString()}" title="#{rece.idAgendamiento.fechaInicioMedico.toLocaleString()}" style="#{(rece.estado=='A'?'':'color: red')}"/>
                     </p:column>
-                    <p:column headerText="Médico Responsable" >
+                    <p:column headerText="Médico Responsable" filterBy="#{rece.idAgendamiento.idMedicoPersonal}" filterMatchMode="contains" filterStyle="display:none">
+                        <f:facet name="filter">
+                            <p:selectOneMenu value="#{recetaMB.medicoFilter}" onchange="PF('consultaWidget').filter()" effect="clip" filter="true" filterMatchMode="contains" autoWidth="false" styleClass="custom-filter" converter="ConverterGeneric">
+                                <f:selectItems value="#{recetaMB.listaMedico}" var="med" itemLabel="#{med.detalle}" itemValue="#{med}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
                         <h:outputText value="#{rece.idAgendamiento.idMedicoPersonal.apaterno.concat(' ').concat(rece.idAgendamiento.idMedicoPersonal.amaterno).concat(' ').concat(rece.idAgendamiento.idMedicoPersonal.nombre)}" title="#{rece.idAgendamiento.idMedicoPersonal.apaterno.concat(' ').concat(rece.idAgendamiento.idMedicoPersonal.amaterno).concat(' ').concat(rece.idAgendamiento.idMedicoPersonal.nombre)}" style="#{(rece.estado=='A'?'':'color: red')}"/>
                     </p:column>
                     <p:column headerText="Especialidad" >
+                        <f:facet name="filter">
+                            <p:inputText id="especialidadFilter" placeholder="find" style="width:100%; text-transform: uppercase;" maxlength="50"
+                                         onkeyup="PF('consultaWidget').filter()" value="#{recetaMB.filtroConsulta}"/>
+                        </f:facet>
                         <h:outputText value="#{rece.idAgendamiento.idEspecialidad.nombre}" title="#{rece.idAgendamiento.idEspecialidad.nombre}" style="#{(rece.estado=='A'?'':'color: red')}"/>
                     </p:column>
                     <p:column headerText="Servicio" >

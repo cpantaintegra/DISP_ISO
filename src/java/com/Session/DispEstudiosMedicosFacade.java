@@ -101,4 +101,12 @@ public class DispEstudiosMedicosFacade extends AbstractFacade<DispEstudiosMedico
         DispEstudiosMedicos estudios = (DispEstudiosMedicos) q.getSingleResult();
         return estudios;
     }
+    
+    public List<DispEstudiosMedicos> findAllActivos(Integer empresa, Integer ciudad, Integer sector) {
+        Query q = this.em.createNamedQuery("DispEstudiosMedicos.findAllActivos");
+        q.setParameter("empresa", empresa);
+        q.setParameter("ciudad", ciudad);
+        q.setParameter("sector", sector);
+        return q.getResultList();
+    }
 }

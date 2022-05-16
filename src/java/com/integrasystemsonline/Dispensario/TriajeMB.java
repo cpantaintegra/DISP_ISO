@@ -254,7 +254,7 @@ public class TriajeMB implements Serializable {
                 if (this.dispAgendamiento.getTurno() == 0) {
                     turnoActual = this.dispAgendamiento.getIdCliente().getApaterno().toUpperCase().concat(" ").concat(this.dispAgendamiento.getIdCliente().getAmaterno().toUpperCase()).concat(" ").concat(this.dispAgendamiento.getIdCliente().getNombre().toUpperCase());
                 } else {
-                    turnoActual = this.dispAgendamiento.getIdEspecialidad().getCodigo().concat("-").concat(String.format("%03d", new Object[]{Integer.valueOf(this.dispAgendamiento.getTurno())}));
+                    turnoActual = this.dispAgendamiento.getIdEspecialidad().getCodigo().concat("-").concat(String.format("%03d", new Object[]{this.dispAgendamiento.getTurno()}));
                 }
             }
         } catch (Exception exception) {

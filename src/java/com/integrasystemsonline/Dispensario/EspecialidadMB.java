@@ -178,7 +178,7 @@ public class EspecialidadMB implements Serializable {
         try {
             this.userTransaction.begin();
             if (guardar) {
-                DispEspecialidad especialidadObj = this.dispEspecialidadFacade.findByNombre(this.dispEspecialidad.getNombre(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+                DispEspecialidad especialidadObj = this.dispEspecialidadFacade.findByNombre(this.dispEspecialidad.getNombre().toUpperCase(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
                 if (especialidadObj == null) {
                     this.dispEspecialidad.setIdEmpresa(this.usuario.getIdEmpresa());
                     this.dispEspecialidad.setIdCiudad(this.usuario.getIdCiudad());

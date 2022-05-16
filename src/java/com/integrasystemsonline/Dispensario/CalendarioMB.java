@@ -197,6 +197,7 @@ public class CalendarioMB implements Serializable {
     }
 
     public void handleComboCliente() throws Exception {
+    
     }
 
     public void iniciarReserva() {

@@ -37,8 +37,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "DispEstudiosMedicos.findAll", query = "SELECT d FROM DispEstudiosMedicos d")
+    , @NamedQuery(name = "DispEstudiosMedicos.findAllActivos", query = "SELECT d FROM DispEstudiosMedicos d where d.estado = 'A' AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
     , @NamedQuery(name = "DispEstudiosMedicos.findByIdEspecialidad", query = "SELECT d FROM DispEstudiosMedicos d WHERE d.idEspecialidad.idEspecialidad = :idEspecialidad")
-    , @NamedQuery(name = "DispEstudiosMedicos.findByNombreByIDs", query = "SELECT d FROM DispEstudiosMedicos d WHERE d.nombre = :nombre AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
+    , @NamedQuery(name = "DispEstudiosMedicos.findByNombreByIDs", query = "SELECT d FROM DispEstudiosMedicos d WHERE UPPER(d.nombre) = :nombre AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
     , @NamedQuery(name = "DispEstudiosMedicos.findByIdEstudiosMedicos", query = "SELECT d FROM DispEstudiosMedicos d WHERE d.idEstudiosMedicos = :idEstudiosMedicos")
     , @NamedQuery(name = "DispEstudiosMedicos.findByNombre", query = "SELECT d FROM DispEstudiosMedicos d WHERE d.nombre = :nombre")
     , @NamedQuery(name = "DispEstudiosMedicos.findByDetalle", query = "SELECT d FROM DispEstudiosMedicos d WHERE d.detalle = :detalle")

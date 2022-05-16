@@ -27,9 +27,7 @@
                 <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
                 <h:panelGrid columns="1" style="width: 100%;text-align: center">
                     <p:outputLabel value="Historial de Pacientes " style="font: 48px bold;"/> <!--background-color: #337ab7;color: white"/>-->
-                </h:panelGrid>
-                <p:commandButton value="REGRESAR" onclick="history.go(-1);return false;" style="font: 24px bold;font-family: sans-serif"/>
-                <br/>                
+                </h:panelGrid>               
                 <br/>
                 <p:outputLabel value="Paciente: " style="font: 24px bold; color: black"/>
                 <p:selectOneMenu value="#{historial.clienteObj}" effect="clip" filter="true" autoWidth="false" converter="ConverterGeneric" onchange="PF('consultaWidget').filter()">

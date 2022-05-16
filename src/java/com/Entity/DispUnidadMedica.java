@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "DispUnidadMedica.findAll", query = "SELECT d FROM DispUnidadMedica d")
-    , @NamedQuery(name = "DispUnidadMedica.findByNombreByIDs", query = "SELECT d FROM DispUnidadMedica d WHERE d.nombre = :nombre AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
+    , @NamedQuery(name = "DispUnidadMedica.findByNombreByIDs", query = "SELECT d FROM DispUnidadMedica d WHERE UPPER(d.nombre) = :nombre AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
     , @NamedQuery(name = "DispUnidadMedica.findAllActivos", query = "SELECT d FROM DispUnidadMedica d where d.estado = 'A' AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
     , @NamedQuery(name = "DispUnidadMedica.findByIdUnidadMedica", query = "SELECT d FROM DispUnidadMedica d WHERE d.idUnidadMedica = :idUnidadMedica")
     , @NamedQuery(name = "DispUnidadMedica.findByNombre", query = "SELECT d FROM DispUnidadMedica d WHERE d.nombre = :nombre")

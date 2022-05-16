@@ -401,7 +401,7 @@ public class AgendamientoMB implements Serializable {
                 this.userTransaction.begin();
                 this.dispAgendamiento = this.dispAgendamientoFacade.findById(Integer.parseInt(String.valueOf(this.evento.getId())));
                 if (this.evento.getDateInicio().after(fechaActual)) {
-                    this.dispAgendamiento.setFecha(this.objSDF.parse(this.objSDF.format(Long.valueOf(this.evento.getDateInicio().getTime()))));
+                    this.dispAgendamiento.setFecha(this.objSDF.parse(this.objSDF.format(this.evento.getDateInicio().getTime())));
                     this.dispAgendamiento.setTurno(0);
                     this.dispAgendamiento.setUsuarioModificacion(this.usuario.getUsuario());
                     this.dispAgendamiento.setFechaModificacion(this.objSDF.parse(this.objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
@@ -547,6 +547,7 @@ public class AgendamientoMB implements Serializable {
                                 this.dispAgendamiento.setIdMedicoPersonal(this.medicoPersonalObj);
                                 this.dispAgendamiento.setIdServicio(this.servicioObj);
                                 this.dispAgendamiento.setEstado("C");
+                                this.dispAgendamiento.setEnTiempoPasado("N");
                                 this.dispAgendamiento.setIdEmpresa(this.usuario.getIdEmpresa());
                                 this.dispAgendamiento.setIdCiudad(this.usuario.getIdCiudad());
                                 this.dispAgendamiento.setIdSector(this.usuario.getIdSector());
@@ -558,6 +559,7 @@ public class AgendamientoMB implements Serializable {
                                 PrimeFaces.current().executeScript("PF('myschedule').update();PF('eventDialog').hide();PF('dlgAgendamiento').show()");
                                 msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Se realizo la transaccion con exito.");
                             } else {
+                                //codigo de guardar en tiempo pasado
                                 msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "No se puede agendar en la fecha seleccionada.");
                             }
                         } else {

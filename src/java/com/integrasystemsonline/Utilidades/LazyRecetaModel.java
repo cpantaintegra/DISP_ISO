@@ -24,16 +24,26 @@ public class LazyRecetaModel extends LazyDataModel<DispReceta> {
     private Integer sector;
 
     private String estado;
-
+    
+    private Integer cliente;
+    
+    private Integer medico;
+    
     private List<DispReceta> listaDispReceta;
 
     Properties propParam = Utilidades.obtenerProperties("MessageResources.properties");
-
-    public LazyRecetaModel(Integer empresa, Integer ciudad, Integer sector, String estado) {
+    
+    Estado estadoObj;
+    Estado clienteObj;
+    Estado medicoObj;
+    
+    public LazyRecetaModel(Integer cliente, Integer medico, Integer empresa, Integer ciudad, Integer sector, String estado) {
         this.empresa = empresa;
         this.ciudad = ciudad;
         this.sector = sector;
         this.estado = estado;
+        this.cliente = cliente;
+        this.medico = medico;
     }
 
     @Override
@@ -48,18 +58,51 @@ public class LazyRecetaModel extends LazyDataModel<DispReceta> {
             for (Object object : set) {
                 try {
                     Map.Entry me = (Map.Entry) object;
-                    estadoObj = (Estado) me.getValue();
-                    if (estadoObj.getValor() != null) {
-                        this.estado = estadoObj.getValor();
+                    String valoDesc = (String) me.getKey();
+                    
+                    if (valoDesc.equals("estado")) {
+                        this.estadoObj = (Estado) me.getValue();
+                        if (this.estadoObj.getValor() != null) {
+                            this.estado = this.estadoObj.getValor();
+                        }
+                    }
+                    
+                    if (valoDesc.equals("idAgendamiento.idMedicoPersonal")) {
+                        this.medicoObj = (Estado) me.getValue();
+                        if (this.medicoObj.getValor()!= null) {
+                            this.medico = Integer.parseInt(this.medicoObj.getValor());
+                        }
+                        else{
+                            this.medico = null;
+                        }
+                        continue;
+                    }
+                    
+                    if (valoDesc.equals("idAgendamiento.idCliente")) {
+                        this.clienteObj = (Estado) me.getValue();
+                        if (this.clienteObj.getValor()!= null) {
+                            this.cliente = Integer.parseInt(this.clienteObj.getValor());
+                        }
+                        else{
+                            this.cliente = null;
+                        }
+                        continue;
+                    }
+                    
+                    if (valoDesc.equals("globalFilter")) {
+                        if(!me.getValue().toString().isEmpty()){
+                            filterValue = (String) me.getValue();
+                            continue;
+                        }
                     }
                 } catch (Exception e) {
                     Map.Entry me = (Map.Entry) object;
                     filterValue = (String) me.getValue();
                 }
             }
-            setRowCount(dispRecetaFacade.countDispReceta(this.empresa, this.ciudad, this.sector, this.estado, filterValue));
+            setRowCount(dispRecetaFacade.countDispReceta(this.cliente, this.medico, this.empresa, this.ciudad, this.sector, this.estado, filterValue));
             if (getRowCount() > 0) {
-                this.listaDispReceta = dispRecetaFacade.listaDispReceta(this.empresa, this.ciudad, this.sector, this.estado, startingAt, maxPerPage, filterValue);
+                this.listaDispReceta = dispRecetaFacade.listaDispReceta(this.cliente, this.medico, this.empresa, this.ciudad, this.sector, this.estado, startingAt, maxPerPage, filterValue);
             }
         } catch (Exception e) {
             e.printStackTrace();

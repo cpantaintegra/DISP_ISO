@@ -277,7 +277,7 @@ public class PlantillaHistorialMB implements Serializable {
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().redirect("../dispensario/disp_registro_diagnostico.xhtml");
         } catch (Exception ex) {
-            Logger.getLogger(TriajeMedicoMB.class.getName()).log(Level.SEVERE, (String) null, ex);
+            Logger.getLogger(PlantillaHistorialMB.class.getName()).log(Level.SEVERE, (String) null, ex);
         }
     }
 

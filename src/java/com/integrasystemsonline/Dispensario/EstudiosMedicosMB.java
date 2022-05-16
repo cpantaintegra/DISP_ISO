@@ -176,7 +176,7 @@ public class EstudiosMedicosMB implements Serializable {
             this.userTransaction.begin();
             this.dispEstudiosMedicos.setIdEspecialidad(this.especialidadObj);
             if (guardar) {
-                DispEstudiosMedicos estudiosMedicosObj = this.dispEstudiosMedicosFacade.findByNombre(this.dispEstudiosMedicos.getNombre(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+                DispEstudiosMedicos estudiosMedicosObj = this.dispEstudiosMedicosFacade.findByNombre(this.dispEstudiosMedicos.getNombre().toUpperCase(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
                 if (estudiosMedicosObj == null) {
                     this.dispEstudiosMedicos.setIdEmpresa(this.usuario.getIdEmpresa());
                     this.dispEstudiosMedicos.setIdCiudad(this.usuario.getIdCiudad());

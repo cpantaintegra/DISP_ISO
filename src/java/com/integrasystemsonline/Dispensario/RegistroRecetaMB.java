@@ -1,6 +1,7 @@
 package com.integrasystemsonline.Dispensario;
 
 import com.Entity.DispAgendamiento;
+import com.Entity.DispCliente;
 import com.Entity.DispDetalleDiagnostico;
 import com.Entity.DispDetalleReceta;
 import com.Entity.DispDiagnostico;
@@ -12,6 +13,7 @@ import com.Entity.IsParametros;
 import com.Entity.IsRolesPermisos;
 import com.Entity.IsUsuarios;
 import com.Session.DispAgendamientoFacade;
+import com.Session.DispClienteFacade;
 import com.Session.DispDetalleDiagnosticoFacade;
 import com.Session.DispDetalleRecetaFacade;
 import com.Session.DispDiagnosticoFacade;
@@ -83,6 +85,9 @@ public class RegistroRecetaMB implements Serializable {
     @EJB
     DispResultadoFacade dispResultadoFacade;
 
+    @EJB
+    DispClienteFacade dispClienteFacade;
+    
     @EJB
     IsEmpresaFacade isEmpresaFacade;
 
@@ -169,7 +174,14 @@ public class RegistroRecetaMB implements Serializable {
     private Date fechaFin = new Date();
 
     private String timeZone = "";
-
+    
+    private List<Estado> listaCliente;
+    private List<Estado> listaMedico;
+    private Estado clienteFilter;
+    private List<DispCliente> lstClienteFilter;
+    private Estado medicoFilter;
+    
+    private List<DispMedicoPersonal> lstMedicoFilter;
     @PostConstruct
     public void ini() {
         try {
@@ -247,6 +259,34 @@ public class RegistroRecetaMB implements Serializable {
             if (this.dispAgendamiento == null
                     && !this.lstDispAgendmaiento.isEmpty()) {
                 this.dispAgendamiento = this.lstDispAgendmaiento.get(0);
+            }
+            
+            lstClienteFilter = dispClienteFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+            this.listaCliente = new ArrayList<>();
+            estado = new Estado();
+            estado.setValor(null);
+            estado.setDetalle("-Seleccione-");
+            this.clienteFilter = estado;
+            this.listaCliente.add(estado);
+            for (int c = 0; c < lstClienteFilter.size(); c++) {
+                estado = new Estado();
+                estado.setValor(String.valueOf(lstClienteFilter.get(c).getIdCliente()));
+                estado.setDetalle(lstClienteFilter.get(c).getApaterno() + " " + lstClienteFilter.get(c).getAmaterno() + " " + lstClienteFilter.get(c).getNombre());
+                this.listaCliente.add(estado);
+            }
+            
+            lstMedicoFilter = dispMedicoPersonalFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+            this.listaMedico = new ArrayList<>();
+            estado = new Estado();
+            estado.setValor(null);
+            estado.setDetalle("-Seleccione-");
+            this.medicoFilter = estado;
+            this.listaMedico.add(estado);
+            for (int c = 0; c < lstMedicoFilter.size(); c++) {
+                estado = new Estado();
+                estado.setValor(String.valueOf(lstMedicoFilter.get(c).getIdMedicoPersonal()));
+                estado.setDetalle(lstMedicoFilter.get(c).getApaterno() + " " + lstMedicoFilter.get(c).getAmaterno() + " " + lstMedicoFilter.get(c).getNombre());
+                this.listaMedico.add(estado);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -481,7 +521,7 @@ public class RegistroRecetaMB implements Serializable {
         this.detalleRecetaObj.setIdMedicamento(car);
         this.detalleRecetaObj.setDosis("");
         this.detalleRecetaObj.setDuracion("");
-        this.detalleRecetaObj.setCantidad(Integer.valueOf(0));
+        this.detalleRecetaObj.setCantidad(0);
         this.lstDetalleReceta.add(this.detalleRecetaObj);
         this.listDispMedicamento.remove(car);
     }
@@ -609,7 +649,17 @@ public class RegistroRecetaMB implements Serializable {
 
     public LazyDataModel<DispReceta> getAll() {
         if (this.lazyDispReceta == null) {
-            this.lazyDispReceta = new LazyRecetaModel(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector(), this.estado);
+            Integer idCliente = null;
+            Integer idMedico = null;
+            if(clienteFilter.getValor()!=null){
+                idCliente = Integer.parseInt(clienteFilter.getValor());
+            }
+            
+            if(medicoFilter.getValor()!=null){
+                idMedico = Integer.parseInt(medicoFilter.getValor());
+            }
+            
+            this.lazyDispReceta = new LazyRecetaModel(idCliente,idMedico,this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector(), this.estado);
         }
         return this.lazyDispReceta;
     }
@@ -813,4 +863,38 @@ public class RegistroRecetaMB implements Serializable {
     public void setLstDispAgendmaiento(List<DispAgendamiento> lstDispAgendmaiento) {
         this.lstDispAgendmaiento = lstDispAgendmaiento;
     }
+
+    public List<Estado> getListaCliente() {
+        return listaCliente;
+    }
+
+    public void setListaCliente(List<Estado> listaCliente) {
+        this.listaCliente = listaCliente;
+    }
+
+    public List<Estado> getListaMedico() {
+        return listaMedico;
+    }
+
+    public void setListaMedico(List<Estado> listaMedico) {
+        this.listaMedico = listaMedico;
+    }
+
+    public Estado getClienteFilter() {
+        return clienteFilter;
+    }
+
+    public void setClienteFilter(Estado clienteFilter) {
+        this.clienteFilter = clienteFilter;
+    }
+
+    public Estado getMedicoFilter() {
+        return medicoFilter;
+    }
+
+    public void setMedicoFilter(Estado medicoFilter) {
+        this.medicoFilter = medicoFilter;
+    }
+    
+    
 }

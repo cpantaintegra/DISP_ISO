@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DispEspecialidad.findAll", query = "SELECT d FROM DispEspecialidad d")
     , @NamedQuery(name = "DispEspecialidad.findByCodigoByIDs", query = "SELECT d FROM DispEspecialidad d WHERE d.codigo = :codigo AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
-    , @NamedQuery(name = "DispEspecialidad.findByNombreByIDs", query = "SELECT d FROM DispEspecialidad d WHERE d.nombre = :nombre AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
+    , @NamedQuery(name = "DispEspecialidad.findByNombreByIDs", query = "SELECT d FROM DispEspecialidad d WHERE UPPER(d.nombre) = :nombre AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
     , @NamedQuery(name = "DispEspecialidad.findAllActivos", query = "SELECT d FROM DispEspecialidad d where d.estado = 'A' AND d.idEspecialidad != 1 AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
     , @NamedQuery(name = "DispEspecialidad.findByIdEspecialidad", query = "SELECT d FROM DispEspecialidad d WHERE d.idEspecialidad = :idEspecialidad")
     , @NamedQuery(name = "DispEspecialidad.findByNombre", query = "SELECT d FROM DispEspecialidad d WHERE d.nombre = :nombre")

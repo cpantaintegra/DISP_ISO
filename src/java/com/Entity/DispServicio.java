@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "DispServicio.findAll", query = "SELECT d FROM DispServicio d")
-    , @NamedQuery(name = "DispServicio.findByNombreByIDs", query = "SELECT d FROM DispServicio d WHERE d.nombre = :nombre AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector AND d.idEspecialidad.idEspecialidad = :especialidad")
+    , @NamedQuery(name = "DispServicio.findByNombreByIDs", query = "SELECT d FROM DispServicio d WHERE UPPER(d.nombre) = :nombre AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector AND d.idEspecialidad.idEspecialidad = :especialidad")
     , @NamedQuery(name = "DispServicio.findAllActivosByIDs", query = "SELECT d FROM DispServicio d where d.estado = 'A' AND d.idServicio != 1 AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
     , @NamedQuery(name = "DispServicio.findByIdEspecialidad", query = "SELECT d FROM DispServicio d WHERE d.idEspecialidad.idEspecialidad = :idEspecialidad")
     , @NamedQuery(name = "DispServicio.findAllActivos", query = "SELECT d FROM DispServicio d where d.estado = 'A' AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")

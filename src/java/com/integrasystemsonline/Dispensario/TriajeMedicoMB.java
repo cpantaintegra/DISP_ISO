@@ -264,8 +264,7 @@ public class TriajeMedicoMB implements Serializable {
             dataSelecionadaJoda = new DateTime(this.fechaActual.getTime());
             this.fechaFin = dataSelecionadaJoda.withHourOfDay(horaFin).withMinuteOfHour(minutosFin).withSecondOfMinute(0).toDate();
             this.medico = this.dispMedicoPersonalFacade.findByIdUsuario(this.usuario.getIdUsuarios());
-            IsParametros isParametros = this.isParametrosFacade.findByCodigo("timeZone", this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
-            String timeZone = isParametros.getValor();
+            
             if (this.usuario.getIdEmpresa().getFlujoCompleto().equals("S")) {
                 if (this.usuario.getIdRoles().getNombre().toUpperCase().equals("MEDICO")) {
                     this.listDispAgendamiento = this.dispAgendamientoFacade.findAllAtendidoTriaje(this.fechaIni, this.fechaFin, this.medico.getIdMedicoPersonal(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
@@ -346,7 +345,7 @@ public class TriajeMedicoMB implements Serializable {
 
     public void cargarCodigo() {
         String codigo = this.dispAgendamiento.getIdMedicoPersonal().getIdEspecialidad().getCodigo() + this.dispAgendamiento.getIdMedicoPersonal().getApaterno().toUpperCase() + this.dispAgendamiento.getIdMedicoPersonal().getAmaterno().toUpperCase() + this.dispAgendamiento.getIdMedicoPersonal().getNombre().toUpperCase();
-        this.dispDiagnostico.setCodigo(this.estado);
+        this.dispDiagnostico.setCodigo(codigo);
     }
 
     public void guardar() throws SystemException {

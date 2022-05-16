@@ -218,7 +218,7 @@ public class MedicamentoMB implements Serializable {
     }
 
     public LazyDataModel<DispMedicamento> getAll() {
-        Integer especialidad = Integer.valueOf(0);
+        Integer especialidad = 0;
         if (this.lazyDispMedicamento == null) {
             this.lazyDispMedicamento = new LazyMedicamentoModel(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector(), this.estado);
         }
