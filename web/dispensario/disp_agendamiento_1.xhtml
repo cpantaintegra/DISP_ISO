@@ -165,7 +165,7 @@
                         <p:column colspan="#{agendamientoMB.clienteObj.idOrigen!=null?'5':'4'}">
                             <p:schedule id="schedule" timeZone="#{agendamientoMB.timeZone}" locale="es" timeFormat="HH:mm:ss" value="#{agendamientoMB.model}" widgetVar="myschedule" maxTime="#{agendamientoMB.maxTime}" minTime="#{agendamientoMB.minTime}" scrollTime="#{agendamientoMB.scrollTime}" allDaySlot="false" showWeekends="true" slotDuration="#{agendamientoMB.slotDuration}"  style="color: red" slotMinutes="#{agendamientoMB.slotMinutes}" view="#{agendamientoMB.view}" >
                                 <p:ajax event="eventSelect" listener="#{agendamientoMB.onEventSelect}" update=":frmEvent,:forma:txtBin,:forma:cmbEspecialidad,:forma:cmbServicios,:forma:cmbMedicos" oncomplete="PF('eventDialog').show();" />
-                                <p:ajax event="dateSelect" listener="#{agendamientoMB.onDateSelect}" update=":frmEvent" oncomplete="PF('eventDialog').show();"/>
+                                <p:ajax event="dateSelect" listener="#{agendamientoMB.onDateSelect}" update=":frmEvent,:forma" oncomplete="PF('eventDialog').show();"/>
                                 <p:ajax event="eventMove" listener="#{agendamientoMB.onEventMove}" update=":forma:mensajesGrowl,:forma" />
                             </p:schedule>
                         </p:column>
@@ -233,7 +233,7 @@
                         <p:inputText value="#{agendamientoMB.precioCita}" />
                         
                         <p:outputLabel value="Pagado:" />
-                        <p:selectOneMenu style="width:190px" value="#{agendamientoMB.pagado}" id="ingTipoPersona">
+                        <p:selectOneMenu style="width:190px" value="#{agendamientoMB.pagado}" id="ingPagado">
                             <f:selectItem itemLabel="Seleccione"/>
                             <f:selectItem itemValue="Si" itemLabel="Si"/>
                             <f:selectItem itemValue="No" itemLabel="No"/>

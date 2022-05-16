@@ -192,6 +192,8 @@ public class RegistroRecetaMB implements Serializable {
             this.dispDiagnostico = (DispDiagnostico) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("dispDiagnostico");
             this.dispResultado = (DispResultado) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("dispResultado");
             this.dispDetalleDiagnostico = (DispDetalleDiagnostico) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("dispDetalleDiagnostico");
+            dispReceta = (DispReceta) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("dispReceta");
+            lstDetalleReceta = (List<DispDetalleReceta>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("listDispDetalleReceta");
             this.estado = "A";
             this.labelMant = "Ingresar";
             this.listaEstado = new ArrayList<>();
@@ -287,6 +289,11 @@ public class RegistroRecetaMB implements Serializable {
                 estado.setValor(String.valueOf(lstMedicoFilter.get(c).getIdMedicoPersonal()));
                 estado.setDetalle(lstMedicoFilter.get(c).getApaterno() + " " + lstMedicoFilter.get(c).getAmaterno() + " " + lstMedicoFilter.get(c).getNombre());
                 this.listaMedico.add(estado);
+            }
+            
+            if(dispReceta!=null){
+                observaciones = dispReceta.getObservaciones();
+                PrimeFaces.current().executeScript("PF('wdlgIngresar').show();");
             }
         } catch (Exception e) {
             e.printStackTrace();

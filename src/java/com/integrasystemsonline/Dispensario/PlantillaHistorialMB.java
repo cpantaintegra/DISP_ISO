@@ -141,7 +141,7 @@ public class PlantillaHistorialMB implements Serializable {
             this.usuario = (IsUsuarios) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
             this.estado = "A";
             this.listDispCliente = this.dispClienteFacade.findAllHistorialActivo(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
-            this.ClienteObj = (DispCliente) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("dispCliente");
+            this.ClienteObj = (DispCliente) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("ClientePlantilla");
             if (this.ClienteObj == null) {
                 try {
                     this.ClienteObj = this.listDispCliente.get(0);

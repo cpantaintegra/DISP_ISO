@@ -194,7 +194,9 @@ public class AgendamientoMB implements Serializable {
     private String showWeekend = "";
 
     private String timeDif = "";
-
+    
+    private String timeDIffPasado = "";
+    
     private ScheduleModel model = (ScheduleModel) new DefaultScheduleModel();
 
     private Evento evento = new Evento();
@@ -297,6 +299,10 @@ public class AgendamientoMB implements Serializable {
             this.showWeekend = this.isParametros.getValor();
             this.isParametros = this.isParametrosFacade.findByCodigo("timeDif", this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
             this.timeDif = this.isParametros.getValor();
+            this.isParametros = this.isParametrosFacade.findByCodigo("timeDif", this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+            this.timeDif = this.isParametros.getValor();
+            this.isParametros = this.isParametrosFacade.findByCodigo("timeDIffPasado", this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+            this.timeDIffPasado = this.isParametros.getValor();
             cargarEventos();
             this.listDispOrigen = this.dispOrigenFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
             try {
@@ -345,8 +351,7 @@ public class AgendamientoMB implements Serializable {
             }
             this.listDispMedicoPersonal = this.dispMedicoPersonalFacade.listaDispMedicoPersonalByEspecialidad(this.especialidadoObj.getIdEspecialidad());
             this.medicoPersonalObj = this.dispAgendamiento.getIdMedicoPersonal();
-            if (this.medicoPersonalObj.getIdMedicoPersonal() == 1
-                    && !this.listDispMedicoPersonal.isEmpty()) {
+            if (!this.listDispMedicoPersonal.isEmpty()) {
                 this.medicoPersonalObj = this.listDispMedicoPersonal.get(0);
             }
         } catch (Exception exception) {
@@ -358,19 +363,18 @@ public class AgendamientoMB implements Serializable {
         try {
             Date fechaActual = new Date();
             fechaActual = Utilidades.obtenerFechaZonaHoraria(fechaActual, this.timeDif, this.timeZone);
-            System.out.println("consultar agendamiento " + fechaActual.getTime());
             this.listDispAgendamiento = this.dispAgendamientoFacade.findAllCalendario(fechaActual, this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
             for (int i = 0; i < this.listDispAgendamiento.size(); i++) {
                 Evento evento = new Evento();
-                this.dispAgendamiento = this.listDispAgendamiento.get(i);
-                evento.setDateInicio(this.dispAgendamiento.getFecha());
+                DispAgendamiento agendamiento = this.listDispAgendamiento.get(i);
+                evento.setDateInicio(agendamiento.getFecha());
                 Date dataSelecionada = evento.getDateInicio();
                 DateTime dataSelecionadaJoda = new DateTime(dataSelecionada.getTime());
                 evento.setDiaEntero(false);
                 evento.setDateFin(dataSelecionadaJoda.plusMinutes(Integer.parseInt(this.timePlus)).toDate());
-                String titulo = "Reservacion para " + this.dispAgendamiento.getIdEspecialidad().getNombre() + " del cliente " + this.dispAgendamiento.getIdCliente().getApaterno() + " " + this.dispAgendamiento.getIdCliente().getAmaterno() + " " + this.dispAgendamiento.getIdCliente().getNombre();
+                String titulo = "Reservacion para " + agendamiento.getIdEspecialidad().getNombre() + " del cliente " + agendamiento.getIdCliente().getApaterno() + " " + agendamiento.getIdCliente().getAmaterno() + " " + agendamiento.getIdCliente().getNombre();
                 evento.setTitulo(titulo);
-                evento.setId(new Long(this.dispAgendamiento.getIdAgendamiento()));
+                evento.setId(new Long(agendamiento.getIdAgendamiento()));
                 lst.add(evento);
             }
         } catch (Exception exception) {
@@ -387,6 +391,14 @@ public class AgendamientoMB implements Serializable {
         this.evento.setDateFin(dataSelecionadaJoda.plusMinutes(Integer.parseInt(this.timePlus)).toDate());
         this.event = (ScheduleEvent) new DefaultScheduleEvent(this.evento.getTitulo(), this.evento.getDateInicio(), this.evento.getDateFin(), this.evento);
         this.labelMant = "Guardar";
+        resetCombos();
+////        if(event.getId()==null){
+////            this.clienteObj = null;
+////            this.cliente = "";
+////            this.precioCita = new BigDecimal(0);
+////            this.especialidadoObj = this.listDispEspecialidad.get(0);
+////        }
+////        this.pagado = null;
     }
 
     public void onEventMove(ScheduleEntryMoveEvent moveEvent) {
@@ -524,15 +536,18 @@ public class AgendamientoMB implements Serializable {
         FacesMessage msg = null;
         try {
             Date fechaActual = Utilidades.obtenerFechaZonaHoraria(new Date(), this.timeDif, this.timeZone);
-            System.out.println("FECHA ACTUAL " + fechaActual.getTime());
-            Calendar calendar = Calendar.getInstance();
-            System.out.println("CALENDARIO ACTUAL " + calendar.getTime());
-            int turno = 0;
             this.userTransaction.begin();
             if (this.clienteObj != null) {
                 if (this.clienteObj.getIdCliente() != null) {
                     String titulo = this.servicioObj.getNombre() + " del paciente " + this.clienteObj.getApaterno() + " " + this.clienteObj.getAmaterno() + " " + this.clienteObj.getNombre();
                     DefaultScheduleEvent defaultScheduleEvent = new DefaultScheduleEvent(titulo, this.event.getStartDate(), this.event.getEndDate(), true);
+                    List<DispPrecio> lstPrecio = this.dispPrecioFacade.findByServicio(this.servicioObj.getIdServicio());
+                    String origen = clienteObj.getIdOrigen().getNombre();
+                    for (int i = 0; i < lstPrecio.size(); i++) {
+                        if (origen.equals(((DispPrecio) lstPrecio.get(i)).getIdOrigen().getNombre())) {
+                            this.precioCita = ((DispPrecio) lstPrecio.get(i)).getValor();
+                        }
+                    }
                     if (this.evento.getId() == null) {
                         this.dispAgendamiento = this.dispAgendamientoFacade.findByEspecialidadMedico(this.evento.getDateInicio(), this.especialidadoObj.getIdEspecialidad(), this.medicoPersonalObj.getIdMedicoPersonal());
                         if (this.dispAgendamiento == null) {
@@ -541,7 +556,7 @@ public class AgendamientoMB implements Serializable {
                                 this.dispAgendamiento = new DispAgendamiento();
                                 this.dispAgendamiento.setFecha(this.objSDF.parse(this.objSDF.format(this.evento.getDateInicio())));
                                 this.dispAgendamiento.setTurno(0);
-                                this.dispAgendamiento.setCosto(null);
+                                this.dispAgendamiento.setCosto(this.precioCita.setScale(2, RoundingMode.HALF_EVEN));
                                 this.dispAgendamiento.setIdCliente(this.clienteObj);
                                 this.dispAgendamiento.setIdEspecialidad(this.especialidadoObj);
                                 this.dispAgendamiento.setIdMedicoPersonal(this.medicoPersonalObj);
@@ -559,18 +574,50 @@ public class AgendamientoMB implements Serializable {
                                 PrimeFaces.current().executeScript("PF('myschedule').update();PF('eventDialog').hide();PF('dlgAgendamiento').show()");
                                 msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Se realizo la transaccion con exito.");
                             } else {
-                                //codigo de guardar en tiempo pasado
-                                msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "No se puede agendar en la fecha seleccionada.");
+                                Long diff = Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone).getTime() - this.event.getStartDate().getTime();
+                                long diffseg = diff / 1000;
+                                Integer tiempoPasado = Integer.parseInt(timeDIffPasado);
+                                if(diffseg > tiempoPasado){
+                                    this.dispAgendamiento = new DispAgendamiento();
+                                    this.dispAgendamiento.setFecha(this.objSDF.parse(this.objSDF.format(this.evento.getDateInicio())));
+                                    this.dispAgendamiento.setFechaLlamada(this.objSDF.parse(this.objSDF.format(this.evento.getDateInicio())));
+                                    this.dispAgendamiento.setFechaInicioAtencion(this.objSDF.parse(this.objSDF.format(this.evento.getDateInicio())));
+                                    this.dispAgendamiento.setFechaAtendido(this.objSDF.parse(this.objSDF.format(this.evento.getDateInicio())));
+                                    this.dispAgendamiento.setFechaLlamarMedico(this.objSDF.parse(this.objSDF.format(this.evento.getDateInicio())));
+                                    this.dispAgendamiento.setFechaInicioMedico(this.objSDF.parse(this.objSDF.format(this.evento.getDateInicio())));
+                                    this.dispAgendamiento.setFechaAtendidoMedico(this.objSDF.parse(this.objSDF.format(this.evento.getDateInicio())));
+                                    this.dispAgendamiento.setTurno(0);
+                                    this.dispAgendamiento.setCosto(this.precioCita.setScale(2, RoundingMode.HALF_EVEN));
+                                    this.dispAgendamiento.setIdCliente(this.clienteObj);
+                                    this.dispAgendamiento.setIdEspecialidad(this.especialidadoObj);
+                                    this.dispAgendamiento.setIdMedicoPersonal(this.medicoPersonalObj);
+                                    this.dispAgendamiento.setIdServicio(this.servicioObj);
+                                    this.dispAgendamiento.setEstado("AM");
+                                    this.dispAgendamiento.setEnTiempoPasado("S");
+                                    this.dispAgendamiento.setIdEmpresa(this.usuario.getIdEmpresa());
+                                    this.dispAgendamiento.setIdCiudad(this.usuario.getIdCiudad());
+                                    this.dispAgendamiento.setIdSector(this.usuario.getIdSector());
+                                    this.dispAgendamiento.setUsuarioIngreso(this.usuario.getUsuario());
+                                    this.dispAgendamiento.setFechaIngreso(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone));
+                                    this.dispAgendamientoFacade.createWithValidator(this.dispAgendamiento);
+                                    this.dispAgendamientoFacade.flush();
+                                    cargarInfoAgendamiento();
+                                    PrimeFaces.current().executeScript("PF('myschedule').update();PF('eventDialog').hide();PF('dlgAgendamiento').show()");
+                                    msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Se realizo la transaccion con exito.");
+                                }
+                                else{
+                                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "No se puede agendar en la fecha seleccionada.");
+                                }
                             }
                         } else {
                             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Ya existe una reservaa en el horario seleccionado.");
                         }
                     } else {
-                        DispAgendamiento agendamiento = this.dispAgendamientoFacade.findByEspecialidadMedico(this.evento.getDateInicio(), this.especialidadoObj.getIdEspecialidad(), this.medicoPersonalObj.getIdMedicoPersonal());
-                        if (agendamiento == null) {
+                        DispAgendamiento agendamiento = this.dispAgendamientoFacade.findById(this.evento.getId().intValue());
+                        if (agendamiento != null) {
                             this.model.deleteEvent(this.eventoTemp);
                             this.model.updateEvent((ScheduleEvent) defaultScheduleEvent);
-                            this.dispAgendamiento.setCosto(null);
+                            this.dispAgendamiento.setCosto(this.precioCita.setScale(2, RoundingMode.HALF_EVEN));
                             this.dispAgendamiento.setIdCliente(this.clienteObj);
                             this.dispAgendamiento.setPagado(this.pagado);
                             this.dispAgendamiento.setIdEspecialidad(this.especialidadoObj);
@@ -611,14 +658,14 @@ public class AgendamientoMB implements Serializable {
             this.infoAgendamiento.setMedico(this.medicoPersonalObj.getApaterno() + " " + this.medicoPersonalObj.getAmaterno() + " " + this.medicoPersonalObj.getNombre());
             this.infoAgendamiento.setServicio(this.servicioObj.getNombre());
             this.infoAgendamiento.setCedulaMedico(this.medicoPersonalObj.getNumDocumento());
-            String origen = this.dispAgendamiento.getIdCliente().getIdOrigen().getNombre();
-            List<DispPrecio> lstPrecio = this.dispPrecioFacade.findByServicio(this.servicioObj.getIdServicio());
-            for (int i = 0; i < lstPrecio.size(); i++) {
-                if (origen.equals(((DispPrecio) lstPrecio.get(i)).getIdOrigen().getNombre())) {
-                    this.precioCita = ((DispPrecio) lstPrecio.get(i)).getValor();
-                }
-            }
-            this.infoAgendamiento.setPrecio(Float.parseFloat(String.valueOf(this.precioCita)));
+//            String origen = this.dispAgendamiento.getIdCliente().getIdOrigen().getNombre();
+//            List<DispPrecio> lstPrecio = this.dispPrecioFacade.findByServicio(this.servicioObj.getIdServicio());
+//            for (int i = 0; i < lstPrecio.size(); i++) {
+//                if (origen.equals(((DispPrecio) lstPrecio.get(i)).getIdOrigen().getNombre())) {
+//                    this.precioCita = ((DispPrecio) lstPrecio.get(i)).getValor();
+//                }
+//            }
+            this.infoAgendamiento.setPrecio(Float.parseFloat(String.valueOf(this.dispAgendamiento.getCosto())));
         } catch (Exception e) {
             this.userTransaction.rollback();
         }
@@ -626,20 +673,25 @@ public class AgendamientoMB implements Serializable {
 
     public void actualizarPrecio() {
         try {
-            if (this.dispAgendamiento.getIdAgendamiento() != null) {
-                this.userTransaction.begin();
-                this.dispAgendamiento.setCosto(this.precioCita.setScale(2, RoundingMode.HALF_EVEN));
-                this.dispAgendamiento.setPagado(this.pagado);
-                this.dispAgendamientoFacade.editWithValidator(this.dispAgendamiento);
-                this.dispAgendamientoFacade.flush();
-                this.userTransaction.commit();
+            if (dispAgendamiento.getIdAgendamiento() != null) {
+                userTransaction.begin();
+                dispAgendamiento.setCosto(this.precioCita.setScale(2, RoundingMode.HALF_EVEN));
+                dispAgendamiento.setPagado(this.pagado);
+                dispAgendamientoFacade.editWithValidator(dispAgendamiento);
+                dispAgendamientoFacade.flush();
+                userTransaction.commit();
             }
-            enviarCorreos();
-            printInfoAgendamiento(this.dispAgendamiento.getIdAgendamiento(), this.servicioObj.getIdServicio());
+            Date fechaActual = Utilidades.obtenerFechaZonaHoraria(new Date(), this.timeDif, this.timeZone);
+            if (fechaActual.before(this.event.getStartDate())) {
+                enviarCorreos();
+                printInfoAgendamiento(this.dispAgendamiento.getIdAgendamiento(), this.servicioObj.getIdServicio());
+            }
+            
             this.clienteObj = null;
             this.cliente = "";
             this.precioCita = new BigDecimal(0);
             this.especialidadoObj = this.listDispEspecialidad.get(0);
+            this.pagado = null;
             resetCombos();
             cargarEventos();
         } catch (Exception exception) {
@@ -652,6 +704,7 @@ public class AgendamientoMB implements Serializable {
             if (this.scheduleEvents == null) {
                 this.scheduleEvents = new ArrayList<>();
             }
+            
             for (Evento eventoAtual : eventos) {
                 DefaultScheduleEvent newEvent = new DefaultScheduleEvent(eventoAtual.getTitulo(), eventoAtual.getDateInicio(), eventoAtual.getDateFin(), eventoAtual);
                 if (!this.scheduleEvents.contains(newEvent)) {

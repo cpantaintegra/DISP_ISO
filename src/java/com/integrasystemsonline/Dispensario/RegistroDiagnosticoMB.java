@@ -163,9 +163,45 @@ public class RegistroDiagnosticoMB implements Serializable {
                 this.dispResultado.setPlan(this.dispDetalleDiagnostico.getIdResultado().getPlan());
                 this.dispResultado.setTratamiento(this.dispDetalleDiagnostico.getIdResultado().getTratamiento());
                 this.dispResultado.setTiempoEnfermedad(this.dispDetalleDiagnostico.getIdResultado().getTiempoEnfermedad());
+                
+                
+                DispReceta recetaPlantila = dispRecetaFacade.findByIdAgendamiento(dispDetalleDiagnostico.getIdResultado().getIdAgendamiento().getIdAgendamiento());
+                //receta de la plantilla
+                if(recetaPlantila!=null){
+                    dispReceta = new DispReceta();
+                    dispReceta.setObservaciones(recetaPlantila.getObservaciones());
+                    List<DispDetalleReceta> listDetalleRecetaTemp = dispDetalleRecetaFacade.findByIdReceta(recetaPlantila.getIdReceta());
+                    listDispDetalleReceta  = new ArrayList<>();
+                    for (int i = 0; i < listDetalleRecetaTemp.size(); i++) {
+                        DispDetalleReceta detalleReceta = new DispDetalleReceta();
+                        detalleReceta.setCantidad(listDetalleRecetaTemp.get(i).getCantidad());
+                        detalleReceta.setDosis(listDetalleRecetaTemp.get(i).getDosis());
+                        detalleReceta.setDuracion(listDetalleRecetaTemp.get(i).getDuracion());
+                        detalleReceta.setIdMedicamento(listDetalleRecetaTemp.get(i).getIdMedicamento());
+                        listDispDetalleReceta.add(detalleReceta);
+                    }
+                }
+                
+//                if (this.listDispDetalleReceta == null) {
+//                    this.listDispDetalleReceta = new ArrayList<>();
+//                }
             }
-            this.dispReceta = (DispReceta) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("dispReceta");
-            this.listDispDetalleReceta = (List<DispDetalleReceta>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("listDispDetalleReceta");
+            
+            //receta en memoria
+            //prioriza la receta en memoria
+            DispReceta receta = (DispReceta) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("dispReceta");
+            List<DispDetalleReceta> listDetalleReceta = (List<DispDetalleReceta>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("listDispDetalleReceta");
+            if(receta!=null){
+                dispReceta = receta;
+            }
+            
+            if(listDetalleReceta!=null){
+                if(!listDetalleReceta.isEmpty()){
+                    listDispDetalleReceta = listDetalleReceta;
+                }
+            }
+            
+            
             if (this.listDispDetalleReceta == null) {
                 this.listDispDetalleReceta = new ArrayList<>();
             }
@@ -342,6 +378,8 @@ public class RegistroDiagnosticoMB implements Serializable {
             if (this.dispResultado.getMotivoConsulta() != null && !this.dispResultado.getMotivoConsulta().isEmpty()) {
                 FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("dispDiagnostico", this.dispDiagnostico);
                 FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("dispResultado", this.dispResultado);
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("dispReceta", this.dispReceta);
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("listDispDetalleReceta", this.listDispDetalleReceta);
                 this.dispDetalleDiagnostico.setIdCliente(this.dispAgendamiento.getIdCliente());
                 this.dispDetalleDiagnostico.setIdDiagnostico(this.dispDiagnostico);
                 this.dispDetalleDiagnostico.setIdResultado(this.dispResultado);
