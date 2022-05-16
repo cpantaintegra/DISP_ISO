@@ -42,6 +42,7 @@
                     <p:ajax event="rowSelect" oncomplete="PF('wdlgIngresar').show();" listener="#{recetaMB.onRowDblClckSelect}" update=":frmIng" disabled="#{recetaMB.editar}"/>
                     
                     <p:column headerText="Paciente" >
+                        
                         <h:outputText value="#{rece.idAgendamiento.idCliente.apaterno.concat(' ').concat(rece.idAgendamiento.idCliente.amaterno).concat(' ').concat(rece.idAgendamiento.idCliente.nombre)}" title="#{rece.idAgendamiento.idCliente.apaterno.concat(' ').concat(rece.idAgendamiento.idCliente.amaterno).concat(' ').concat(rece.idAgendamiento.idCliente.nombre)}" style="#{(rece.estado=='A'?'':'color: red')}"/>
                     </p:column>
                     <p:column headerText="Fecha de atención" >
