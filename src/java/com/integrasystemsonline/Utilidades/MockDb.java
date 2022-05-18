@@ -18,10 +18,10 @@ public class MockDb {
         return headerList;
     }
 
-    public static List<DataValue> getValueList(List<String> lstDia) {
+    public static List<DataValue> getValueList(List<String> lstDatos) {
         List<DataValue> valueList = new ArrayList<>();
-        for (int i = 1; i <= 2; i++) {
-            DataValue data = new DataValue(lstDia.get(i - 1));
+        for (int i = 0; i < lstDatos.size(); i++) {
+            DataValue data = new DataValue(lstDatos.get(i));
             valueList.add(data);
         }
         return valueList;

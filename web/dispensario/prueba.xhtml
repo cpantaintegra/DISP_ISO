@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/template/platform/MainTamplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="head">
+        <title>Mantenimiento Examen</title>    
+    </ui:define>
+    <ui:define name="body">
+        <ui:insert name="header">
+            <ui:include src="../template/platform/header.xhtml"/>
+        </ui:insert>
+        <div class="container-fluid">
+            <h:form id="forma" class="form-horizontal" >
+                <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
+                <p:panelGrid columns="2" >
+                    
+                </p:panelGrid>
+                <p:dataTable id="dtDatos" widgetVar="consultaWidget" value="#{calendarioMB.all}" selectionMode="single" reflow="true" lazy="true" resizableColumns="true"
+                             var="a" rowKey="#{a.idExamen}" paginator="true" paginatorPosition="both" scrollable="true" 
+                             paginatorTemplate="#{messages.tem_paginator}" currentPageReportTemplate="#{messages.tem_page_report}" style="width:100%;"
+                             rowsPerPageTemplate="#{messages.num_page_size_tem}" rows="#{messages.num_page_size}" emptyMessage="#{messages.lbl_no_data_found}" rendered="#{!examenMB.consultar}">
+                </p:dataTable>   
+      
+            </h:form>        
+        </div>
+    </ui:define>
+</ui:composition>

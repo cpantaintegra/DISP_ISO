@@ -17,13 +17,13 @@
         <div class="container-fluid">
             <h:form id="forma" class="form-horizontal" style="text-align: left;" >
                 <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
-                 <p:focus for="ingEnfermedad"/>
+                <p:focus for="ingEnfermedad"/>
                 <div style="text-align: center;">
                     <p:outputLabel value="Diagnostico" style="font: 64px bold;" />
                 </div>
                 <br/>
                 <h:panelGrid columns="1" style="text-align: left; width: 90%; margin-left: 5%; height: 100%; background-color: white"  >
-                                        
+
                     <h:panelGrid columns="6" style="text-align: left; width: 90%; margin-left: 5%; background-color: white">
                         <p:outputLabel value="Datos Paciente" style="font: 24px bold, sans-serif; color: black; background-color: white" /> 
                         <p:outputLabel value=" "/>
@@ -56,7 +56,7 @@
                         <p:outputLabel value="Persona Responsable: "/>
                         <p:outputLabel value="#{registroDiagnosticoMB.dispAgendamiento.idCliente.personaResponsable}" style="color: black"/>
                     </h:panelGrid>
-                    
+
                     <br/>
                     <h:panelGrid columns="3" style="text-align: left;">
                         <p:outputLabel value="Antecedentes Paciente" style="font: 24px bold, sans-serif; color: black; background-color: white" />
@@ -67,7 +67,7 @@
                         <p:commandButton value="VER" actionListener="#{registroDiagnosticoMB.redireccionarHistorial()}"/>
                     </h:panelGrid>
                     <br/>
-                    
+
                     <p:outputLabel for="ingCodigo" value="Código: " style="font: 24px sans-serif; background-color: white"/>
                     <br/>
                     <p:inputText id="ingCodigo" value="#{registroDiagnosticoMB.dispDiagnostico.codigo}" style="text-align: left; width: 100%" />  
@@ -86,12 +86,20 @@
                         <p:calendar id="ingFechaNac" placeholder="Seleccione Fecha" title="Próxima Cita" mindate="1/1/60" navigator="true" value="#{registroDiagnosticoMB.dispResultado.proximaCita}"/>
                     </h:panelGrid>
                     <p:commandButton value="Guardar" actionListener="#{registroDiagnosticoMB.guardar('T')}" update=":forma:mensajesGrowl"/>
-                    <br/>
+                    <p:spacer width="25" height="0"/>
                     <p:commandButton value="Nueva Receta" actionListener="#{registroDiagnosticoMB.redireccionarRecetas()}" update=":forma:mensajesGrowl"/>
+                    <p:spacer width="25" height="0"/>
+                    <p:commandButton value="Solicitar estudios medicos" onclick="PF('wdlgOrdenes').show();" update=":frmOrdenes"/>
                     <br/>
                     <br/>
                 </h:panelGrid>
             </h:form>
+
+            <p:dialog id="dlgOrdenes" header="Examenes" position="center" widgetVar="wdlgOrdenes" width="800" height="500" modal="true">
+                <h:form id="frmOrdenes" style="text-align: center" binding="#{registroDiagnosticoMB.form}" >
+                    <p:commandButton value="Generar orden"/>
+                </h:form>
+            </p:dialog>
         </div>
     </ui:define>
 </ui:composition>

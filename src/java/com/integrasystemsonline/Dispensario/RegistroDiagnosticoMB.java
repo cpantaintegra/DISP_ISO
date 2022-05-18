@@ -5,8 +5,12 @@ import com.Entity.DispAntecedentes;
 import com.Entity.DispDetalleDiagnostico;
 import com.Entity.DispDetalleReceta;
 import com.Entity.DispDiagnostico;
+import com.Entity.DispEstudiosMedicos;
+import com.Entity.DispExamen;
+import com.Entity.DispMedicoPersonal;
 import com.Entity.DispReceta;
 import com.Entity.DispResultado;
+import com.Entity.DispSolicitudExamen;
 import com.Entity.IsParametros;
 import com.Entity.IsRolesPermisos;
 import com.Entity.IsUsuarios;
@@ -15,13 +19,18 @@ import com.Session.DispAntecedentesFacade;
 import com.Session.DispDetalleDiagnosticoFacade;
 import com.Session.DispDetalleRecetaFacade;
 import com.Session.DispDiagnosticoFacade;
+import com.Session.DispEstudiosMedicosFacade;
+import com.Session.DispExamenFacade;
+import com.Session.DispMedicoPersonalFacade;
 import com.Session.DispRecetaFacade;
 import com.Session.DispResultadoFacade;
+import com.Session.DispSolicitudExamenFacade;
 import com.Session.IsCiudadFacade;
 import com.Session.IsEmpresaFacade;
 import com.Session.IsParametrosFacade;
 import com.Session.IsRolesPermisosFacade;
 import com.Session.IsSectorFacade;
+import com.integrasystemsonline.Process.TablaDinamica;
 import com.integrasystemsonline.Utilidades.LazyAntecedentesModel;
 import com.integrasystemsonline.Utilidades.Utilidades;
 import java.io.Serializable;
@@ -35,12 +44,18 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.ViewHandler;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.html.HtmlForm;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+import org.primefaces.component.datatable.DataTable;
+import org.primefaces.component.spacer.Spacer;
 import org.primefaces.model.LazyDataModel;
 
 @Named("registroDiagnosticoMB")
@@ -86,6 +101,17 @@ public class RegistroDiagnosticoMB implements Serializable {
     @EJB
     DispDetalleRecetaFacade dispDetalleRecetaFacade;
 
+    @EJB
+    DispEstudiosMedicosFacade dispEstudiosMedicosFacade;
+    
+    @EJB
+    DispExamenFacade dispExamenFacade;
+    
+    @EJB
+    DispMedicoPersonalFacade dispMedicoPersonalFacade;
+    
+    @EJB
+    DispSolicitudExamenFacade dispSolicitudExamenFacade;
     private SimpleDateFormat objSDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private SimpleDateFormat objSDFOnlyDay = new SimpleDateFormat("yyyy-MM-dd");
@@ -129,7 +155,15 @@ public class RegistroDiagnosticoMB implements Serializable {
     private List<DispDetalleReceta> listDispDetalleReceta = new ArrayList<>();
 
     private DispDetalleReceta dispDetalleReceta = new DispDetalleReceta();
-
+    
+    DataTable table = new DataTable();
+    
+    HtmlForm form = new HtmlForm();
+    
+    DispExamen dispExamen = new DispExamen();
+    
+    List<DispExamen> listDispExamen = new ArrayList<>();
+    
     @PostConstruct
     public void init() {
         try {
@@ -231,6 +265,8 @@ public class RegistroDiagnosticoMB implements Serializable {
                     this.ingresar = false;
                 }
             }
+            
+            crearTablasOrdenes();
         } catch (Exception ex) {
             Logger.getLogger(RegistroDiagnosticoMB.class.getName()).log(Level.SEVERE, (String) null, ex);
         }
@@ -399,6 +435,75 @@ public class RegistroDiagnosticoMB implements Serializable {
         }
     }
 
+    public void crearTablasOrdenes(){
+        try {
+            List<DispEstudiosMedicos> lstDispEstudiosMedicos = new ArrayList<>();
+            List<String> lstExamen = new ArrayList<>();
+            List<String> lstEstudios = new ArrayList<>();
+            List<DataTable> lst = new ArrayList<>();
+
+            DispMedicoPersonal medico = dispMedicoPersonalFacade.findByIdUsuario(usuario.getIdUsuarios());
+            if(medico!=null){
+                lstDispEstudiosMedicos = dispEstudiosMedicosFacade.findByIdEspecialidad(medico.getIdEspecialidad().getIdEspecialidad());
+                lstEstudios = new ArrayList<>();
+                for (int j = 0; j < lstDispEstudiosMedicos.size(); j++) {
+                    lstEstudios.add(lstDispEstudiosMedicos.get(j).getNombre());
+                }
+
+                TablaDinamica myTable = new TablaDinamica();
+                myTable.construirPanel(2, "text-align: left");
+                for (int i = 0; i < lstDispEstudiosMedicos.size(); i++) {
+                    List<DispExamen> lstDispExamen = dispExamenFacade.findByIdEstudiosMedicos(lstDispEstudiosMedicos.get(i).getIdEstudiosMedicos());
+                    lstExamen = new ArrayList<>();
+                    for (int j = 0; j < lstDispExamen.size(); j++) {
+                        lstExamen.add(lstDispExamen.get(j).getNombre());
+                    }
+
+                    if(!lstExamen.isEmpty()){
+                        myTable.TablaExamenes(1, lstEstudios.get(i),lstExamen);
+                        //myTable.NuevaTabla(lstExamen.size(), lstExamen);
+                        this.table = myTable.getMyDataTable();
+                        //lst.add(table);
+                        List<String> lstStr = myTable.getLstExamenes();
+                        form.getChildren().add(myTable.getPanel());
+                        Spacer spacer = new Spacer();
+                        spacer.setHeight("50");
+                        form.getChildren().add(spacer);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+    
+    public void generarOrdenes() throws SystemException{
+        FacesMessage msg = null;
+        try {
+            userTransaction.begin();
+            DispSolicitudExamen dispSolicitudExamen = new DispSolicitudExamen();
+            dispSolicitudExamen.setIdCliente(dispAgendamiento.getIdCliente());
+            dispSolicitudExamen.setIdMedicoPersonal(dispAgendamiento.getIdMedicoPersonal());
+            dispSolicitudExamen.setIdExamen(dispExamen);
+            dispSolicitudExamen.setIdEmpresa(this.usuario.getIdEmpresa());
+            dispSolicitudExamen.setIdCiudad(this.usuario.getIdCiudad());
+            dispSolicitudExamen.setIdSector(this.usuario.getIdSector());
+            dispSolicitudExamen.setUsuarioIngreso(this.usuario.getUsuario());
+            dispSolicitudExamen.setFechaIngreso(objSDF.parse(objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
+            dispSolicitudExamenFacade.createWithValidator(dispSolicitudExamen);
+            dispSolicitudExamenFacade.flush();
+            userTransaction.commit();
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Se realizo la transaccion con exito.");
+        } catch (Exception e) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", e.toString());
+            userTransaction.rollback();
+        }
+        
+        if (msg != null) {
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
+    
     public void redireccionarTriajeMedico() {
         try {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -511,4 +616,30 @@ public class RegistroDiagnosticoMB implements Serializable {
     public void setIngresar(boolean ingresar) {
         this.ingresar = ingresar;
     }
+
+    public DataTable getTable() {
+        return table;
+    }
+
+    public void setTable(DataTable table) {
+        this.table = table;
+    }
+
+    public HtmlForm getForm() {
+        return form;
+    }
+
+    public void setForm(HtmlForm form) {
+        this.form = form;
+    }
+
+    public DispExamen getDispExamen() {
+        return dispExamen;
+    }
+
+    public void setDispExamen(DispExamen dispExamen) {
+        this.dispExamen = dispExamen;
+    }
+    
+    
 }

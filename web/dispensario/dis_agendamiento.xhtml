@@ -15,11 +15,18 @@
             <ui:include src="../template/platform/header.xhtml"/>
         </ui:insert>
         <div class="container-fluid">
-            <h:form id="forma" class="form-horizontal" >
+            
+            <h:form id="forma" class="form-horizontal">
                 <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
                     
-                <p:dataTable binding="#{agendamientoMB.table}"/>       
-            </h:form>     
+                <p:commandButton value="nueva orden" onclick="PF('wdlgOrdenes').show()" update="frmOrdenes"/>  
+            </h:form>
+            
+            <p:dialog id="dlgOrdenes" header="Examen" widgetVar="wdlgOrdenes" modal="false">
+                <h:form id="frmOrdenes" style="text-align: center" binding="#{calendarioMB.form}">
+                    <p:commandButton value="Generar orden" actionListener="#{calendarioMB.verlista()}"/>
+                </h:form>
+            </p:dialog>
         </div>
     </ui:define>
 </ui:composition>

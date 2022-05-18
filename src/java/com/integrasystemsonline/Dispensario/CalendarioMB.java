@@ -1,9 +1,15 @@
 package com.integrasystemsonline.Dispensario;
 
 import com.Entity.DispCliente;
+import com.Entity.DispEstudiosMedicos;
+import com.Entity.DispExamen;
+import com.Entity.DispMedicoPersonal;
 import com.Entity.IsRolesPermisos;
 import com.Entity.IsUsuarios;
 import com.Session.DispClienteFacade;
+import com.Session.DispEstudiosMedicosFacade;
+import com.Session.DispExamenFacade;
+import com.Session.DispMedicoPersonalFacade;
 import com.Session.IsCiudadFacade;
 import com.Session.IsEmpresaFacade;
 import com.Session.IsRolesPermisosFacade;
@@ -21,13 +27,19 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIData;
+import javax.faces.component.UIPanel;
+import javax.faces.component.html.HtmlForm;
+import javax.faces.component.html.HtmlMessage;
+import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import org.primefaces.component.datatable.DataTable;
+import org.primefaces.component.spacer.Spacer;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
@@ -56,6 +68,15 @@ public class CalendarioMB implements Serializable {
     @EJB
     IsRolesPermisosFacade isRolesPermisosFacade;
 
+    @EJB
+    DispEstudiosMedicosFacade dispEstudiosMedicosFacade;
+    
+    @EJB
+    DispExamenFacade dispExamenFacade;
+    
+    @EJB
+    DispMedicoPersonalFacade dispMedicoPersonalFacade;
+    
     private ScheduleModel eventModel;
 
     private ScheduleModel lazyEventModel;
@@ -135,17 +156,15 @@ public class CalendarioMB implements Serializable {
     int numFilas = 0;
 
     DataTable table = new DataTable();
-
+    HtmlForm form = new HtmlForm();
+    
     @PostConstruct
     public void ini() {
         try {
-            this.eventModel = (ScheduleModel) new DefaultScheduleModel();
+            this.usuario = (IsUsuarios) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
+            
             this.estado = "A";
-            this.listDispCliente = this.dispClienteFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
-            try {
-                this.ClienteObj = this.listDispCliente.get(0);
-            } catch (Exception exception) {
-            }
+            
             this.labelMant = "Ingresar";
             this.listaEstado = new ArrayList<>();
             Estado estado = new Estado();
@@ -157,7 +176,7 @@ public class CalendarioMB implements Serializable {
             estado.setValor("I");
             estado.setDetalle("Inactivo");
             this.listaEstado.add(estado);
-            this.usuario = (IsUsuarios) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
+            
             this.listIsRolesPermisos = this.isRolesPermisosFacade.findByRol(this.usuario.getIdRoles());
             String eli = "", edi = "", con = "", ing = "";
             try {
@@ -184,12 +203,53 @@ public class CalendarioMB implements Serializable {
                     this.ingresar = false;
                 }
             }
-            cargarHorarios();
+            //cargarHorarios();
+            crearTablasOrdenes();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public HtmlForm crearTablasOrdenes(){
+        List<DispEstudiosMedicos> lstDispEstudiosMedicos = new ArrayList<>();
+        List<String> lstExamen = new ArrayList<>();
+        List<String> lstEstudios = new ArrayList<>();
+        List<DataTable> lst = new ArrayList<>();
+        
+        DispMedicoPersonal medico = dispMedicoPersonalFacade.findByIdUsuario(usuario.getIdUsuarios());
+        //if(medico!=null){
+            lstDispEstudiosMedicos = dispEstudiosMedicosFacade.findByIdEspecialidad(2);//medico.getIdEspecialidad().getIdEspecialidad()
+            lstEstudios = new ArrayList<>();
+            for (int j = 0; j < lstDispEstudiosMedicos.size(); j++) {
+                lstEstudios.add(lstDispEstudiosMedicos.get(j).getNombre());
+            }
+            
+            TablaDinamica myTable = new TablaDinamica();
+            myTable.construirPanel(2, "width:100%;text-align: left");
+            for (int i = 0; i < lstDispEstudiosMedicos.size(); i++) {
+                List<DispExamen> lstDispExamen = dispExamenFacade.findByIdEstudiosMedicos(lstDispEstudiosMedicos.get(i).getIdEstudiosMedicos());
+                lstExamen = new ArrayList<>();
+                for (int j = 0; j < lstDispExamen.size(); j++) {
+                    lstExamen.add(lstDispExamen.get(j).getNombre());
+                }
+                
+                if(!lstExamen.isEmpty()){
+                    
+                    myTable.TablaExamenes(1, lstEstudios.get(i),lstExamen);
+                    //myTable.NuevaTabla(lstExamen.size(), lstExamen);
+                    this.table = myTable.getMyDataTable();
+                    //lst.add(table);
+                    List<String> lstStr = myTable.getLstExamenes();
+                    form.getChildren().add(myTable.getPanel());
+                    Spacer spacer = new Spacer();
+                    spacer.setHeight("50");
+                    form.getChildren().add(spacer);
+                }
+            }
+        //}
+        return form;
+    }
+    
     public void guardar() throws SystemException {
         FacesMessage msg = null;
         boolean guardar = true;
@@ -583,4 +643,13 @@ public class CalendarioMB implements Serializable {
     public void setColumnHeaderFormat(String columnHeaderFormat) {
         this.columnHeaderFormat = columnHeaderFormat;
     }
+
+    public HtmlForm getForm() {
+        return form;
+    }
+
+    public void setForm(HtmlForm form) {
+        this.form = form;
+    }
+    
 }
