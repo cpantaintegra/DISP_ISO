@@ -85,19 +85,52 @@
                         <p:spacer width="40"/>
                         <p:calendar id="ingFechaNac" placeholder="Seleccione Fecha" title="Próxima Cita" mindate="1/1/60" navigator="true" value="#{registroDiagnosticoMB.dispResultado.proximaCita}"/>
                     </h:panelGrid>
-                    <p:commandButton value="Guardar" actionListener="#{registroDiagnosticoMB.guardar('T')}" update=":forma:mensajesGrowl"/>
-                    <p:spacer width="25" height="0"/>
-                    <p:commandButton value="Nueva Receta" actionListener="#{registroDiagnosticoMB.redireccionarRecetas()}" update=":forma:mensajesGrowl"/>
-                    <p:spacer width="25" height="0"/>
-                    <p:commandButton value="Solicitar estudios medicos" onclick="PF('wdlgOrdenes').show();" update=":frmOrdenes"/>
+                    <br/>
+                    <h:panelGrid columns="3" style="text-align: left;">
+                        <p:commandButton value="Guardar" actionListener="#{registroDiagnosticoMB.guardar('T')}" update=":forma:mensajesGrowl"/>
+                        
+                        <p:commandButton value="Nueva Receta" actionListener="#{registroDiagnosticoMB.redireccionarRecetas()}" update=":forma:mensajesGrowl"/>
+                        
+                        <p:commandButton value="Solicitar estudios medicos" onclick="PF('wdlgOrdenes').show();" actionListener="#{registroDiagnosticoMB.cargarListaEstudiosMedicos()}" update=":frmOrden"/>
+                    </h:panelGrid>
+                    
                     <br/>
                     <br/>
                 </h:panelGrid>
             </h:form>
-
-            <p:dialog id="dlgOrdenes" header="Examenes" position="center" widgetVar="wdlgOrdenes" width="800" height="500" modal="true">
-                <h:form id="frmOrdenes" style="text-align: center" binding="#{registroDiagnosticoMB.form}" >
-                    <p:commandButton value="Generar orden"/>
+            
+            <p:dialog id="dlgOrdenes" header="Orden de Examen" position="center" widgetVar="wdlgOrdenes" width="800" height="450" modal="true">
+                <h:form id="frmOrden" style="text-align: left" >
+                    <p:panelGrid columns="4" style="text-align: left; width: 100%">
+                        <p:outputLabel value="Ayuno: "/>
+                        <p:selectBooleanCheckbox value="#{registroDiagnosticoMB.ayuno}" />
+                        <p:outputLabel value="Vejiga LLena: "/>
+                        <p:selectBooleanCheckbox value="#{registroDiagnosticoMB.vejigaLlena}"/>
+                    </p:panelGrid> 
+                    
+                    <p:repeat value="#{registroDiagnosticoMB.listDispEstudiosMedicos}" var="estudios" >
+                        <p:outputLabel value="#{estudios.nombre}" style="width: 100%;background-color: #2aabd2;font: 30px serif bold;color: white;text-transform: uppercase"/>
+                        <br/>
+                        <p:repeat value="#{registroDiagnosticoMB.cargarListaExamen(estudios)}" var="examen">
+                            <p:outputLabel value="#{examen.nombre}" style="background-color: white;font: 24px serif;color: black;text-transform: capitalize"/>
+                            <p:spacer width="20" height="0"/>
+                            <p:selectBooleanCheckbox>
+                                <p:ajax event="change" listener="#{registroDiagnosticoMB.agregarExamenesSeleccionados(examen)}"/>                          
+                            </p:selectBooleanCheckbox>
+                            <br/>
+                        </p:repeat>
+                    </p:repeat>
+                    <br/>
+                    <p:commandButton value="Generar orden" actionListener="#{registroDiagnosticoMB.generarOrdenes()}" oncomplete="PF('wdlgConfirmacion').show();"/>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog header="Confirmación" widgetVar="wdlgConfirmacion" id="dlgConfirmacion"> 
+                <h:form style="text-align: center">
+                    <p:outputLabel value="Desea generar receta?" style="font: 30px serif bold;text-transform: capitalize"/>
+                    <br/>
+                    <p:commandButton value="Si" actionListener="#{registroDiagnosticoMB.redireccionarRecetas()}" oncomplete="PF('wdlgConfirmacion').hide();"/>
+                    <p:commandButton value="No" immediate="true"  oncomplete="PF('wdlgConfirmacion').hide();"/>
                 </h:form>
             </p:dialog>
         </div>

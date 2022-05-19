@@ -33,6 +33,10 @@
         <servlet-name>ServletReceta</servlet-name>
         <servlet-class>com.integrasystemsonline.Servlets.ServletReceta</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServletOrden</servlet-name>
+        <servlet-class>com.integrasystemsonline.Servlets.ServletOrden</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
@@ -44,6 +48,10 @@
     <servlet-mapping>
         <servlet-name>ServletReceta</servlet-name>
         <url-pattern>/ServletReceta</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServletOrden</servlet-name>
+        <url-pattern>/ServletOrden</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

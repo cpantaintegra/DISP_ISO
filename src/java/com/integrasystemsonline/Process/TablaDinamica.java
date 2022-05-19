@@ -149,22 +149,16 @@ public class TablaDinamica {
                 ValueExpression valueExp = ef.createValueExpression(elc, "#{mydata.data" + i + "}", Object.class);
                 OutputLabel label = new OutputLabel();
                 label.setValueExpression("value", valueExp);
+                
                 checkBox = new SelectBooleanCheckbox();
                 AjaxBehavior valueChangeAction = (AjaxBehavior) FacesContext.getCurrentInstance().getApplication().createBehavior(AjaxBehavior.BEHAVIOR_ID);
 
-                valueChangeAction.addAjaxBehaviorListener(new AjaxBehaviorListener() {
-
-                    @Override
-                    public void processAjaxBehavior(AjaxBehaviorEvent event) throws AbortProcessingException {
-                        //codigo al seleccionar el check
-                        if (checkBox.isSelected()) {
-                            lstExamenes.add(label.getValue().toString());
-                        } else {
-                            lstExamenes.remove(label.getValue().toString());
-                        }
+                valueChangeAction.addAjaxBehaviorListener((AjaxBehaviorEvent event) -> {
+                    //codigo al seleccionar el check
+                    for (int j = 0; j < lstRow.size(); j++) {
+                        agregarLista(lstRow.get(j));
                     }
                 });
-
                 checkBox.addClientBehavior("valueChange", valueChangeAction);
                 Column dataColumn = new Column();
                 dataColumn.getChildren().add(checkBox);
@@ -204,6 +198,15 @@ public class TablaDinamica {
         }
     }
 
+    public List<String> agregarLista(String object){
+        
+        try {
+            lstExamenes.add(object);
+        } catch (Exception e) {
+        }
+        return lstExamenes;
+    }
+    
     public DataTable getMyDataTable() {
         return this.myDataTable;
     }

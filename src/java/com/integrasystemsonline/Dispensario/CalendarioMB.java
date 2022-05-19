@@ -157,7 +157,11 @@ public class CalendarioMB implements Serializable {
 
     DataTable table = new DataTable();
     HtmlForm form = new HtmlForm();
-    
+    TablaDinamica myTable = new TablaDinamica();
+    DispExamen examen = new DispExamen();
+    List<DispExamen> lstDispExamen = new ArrayList<>();
+    List<DispExamen> lstDispExamenesSeleccionados = new ArrayList<>();
+    List<DispEstudiosMedicos> lstDispEstudiosMedicos = new ArrayList<>();
     @PostConstruct
     public void ini() {
         try {
@@ -204,12 +208,49 @@ public class CalendarioMB implements Serializable {
                 }
             }
             //cargarHorarios();
+            lstDispEstudiosMedicos = dispEstudiosMedicosFacade.findByIdEspecialidad(2);
             crearTablasOrdenes();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void agregarExamenesSeleccionados(DispExamen examen){
+        try {
+            if(examen.getIdExamen()!=null){
+                if(lstDispExamenesSeleccionados.contains(examen)){
+                    lstDispExamenesSeleccionados.remove(examen);
+                }
+                else{
+                    lstDispExamenesSeleccionados.add(examen);
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
+    
+    public List<DispExamen> cargarListaExamen(DispEstudiosMedicos estudios){
+        lstDispExamen = new ArrayList<>();
+        try {
+            lstDispExamen = dispExamenFacade.findByIdEstudiosMedicos(estudios.getIdEstudiosMedicos());
+        } catch (Exception e) {
+        }
+        
+        return lstDispExamen;
+    }
+    
+    public void verLista(){
+        FacesMessage msg = null;
+        
+        for (int i = 0; i < lstDispExamenesSeleccionados.size(); i++) {
+            
+        }
+        
+        msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito", String.valueOf(lstDispExamenesSeleccionados.size()));
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+        
+    }
+    
     public HtmlForm crearTablasOrdenes(){
         List<DispEstudiosMedicos> lstDispEstudiosMedicos = new ArrayList<>();
         List<String> lstExamen = new ArrayList<>();
@@ -223,8 +264,7 @@ public class CalendarioMB implements Serializable {
             for (int j = 0; j < lstDispEstudiosMedicos.size(); j++) {
                 lstEstudios.add(lstDispEstudiosMedicos.get(j).getNombre());
             }
-            
-            TablaDinamica myTable = new TablaDinamica();
+
             myTable.construirPanel(2, "width:100%;text-align: left");
             for (int i = 0; i < lstDispEstudiosMedicos.size(); i++) {
                 List<DispExamen> lstDispExamen = dispExamenFacade.findByIdEstudiosMedicos(lstDispEstudiosMedicos.get(i).getIdEstudiosMedicos());
@@ -650,6 +690,38 @@ public class CalendarioMB implements Serializable {
 
     public void setForm(HtmlForm form) {
         this.form = form;
+    }
+
+    public DispExamen getExamen() {
+        return examen;
+    }
+
+    public void setExamen(DispExamen examen) {
+        this.examen = examen;
+    }
+
+    public List<DispExamen> getLstDispExamen() {
+        return lstDispExamen;
+    }
+
+    public void setLstDispExamen(List<DispExamen> lstDispExamen) {
+        this.lstDispExamen = lstDispExamen;
+    }
+
+    public List<DispEstudiosMedicos> getLstDispEstudiosMedicos() {
+        return lstDispEstudiosMedicos;
+    }
+
+    public void setLstDispEstudiosMedicos(List<DispEstudiosMedicos> lstDispEstudiosMedicos) {
+        this.lstDispEstudiosMedicos = lstDispEstudiosMedicos;
+    }
+
+    public List<DispExamen> getLstDispExamenesSeleccionados() {
+        return lstDispExamenesSeleccionados;
+    }
+
+    public void setLstDispExamenesSeleccionados(List<DispExamen> lstDispExamenesSeleccionados) {
+        this.lstDispExamenesSeleccionados = lstDispExamenesSeleccionados;
     }
     
 }

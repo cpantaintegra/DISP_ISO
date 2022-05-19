@@ -54,6 +54,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+import org.primefaces.PrimeFaces;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.spacer.Spacer;
 import org.primefaces.model.LazyDataModel;
@@ -112,6 +113,7 @@ public class RegistroDiagnosticoMB implements Serializable {
     
     @EJB
     DispSolicitudExamenFacade dispSolicitudExamenFacade;
+    
     private SimpleDateFormat objSDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private SimpleDateFormat objSDFOnlyDay = new SimpleDateFormat("yyyy-MM-dd");
@@ -163,6 +165,14 @@ public class RegistroDiagnosticoMB implements Serializable {
     DispExamen dispExamen = new DispExamen();
     
     List<DispExamen> listDispExamen = new ArrayList<>();
+    
+    List<DispExamen> listDispExamenesSeleccionados = new ArrayList<>();
+    
+    List<DispEstudiosMedicos> listDispEstudiosMedicos = new ArrayList<>();
+    
+    private boolean ayuno = false;
+    
+    private boolean vejigaLlena = false;
     
     @PostConstruct
     public void init() {
@@ -477,21 +487,63 @@ public class RegistroDiagnosticoMB implements Serializable {
         }
     }
     
+    public List<DispExamen> cargarListaExamen(DispEstudiosMedicos estudios){
+        listDispExamen = new ArrayList<>();
+        try {
+            listDispExamen = dispExamenFacade.findByIdEstudiosMedicos(estudios.getIdEstudiosMedicos());
+        } catch (Exception e) {
+        }
+        
+        return listDispExamen;
+    }
+    
+    public void cargarListaEstudiosMedicos(){
+        try {
+            DispMedicoPersonal medico = dispMedicoPersonalFacade.findByIdUsuario(usuario.getIdUsuarios());
+            if(medico!=null){
+                Integer idEspecialidad = medico.getIdEspecialidad().getIdEspecialidad();
+                if(idEspecialidad!=null){
+                    listDispEstudiosMedicos = dispEstudiosMedicosFacade.findByIdEspecialidad(idEspecialidad);
+                }
+            }            
+        } catch (Exception e) {
+        }
+    }
+    
+    public void agregarExamenesSeleccionados(DispExamen examen){
+        try {
+            if(examen.getIdExamen()!=null){
+                if(listDispExamenesSeleccionados.contains(examen)){
+                    listDispExamenesSeleccionados.remove(examen);
+                }
+                else{
+                    listDispExamenesSeleccionados.add(examen);
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
+    
     public void generarOrdenes() throws SystemException{
         FacesMessage msg = null;
         try {
             userTransaction.begin();
-            DispSolicitudExamen dispSolicitudExamen = new DispSolicitudExamen();
-            dispSolicitudExamen.setIdCliente(dispAgendamiento.getIdCliente());
-            dispSolicitudExamen.setIdMedicoPersonal(dispAgendamiento.getIdMedicoPersonal());
-            dispSolicitudExamen.setIdExamen(dispExamen);
-            dispSolicitudExamen.setIdEmpresa(this.usuario.getIdEmpresa());
-            dispSolicitudExamen.setIdCiudad(this.usuario.getIdCiudad());
-            dispSolicitudExamen.setIdSector(this.usuario.getIdSector());
-            dispSolicitudExamen.setUsuarioIngreso(this.usuario.getUsuario());
-            dispSolicitudExamen.setFechaIngreso(objSDF.parse(objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
-            dispSolicitudExamenFacade.createWithValidator(dispSolicitudExamen);
-            dispSolicitudExamenFacade.flush();
+            for (int i = 0; i < listDispExamenesSeleccionados.size(); i++) {
+                DispSolicitudExamen dispSolicitudExamen = new DispSolicitudExamen();
+                dispSolicitudExamen.setFecha(objSDF.parse(objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
+                dispSolicitudExamen.setEstado("A");
+                dispSolicitudExamen.setIdCliente(dispAgendamiento.getIdCliente());
+                dispSolicitudExamen.setIdMedicoPersonal(dispAgendamiento.getIdMedicoPersonal());
+                dispSolicitudExamen.setIdExamen(listDispExamenesSeleccionados.get(i));
+                dispSolicitudExamen.setIdEmpresa(this.usuario.getIdEmpresa());
+                dispSolicitudExamen.setIdCiudad(this.usuario.getIdCiudad());
+                dispSolicitudExamen.setIdSector(this.usuario.getIdSector());
+                dispSolicitudExamen.setUsuarioIngreso(this.usuario.getUsuario());
+                dispSolicitudExamen.setFechaIngreso(objSDF.parse(objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
+                dispSolicitudExamenFacade.createWithValidator(dispSolicitudExamen);
+                dispSolicitudExamenFacade.flush();
+                printSolicitudExamen(dispSolicitudExamen.getIdSolicitudExamen());
+            }
             userTransaction.commit();
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Se realizo la transaccion con exito.");
         } catch (Exception e) {
@@ -499,6 +551,22 @@ public class RegistroDiagnosticoMB implements Serializable {
             userTransaction.rollback();
         }
         
+        if (msg != null) {
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
+    
+    public void printSolicitudExamen(int idSolicitud) {
+        FacesMessage msg = null;
+        try {
+            if (idSolicitud > 0) {
+                PrimeFaces.current().executeScript("window.open('../ServletOrden?solicitudID=" + idSolicitud + "');");
+            } else {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ImpresiFallido", "Favor comunicarse con el administrador del Sistema.");
+            }
+        } catch (Exception e) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.toString());
+        }
         if (msg != null) {
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
@@ -639,6 +707,38 @@ public class RegistroDiagnosticoMB implements Serializable {
 
     public void setDispExamen(DispExamen dispExamen) {
         this.dispExamen = dispExamen;
+    }
+
+    public List<DispExamen> getListDispExamen() {
+        return listDispExamen;
+    }
+
+    public void setListDispExamen(List<DispExamen> listDispExamen) {
+        this.listDispExamen = listDispExamen;
+    }
+
+    public List<DispEstudiosMedicos> getListDispEstudiosMedicos() {
+        return listDispEstudiosMedicos;
+    }
+
+    public void setListDispEstudiosMedicos(List<DispEstudiosMedicos> listDispEstudiosMedicos) {
+        this.listDispEstudiosMedicos = listDispEstudiosMedicos;
+    }
+
+    public boolean isAyuno() {
+        return ayuno;
+    }
+
+    public void setAyuno(boolean ayuno) {
+        this.ayuno = ayuno;
+    }
+
+    public boolean isVejigaLlena() {
+        return vejigaLlena;
+    }
+
+    public void setVejigaLlena(boolean vejigaLlena) {
+        this.vejigaLlena = vejigaLlena;
     }
     
     

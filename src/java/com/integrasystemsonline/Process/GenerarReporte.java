@@ -33,7 +33,16 @@ public class GenerarReporte {
 
     public static void visibilidadColumna() {
     }
-
+    List<String> lstStr = new ArrayList<>();
+    public List<String> agregarLista(String object){
+        
+        try {
+            lstStr.add(object);
+        } catch (Exception e) {
+        }
+        return lstStr;
+    }
+    
     public PanelGrid getPanel() {
         return this.panel;
     }

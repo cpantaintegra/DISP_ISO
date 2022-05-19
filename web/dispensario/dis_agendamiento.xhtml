@@ -15,16 +15,35 @@
             <ui:include src="../template/platform/header.xhtml"/>
         </ui:insert>
         <div class="container-fluid">
-            
             <h:form id="forma" class="form-horizontal">
                 <p:growl id="mensajesGrowl" showDetail="true" life="8000" />
-                    
-                <p:commandButton value="nueva orden" onclick="PF('wdlgOrdenes').show()" update="frmOrdenes"/>  
+                
+                <p:commandButton value="nueva orden" onclick="PF('wdlgOrdenesEco').show()" update=":frmOrdenEco"/>  
             </h:form>
             
             <p:dialog id="dlgOrdenes" header="Examen" widgetVar="wdlgOrdenes" modal="false">
                 <h:form id="frmOrdenes" style="text-align: center" binding="#{calendarioMB.form}">
-                    <p:commandButton value="Generar orden" actionListener="#{calendarioMB.verlista()}"/>
+                    <p:commandButton value="Generar orden" update=":forma:mensajesGrowl"/>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog id="dlgOrdenesEco" header="Orden de Examen" position="center" widgetVar="wdlgOrdenesEco" width="800" height="500" modal="true">
+                <h:form id="frmOrdenEco" style="text-align: left" >
+                    <p:repeat value="#{calendarioMB.lstDispEstudiosMedicos}"  var="estudios">
+                        <p:outputLabel value="#{estudios.nombre}" style="width: 100%;background-color: #2aabd2;font: 30px serif bold;color: white;text-transform: uppercase"/>
+                        <br/>
+                        <p:repeat value="#{calendarioMB.cargarListaExamen(estudios)}" var="examen">
+
+                            <p:outputLabel value="#{examen.nombre}" style="background-color: white;font: 24px serif;color: black;text-transform: capitalize"/>
+                            <p:spacer width="30" height="0"/>
+                            <p:selectBooleanCheckbox>
+                                <p:ajax event="change" listener="#{calendarioMB.agregarExamenesSeleccionados(examen)}"/>                          
+                            </p:selectBooleanCheckbox>
+                            <br/>
+                        </p:repeat>
+                            
+                    </p:repeat>
+                    <p:commandButton value="Generar orden" actionListener="#{calendarioMB.verLista()}" update=":forma:mensajesGrowl"/>
                 </h:form>
             </p:dialog>
         </div>
