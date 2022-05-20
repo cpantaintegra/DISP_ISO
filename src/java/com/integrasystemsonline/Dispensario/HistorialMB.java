@@ -6,10 +6,13 @@ import com.Entity.DispCliente;
 import com.Entity.DispDetalleDiagnostico;
 import com.Entity.DispDetalleReceta;
 import com.Entity.DispDiagnostico;
+import com.Entity.DispEstudiosMedicos;
+import com.Entity.DispExamen;
 import com.Entity.DispMedicamento;
 import com.Entity.DispMedicoPersonal;
 import com.Entity.DispReceta;
 import com.Entity.DispResultado;
+import com.Entity.DispSolicitudExamen;
 import com.Entity.DispTriaje;
 import com.Entity.IsParametros;
 import com.Entity.IsRolesPermisos;
@@ -19,8 +22,11 @@ import com.Session.DispAntecedentesFacade;
 import com.Session.DispClienteFacade;
 import com.Session.DispDetalleDiagnosticoFacade;
 import com.Session.DispDetalleRecetaFacade;
+import com.Session.DispEstudiosMedicosFacade;
+import com.Session.DispExamenFacade;
 import com.Session.DispMedicamentoFacade;
 import com.Session.DispRecetaFacade;
+import com.Session.DispSolicitudExamenFacade;
 import com.Session.DispTriajeFacade;
 import com.Session.IsCiudadFacade;
 import com.Session.IsEmpresaFacade;
@@ -107,6 +113,15 @@ public class HistorialMB implements Serializable {
     @EJB
     DispMedicamentoFacade dispMedicamentoFacade;
 
+    @EJB
+    DispExamenFacade dispExamenFacade;
+    
+    @EJB
+    DispSolicitudExamenFacade dispSolicitudExamenFacade;
+    
+    @EJB
+    DispEstudiosMedicosFacade dispEstudiosMedicosFacade;
+    
     private SimpleDateFormat objSDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private List<DispCliente> listDispCliente = new ArrayList<>();
@@ -157,7 +172,14 @@ public class HistorialMB implements Serializable {
     private List<DispMedicamento> listDispMedicamento = new ArrayList<>();
     private DispMedicamento dispMedicamento = new DispMedicamento();
     private String medicamento;
-
+    List<DispExamen> listDispExamen = new ArrayList<>();
+    List<DispEstudiosMedicos> listDispEstudiosMedicos = new ArrayList<>();
+    private boolean ayuno = false;
+    private boolean vejigaLlena = false;
+    List<DispExamen> listDispExamenesSeleccionados = new ArrayList<>();
+    DispSolicitudExamen dispSolicitudExamen = new DispSolicitudExamen();
+    List<DispSolicitudExamen> lstDispSolicitudExamen = new ArrayList<>();
+    
     @PostConstruct
     public void ini() {
         try {
@@ -213,6 +235,25 @@ public class HistorialMB implements Serializable {
         }
     }
 
+    public boolean tieneordenExamen(DispDetalleDiagnostico detalleDiagnostico) {
+        try {
+            if (detalleDiagnostico.getIdDetalleDiagnostico() != null) {
+                int idAgendamiento = detalleDiagnostico.getIdResultado().getIdAgendamiento().getIdAgendamiento();
+                lstDispSolicitudExamen = this.dispSolicitudExamenFacade.findByIdAgendamiento(idAgendamiento);
+                
+                if (this.lstDispSolicitudExamen.isEmpty()) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        } catch (Exception exception) {
+            return false;
+        }
+    }
+    
     public boolean tieneReceta(DispDetalleDiagnostico detalleDiagnostico) {
         try {
             if (detalleDiagnostico.getIdDetalleDiagnostico() != null) {
@@ -247,6 +288,123 @@ public class HistorialMB implements Serializable {
         return String.valueOf(years) + " años";
     }
 
+    public List<DispExamen> cargarListaExamen(DispEstudiosMedicos estudios){
+        listDispExamen = new ArrayList<>();
+        try {
+            listDispExamen = dispExamenFacade.findByIdEstudiosMedicos(estudios.getIdEstudiosMedicos());
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return listDispExamen;
+    }
+    
+    public void agregarExamenesSeleccionados(DispExamen examen){
+        try {
+            if(examen.getIdExamen()!=null){
+                if(listDispExamenesSeleccionados.contains(examen)){
+                    listDispExamenesSeleccionados.remove(examen);
+                }
+                else{
+                    listDispExamenesSeleccionados.add(examen);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+    
+    public void nuevaOrden(DispDetalleDiagnostico detalleDiagnostico){
+        try {
+            dispSolicitudExamen = new DispSolicitudExamen();
+            dispAgendamiento = detalleDiagnostico.getIdResultado().getIdAgendamiento();
+            listDispEstudiosMedicos = dispEstudiosMedicosFacade.findByIdEspecialidad(dispAgendamiento.getIdEspecialidad().getIdEspecialidad());
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+    
+    public void cargarOrdenes(DispDetalleDiagnostico detalleDiagnostico) {
+        try {
+            this.hoy = Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone);
+            this.labelMant = "Actualizar";
+            if (detalleDiagnostico.getIdDetalleDiagnostico() != null) {
+                dispAgendamiento = detalleDiagnostico.getIdResultado().getIdAgendamiento();
+                this.lstDispSolicitudExamen = this.dispSolicitudExamenFacade.findByIdAgendamiento(dispAgendamiento.getIdAgendamiento());
+                
+                listDispEstudiosMedicos = new ArrayList<>();
+                for (int i = 0; i < lstDispSolicitudExamen.size(); i++) {
+                    DispEstudiosMedicos estudiosObj = lstDispSolicitudExamen.get(i).getIdExamen().getIdEstudiosMedicos();
+                    if(!listDispEstudiosMedicos.contains(estudiosObj)){
+                        listDispEstudiosMedicos.add(estudiosObj);
+                    }
+                }
+                //listDispEstudiosMedicos = dispEstudiosMedicosFacade.findByIdEspecialidad(dispAgendamiento.getIdEspecialidad().getIdEspecialidad());
+                
+                
+            }
+        } catch (Exception exception) {
+        }
+    }
+    
+    public void generarOrdenes() throws SystemException{
+        FacesMessage msg = null;
+        try {
+            userTransaction.begin();
+            List<DispSolicitudExamen> lstSolicitud = dispSolicitudExamenFacade.findByIdAgendamiento(dispAgendamiento.getIdAgendamiento());
+            for (int i = 0; i < listDispExamenesSeleccionados.size(); i++) {
+                dispSolicitudExamen = new DispSolicitudExamen();
+                dispSolicitudExamen.setFecha(objSDF.parse(objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
+                dispSolicitudExamen.setEstado("A");
+                dispSolicitudExamen.setIdAgendamiento(dispAgendamiento);
+                dispSolicitudExamen.setIdExamen(listDispExamenesSeleccionados.get(i));
+                dispSolicitudExamen.setIdEmpresa(this.usuario.getIdEmpresa());
+                dispSolicitudExamen.setIdCiudad(this.usuario.getIdCiudad());
+                dispSolicitudExamen.setIdSector(this.usuario.getIdSector());
+                dispSolicitudExamen.setUsuarioIngreso(this.usuario.getUsuario());
+                dispSolicitudExamen.setFechaIngreso(objSDF.parse(objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
+                dispSolicitudExamenFacade.createWithValidator(dispSolicitudExamen);
+                dispSolicitudExamenFacade.flush();
+            }
+            printSolicitudExamen(dispAgendamiento.getIdAgendamiento());
+            userTransaction.commit();
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Se realizo la transaccion con exito.");
+        } catch (Exception e) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", e.toString());
+            userTransaction.rollback();
+        }
+        
+        if (msg != null) {
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
+    
+    public void printSolicitudExamen(int idAgendamiento) {
+        FacesMessage msg = null;
+        try {
+            if (idAgendamiento > 0) {
+                PrimeFaces.current().executeScript("window.open('../ServletOrden?agendamientoID=" + idAgendamiento + "');");
+            } else {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ImpresiFallido", "Favor comunicarse con el administrador del Sistema.");
+            }
+        } catch (Exception e) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.toString());
+        }
+        if (msg != null) {
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
+    
+    public void nuevaReceta(DispDetalleDiagnostico detalleDiagnostico){
+        try {
+            receta = new DispReceta();
+            this.labelMant = "Ingresar";
+            listDetalleReceta = new ArrayList<>();
+            dispAgendamiento = detalleDiagnostico.getIdResultado().getIdAgendamiento();
+            this.listDispMedicamento = this.dispMedicamentoFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+        } catch (Exception e) {
+        }
+    }
+    
     public void cargarReceta(DispDetalleDiagnostico detalleDiagnostico) {
         try {
             this.hoy = Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone);
@@ -442,10 +600,10 @@ public class HistorialMB implements Serializable {
                     return false;
                 }
             } else {
-                return false;
+                return true;
             }
         } else {
-            return false;
+            return true;
         }
     }
 
@@ -495,7 +653,7 @@ public class HistorialMB implements Serializable {
                         this.dispRecetaFacade.createWithValidator(this.receta);
                         this.dispRecetaFacade.flush();
                         msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Se realizo la transaccion con exito.");
-                        redireccionar();
+                        //redireccionar();
                     } else {
                         msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Debe seleccionar una reservacion");
                     }
@@ -513,6 +671,7 @@ public class HistorialMB implements Serializable {
                     this.dispDetalleRecetaFacade.flush();
                 }
             }
+            
             for (int i = 0; i < this.listDetalleReceta.size(); i++) {
                 DispDetalleReceta dispDetalleReceta = new DispDetalleReceta();
                 dispDetalleReceta.setEstado("A");
@@ -1029,6 +1188,30 @@ public class HistorialMB implements Serializable {
 
     public void setLabelMantAntecedentes(String labelMantAntecedentes) {
         this.labelMantAntecedentes = labelMantAntecedentes;
+    }
+
+    public boolean isAyuno() {
+        return ayuno;
+    }
+
+    public void setAyuno(boolean ayuno) {
+        this.ayuno = ayuno;
+    }
+
+    public boolean isVejigaLlena() {
+        return vejigaLlena;
+    }
+
+    public void setVejigaLlena(boolean vejigaLlena) {
+        this.vejigaLlena = vejigaLlena;
+    }
+
+    public List<DispEstudiosMedicos> getListDispEstudiosMedicos() {
+        return listDispEstudiosMedicos;
+    }
+
+    public void setListDispEstudiosMedicos(List<DispEstudiosMedicos> listDispEstudiosMedicos) {
+        this.listDispEstudiosMedicos = listDispEstudiosMedicos;
     }
 
 }

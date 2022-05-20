@@ -100,14 +100,14 @@ public class ServletOrden extends HttpServlet {
         JasperReport reports = null;
         Connection _conn = null;
         try {
-            String solicitudIDStr = request.getParameter("solicutdID");
-            int solicutdID = Integer.parseInt(solicitudIDStr);
+            String agendamientoIDStr = request.getParameter("agendamientoID");
+            int agendamientoID = Integer.parseInt(agendamientoIDStr);
             String ruta = request.getRealPath("/Reportes/ordenExamenReport.jasper");
             File file = new File(ruta);
             DatabaseLogin login = this.isParametrosFacade.getSession().getLogin();
             _conn = (Connection) login.connectToDatasource(this.isParametrosFacade.getSession().getDatasourceLogin().buildAccessor(), this.isParametrosFacade.getSession());
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("solicutdID", solicutdID);
+            parameters.put("agendamientoID", agendamientoID);
             reports = (JasperReport) JRLoader.loadObject(file);
             byte[] bytes = null;
             bytes = JasperRunManager.runReportToPdf(ruta, parameters, _conn);

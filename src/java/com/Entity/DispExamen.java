@@ -6,8 +6,10 @@
 package com.Entity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,6 +27,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -49,6 +53,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "DispExamen.findByUsuarioModificacion", query = "SELECT d FROM DispExamen d WHERE d.usuarioModificacion = :usuarioModificacion")
     , @NamedQuery(name = "DispExamen.findByFechaModificacion", query = "SELECT d FROM DispExamen d WHERE d.fechaModificacion = :fechaModificacion")})
 public class DispExamen implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idExamen")
+    private Collection<DispSolicitudExamen> dispSolicitudExamenCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -291,6 +298,15 @@ public class DispExamen implements Serializable {
     @Override
     public String toString() {
         return "com.Entity.DispExamen[ idExamen=" + idExamen + " ]";
+    }
+
+    @XmlTransient
+    public Collection<DispSolicitudExamen> getDispSolicitudExamenCollection() {
+        return dispSolicitudExamenCollection;
+    }
+
+    public void setDispSolicitudExamenCollection(Collection<DispSolicitudExamen> dispSolicitudExamenCollection) {
+        this.dispSolicitudExamenCollection = dispSolicitudExamenCollection;
     }
     
 }

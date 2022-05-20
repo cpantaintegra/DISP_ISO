@@ -1,10 +1,13 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.Entity;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,20 +17,23 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
+/**
+ *
+ * @author USER
+ */
 @Entity
 @Table(name = "disp_solicitud_examen")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "DispSolicitudExamen.findAll", query = "SELECT d FROM DispSolicitudExamen d")
+    , @NamedQuery(name = "DispSolicitudExamen.findByIdAgendamiento", query = "SELECT d FROM DispSolicitudExamen d WHERE d.idAgendamiento.idAgendamiento = :idAgendamiento")
     , @NamedQuery(name = "DispSolicitudExamen.findByIdSolicitudExamen", query = "SELECT d FROM DispSolicitudExamen d WHERE d.idSolicitudExamen = :idSolicitudExamen")
     , @NamedQuery(name = "DispSolicitudExamen.findByFecha", query = "SELECT d FROM DispSolicitudExamen d WHERE d.fecha = :fecha")
     , @NamedQuery(name = "DispSolicitudExamen.findByEstado", query = "SELECT d FROM DispSolicitudExamen d WHERE d.estado = :estado")
@@ -38,75 +44,50 @@ import javax.xml.bind.annotation.XmlTransient;
 public class DispSolicitudExamen implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id_solicitud_examen")
     private Integer idSolicitudExamen;
-
     @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 1)
     @Column(name = "estado")
     private String estado;
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "usuario_ingreso")
     private String usuarioIngreso;
-
     @Basic(optional = false)
     @NotNull
     @Column(name = "fecha_ingreso")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaIngreso;
-
     @Size(max = 100)
     @Column(name = "usuario_modificacion")
     private String usuarioModificacion;
-
     @Column(name = "fecha_modificacion")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaModificacion;
-
-    @JoinColumn(name = "id_cliente", referencedColumnName = "id_cliente")
+    @JoinColumn(name = "id_agendamiento", referencedColumnName = "id_agendamiento")
     @ManyToOne(optional = false)
-    private DispCliente idCliente;
-
+    private DispAgendamiento idAgendamiento;
     @JoinColumn(name = "id_examen", referencedColumnName = "id_examen")
     @ManyToOne(optional = false)
     private DispExamen idExamen;
-
-    @JoinColumn(name = "id_medico_personal", referencedColumnName = "id_medico_personal")
-    @ManyToOne(optional = false)
-    private DispMedicoPersonal idMedicoPersonal;
-
     @JoinColumn(name = "id_ciudad", referencedColumnName = "id_ciudad")
     @ManyToOne(optional = false)
     private IsCiudad idCiudad;
-
     @JoinColumn(name = "id_empresa", referencedColumnName = "id_empresa")
     @ManyToOne(optional = false)
     private IsEmpresa idEmpresa;
-
     @JoinColumn(name = "id_sector", referencedColumnName = "id_sector")
     @ManyToOne(optional = false)
     private IsSector idSector;
-
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "idSolicitudExamen")
-    private Collection<DispTomaMuestra> dispTomaMuestraCollection;
-
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "idSolicitudExamen")
-    private Collection<DispResultadoExamen> dispResultadoExamenCollection;
-
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "idSolicitudExamen")
-    private Collection<DispDetalleFactura> dispDetalleFacturaCollection;
 
     public DispSolicitudExamen() {
     }
@@ -123,7 +104,7 @@ public class DispSolicitudExamen implements Serializable {
     }
 
     public Integer getIdSolicitudExamen() {
-        return this.idSolicitudExamen;
+        return idSolicitudExamen;
     }
 
     public void setIdSolicitudExamen(Integer idSolicitudExamen) {
@@ -131,7 +112,7 @@ public class DispSolicitudExamen implements Serializable {
     }
 
     public Date getFecha() {
-        return this.fecha;
+        return fecha;
     }
 
     public void setFecha(Date fecha) {
@@ -139,7 +120,7 @@ public class DispSolicitudExamen implements Serializable {
     }
 
     public String getEstado() {
-        return this.estado;
+        return estado;
     }
 
     public void setEstado(String estado) {
@@ -147,7 +128,7 @@ public class DispSolicitudExamen implements Serializable {
     }
 
     public String getUsuarioIngreso() {
-        return this.usuarioIngreso;
+        return usuarioIngreso;
     }
 
     public void setUsuarioIngreso(String usuarioIngreso) {
@@ -155,7 +136,7 @@ public class DispSolicitudExamen implements Serializable {
     }
 
     public Date getFechaIngreso() {
-        return this.fechaIngreso;
+        return fechaIngreso;
     }
 
     public void setFechaIngreso(Date fechaIngreso) {
@@ -163,7 +144,7 @@ public class DispSolicitudExamen implements Serializable {
     }
 
     public String getUsuarioModificacion() {
-        return this.usuarioModificacion;
+        return usuarioModificacion;
     }
 
     public void setUsuarioModificacion(String usuarioModificacion) {
@@ -171,39 +152,31 @@ public class DispSolicitudExamen implements Serializable {
     }
 
     public Date getFechaModificacion() {
-        return this.fechaModificacion;
+        return fechaModificacion;
     }
 
     public void setFechaModificacion(Date fechaModificacion) {
         this.fechaModificacion = fechaModificacion;
     }
 
-    public DispCliente getIdCliente() {
-        return this.idCliente;
+    public DispAgendamiento getIdAgendamiento() {
+        return idAgendamiento;
     }
 
-    public void setIdCliente(DispCliente idCliente) {
-        this.idCliente = idCliente;
+    public void setIdAgendamiento(DispAgendamiento idAgendamiento) {
+        this.idAgendamiento = idAgendamiento;
     }
 
     public DispExamen getIdExamen() {
-        return this.idExamen;
+        return idExamen;
     }
 
     public void setIdExamen(DispExamen idExamen) {
         this.idExamen = idExamen;
     }
 
-    public DispMedicoPersonal getIdMedicoPersonal() {
-        return this.idMedicoPersonal;
-    }
-
-    public void setIdMedicoPersonal(DispMedicoPersonal idMedicoPersonal) {
-        this.idMedicoPersonal = idMedicoPersonal;
-    }
-
     public IsCiudad getIdCiudad() {
-        return this.idCiudad;
+        return idCiudad;
     }
 
     public void setIdCiudad(IsCiudad idCiudad) {
@@ -211,7 +184,7 @@ public class DispSolicitudExamen implements Serializable {
     }
 
     public IsEmpresa getIdEmpresa() {
-        return this.idEmpresa;
+        return idEmpresa;
     }
 
     public void setIdEmpresa(IsEmpresa idEmpresa) {
@@ -219,49 +192,23 @@ public class DispSolicitudExamen implements Serializable {
     }
 
     public IsSector getIdSector() {
-        return this.idSector;
+        return idSector;
     }
 
     public void setIdSector(IsSector idSector) {
         this.idSector = idSector;
     }
 
-    @XmlTransient
-    public Collection<DispTomaMuestra> getDispTomaMuestraCollection() {
-        return this.dispTomaMuestraCollection;
-    }
-
-    public void setDispTomaMuestraCollection(Collection<DispTomaMuestra> dispTomaMuestraCollection) {
-        this.dispTomaMuestraCollection = dispTomaMuestraCollection;
-    }
-
-    @XmlTransient
-    public Collection<DispResultadoExamen> getDispResultadoExamenCollection() {
-        return this.dispResultadoExamenCollection;
-    }
-
-    public void setDispResultadoExamenCollection(Collection<DispResultadoExamen> dispResultadoExamenCollection) {
-        this.dispResultadoExamenCollection = dispResultadoExamenCollection;
-    }
-
-    @XmlTransient
-    public Collection<DispDetalleFactura> getDispDetalleFacturaCollection() {
-        return this.dispDetalleFacturaCollection;
-    }
-
-    public void setDispDetalleFacturaCollection(Collection<DispDetalleFactura> dispDetalleFacturaCollection) {
-        this.dispDetalleFacturaCollection = dispDetalleFacturaCollection;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (this.idSolicitudExamen != null) ? this.idSolicitudExamen.hashCode() : 0;
+        hash += (idSolicitudExamen != null ? idSolicitudExamen.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof DispSolicitudExamen)) {
             return false;
         }
@@ -274,6 +221,7 @@ public class DispSolicitudExamen implements Serializable {
 
     @Override
     public String toString() {
-        return "com.Entity.DispSolicitudExamen[ idSolicitudExamen=" + this.idSolicitudExamen + " ]";
+        return "com.Entity.DispSolicitudExamen[ idSolicitudExamen=" + idSolicitudExamen + " ]";
     }
+    
 }

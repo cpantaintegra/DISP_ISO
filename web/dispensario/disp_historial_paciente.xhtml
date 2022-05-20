@@ -56,7 +56,9 @@
                     <p:column width="150">
                         <p:splitButton value="Actions" icon="fa fa-fw fa-check-square-o" >
                             <p:menuitem value="ver Receta" actionListener="#{historial.cargarReceta(his)}" onclick="PF('wdlgIngresar').show();" update=":frmIng" rendered="#{historial.tieneReceta(his)}"/>
-                            <p:menuitem value="No tiene receta" rendered="#{!historial.tieneReceta(his)}" disabled="true"/>
+                            <p:menuitem value="Crear receta" actionListener="#{historial.nuevaReceta(his)}" rendered="#{!historial.tieneReceta(his)}" onclick="PF('wdlgIngresar').show();" update=":frmIng"/>
+                            <p:menuitem value="ver Ordenes" actionListener="#{historial.cargarOrdenes(his)}" onclick="PF('wdlgOrdenes').show();" update=":frmOrden" rendered="#{historial.tieneordenExamen(his)}"/>
+                            <p:menuitem value="Crear Ordenes" actionListener="#{historial.nuevaOrden(his)}" rendered="#{!historial.tieneordenExamen(his)}" onclick="PF('wdlgOrdenes').show();" update=":frmOrden"/>
                             <p:menuitem value="Ver Antecedentes" actionListener="#{historial.cargarAntecedentes(his)}" update=":frmAntecedentes,:frmAntecedentes:dtDatosAntecedentes" onclick="PF('wdlgAntecedentes').show();"/>
                             <p:menuitem value="Editar historial" actionListener="#{historial.iniciarEdicion(his)}" update=":forma:mensajesGrowl" rendered="#{historial.editarHistorial(his)}"/>
                         </p:splitButton>
@@ -153,7 +155,7 @@
                 </h:form>
             </p:dialog>
             
-            <p:dialog id="dlgIngresar" header="Receta" widgetVar="wdlgIngresar" width="1220" height="600">
+            <p:dialog id="dlgIngresar" header="Receta" widgetVar="wdlgIngresar" height="600">
                 <h:form id="frmIng" style="text-align: left">
                     <h:panelGrid columns="1" style="width: 100%">
                         <h:panelGrid columns="5" style="text-align: left">
@@ -166,7 +168,6 @@
                             <p:commandButton value="Agregar" actionListener="#{historial.guardarMedicamento()}" update=":frmIng,:forma:mensajesGrowl"/>
                         </h:panelGrid>
 
-                        
                         <p:outputLabel value=""/>
                         <br/>
                         <p:spacer width="10"/>
@@ -240,6 +241,32 @@
                     <p:commandButton value="Imprimir" actionListener="#{historial.imprimir(historial.receta)}" update=":forma:mensajesGrowl"/>
                     <br/>
                     <br/>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog id="dlgOrdenes" header="Orden de Examen" position="center" widgetVar="wdlgOrdenes" width="800" modal="true">
+                <h:form id="frmOrden" style="text-align: left" >
+                    <p:panelGrid columns="4" style="text-align: left; width: 100%">
+                        <p:outputLabel value="Ayuno: "/>
+                        <p:selectBooleanCheckbox value="#{historial.ayuno}" />
+                        <p:outputLabel value="Vejiga LLena: "/>
+                        <p:selectBooleanCheckbox value="#{historial.vejigaLlena}"/>
+                    </p:panelGrid> 
+                    
+                    <p:repeat value="#{historial.listDispEstudiosMedicos}" var="estudios" >
+                        <p:outputLabel value="#{estudios.nombre}" style="width: 100%;background-color: #2aabd2;font: 30px serif bold;color: white;text-transform: uppercase"/>
+                        <br/>
+                        <p:repeat value="#{historial.cargarListaExamen(estudios)}" var="examen">
+                            <p:outputLabel value="#{examen.nombre}" style="background-color: white;font: 24px serif;color: black;text-transform: capitalize"/>
+                            <p:spacer width="20" height="0"/>
+                            <p:selectBooleanCheckbox>
+                                <p:ajax event="change" listener="#{historial.agregarExamenesSeleccionados(examen)}"/>                          
+                            </p:selectBooleanCheckbox>
+                            <br/>
+                        </p:repeat>
+                    </p:repeat>
+                    <br/>
+                    <p:commandButton value="Generar orden" actionListener="#{historial.generarOrdenes()}" update=":forma:dtDatos,:forma:mensajesGrowl" oncomplete="PF('wdlgOrdenes').hide();"/>
                 </h:form>
             </p:dialog>
             

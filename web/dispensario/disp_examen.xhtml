@@ -41,7 +41,7 @@
                     <p:column headerText="Nombre" filterBy="#{a.nombre}" filterMatchMode="contains" filterStyle="display:none" width="200" >
                         <h:outputText value="#{a.nombre}" style="#{(a.estado=='A'?'':'color: red')}"/>
                     </p:column>
-                    <p:column headerText="Descripcion" filterBy="#{a.descripcion}" filterMatchMode="contains" filterStyle="display:none" width="200" >
+                    <p:column headerText="Comentario" filterBy="#{a.descripcion}" filterMatchMode="contains" filterStyle="display:none" width="200" >
                         <h:outputText value="#{a.descripcion}" style="#{(a.estado=='A'?'':'color: red')}"/>
                     </p:column>
                     <p:column headerText="Ayuno" width="200" >
@@ -102,7 +102,7 @@
                         <p:outputLabel for="ingNombre" value="Nombre: "/>
                         <p:inputText id="ingNombre" required="true" value="#{examenMB.dispExamen.nombre}" />
                         
-                        <p:outputLabel for="ingDescripcion" value="Descripcion: "/>
+                        <p:outputLabel for="ingDescripcion" value="Comentario: "/>
                         <p:inputText id="ingDescripcion" value="#{examenMB.dispExamen.descripcion}" />
                         
                         <p:outputLabel for="ingAyuno" value="Ayuno: "/>

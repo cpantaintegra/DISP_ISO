@@ -1,10 +1,13 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.Entity;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,15 +17,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
+/**
+ *
+ * @author USER
+ */
 @Entity
 @Table(name = "disp_medico_personal")
 @XmlRootElement
@@ -52,132 +57,102 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "DispMedicoPersonal.findByFechaModificacion", query = "SELECT d FROM DispMedicoPersonal d WHERE d.fechaModificacion = :fechaModificacion")})
 public class DispMedicoPersonal implements Serializable {
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "idMedicoPersonal")
-    private Collection<DispSolicitudExamen> dispSolicitudExamenCollection;
-
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "idMedicoPersonal")
-    private Collection<DispAgendamiento> dispAgendamientoCollection;
-
     private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id_medico_personal")
     private Integer idMedicoPersonal;
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
     @Column(name = "tipo_documento")
     private String tipoDocumento;
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
     @Column(name = "num_documento")
     private String numDocumento;
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
     @Column(name = "apaterno")
     private String apaterno;
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
     @Column(name = "amaterno")
     private String amaterno;
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
     @Column(name = "nombre")
     private String nombre;
-
     @Column(name = "fecha_nacimiento")
     @Temporal(TemporalType.DATE)
     private Date fechaNacimiento;
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 1)
     @Column(name = "sexo")
     private String sexo;
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 1)
     @Column(name = "estado_civil")
     private String estadoCivil;
-
     @Size(max = 20)
     @Column(name = "telefono")
     private String telefono;
-
     @Size(max = 12)
     @Column(name = "celular")
     private String celular;
-
     @Size(max = 30)
     @Column(name = "ocupacion")
     private String ocupacion;
-
     @Size(max = 70)
     @Column(name = "direccion")
     private String direccion;
-
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Size(max = 50)
     @Column(name = "email")
     private String email;
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 1)
     @Column(name = "estado")
     private String estado;
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "usuario_ingreso")
     private String usuarioIngreso;
-
     @Basic(optional = false)
     @NotNull
     @Column(name = "fecha_ingreso")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaIngreso;
-
     @Size(max = 100)
     @Column(name = "usuario_modificacion")
     private String usuarioModificacion;
-
     @Column(name = "fecha_modificacion")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaModificacion;
-
     @JoinColumn(name = "id_ciudad", referencedColumnName = "id_ciudad")
     @ManyToOne(optional = false)
     private IsCiudad idCiudad;
-
     @JoinColumn(name = "id_empresa", referencedColumnName = "id_empresa")
     @ManyToOne(optional = false)
     private IsEmpresa idEmpresa;
-
     @JoinColumn(name = "id_sector", referencedColumnName = "id_sector")
     @ManyToOne(optional = false)
     private IsSector idSector;
-
     @JoinColumn(name = "id_consultorio", referencedColumnName = "id_consultorio")
     @ManyToOne(optional = false)
     private DispConsultorio idConsultorio;
-
     @JoinColumn(name = "id_especialidad", referencedColumnName = "id_especialidad")
     @ManyToOne(optional = false)
     private DispEspecialidad idEspecialidad;
-
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuarios")
     @ManyToOne(optional = false)
     private IsUsuarios idUsuario;
@@ -204,7 +179,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public Integer getIdMedicoPersonal() {
-        return this.idMedicoPersonal;
+        return idMedicoPersonal;
     }
 
     public void setIdMedicoPersonal(Integer idMedicoPersonal) {
@@ -212,7 +187,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getTipoDocumento() {
-        return this.tipoDocumento;
+        return tipoDocumento;
     }
 
     public void setTipoDocumento(String tipoDocumento) {
@@ -220,7 +195,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getNumDocumento() {
-        return this.numDocumento;
+        return numDocumento;
     }
 
     public void setNumDocumento(String numDocumento) {
@@ -228,7 +203,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getApaterno() {
-        return this.apaterno;
+        return apaterno;
     }
 
     public void setApaterno(String apaterno) {
@@ -236,7 +211,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getAmaterno() {
-        return this.amaterno;
+        return amaterno;
     }
 
     public void setAmaterno(String amaterno) {
@@ -244,7 +219,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getNombre() {
-        return this.nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
@@ -252,7 +227,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public Date getFechaNacimiento() {
-        return this.fechaNacimiento;
+        return fechaNacimiento;
     }
 
     public void setFechaNacimiento(Date fechaNacimiento) {
@@ -260,7 +235,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getSexo() {
-        return this.sexo;
+        return sexo;
     }
 
     public void setSexo(String sexo) {
@@ -268,7 +243,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getEstadoCivil() {
-        return this.estadoCivil;
+        return estadoCivil;
     }
 
     public void setEstadoCivil(String estadoCivil) {
@@ -276,7 +251,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getTelefono() {
-        return this.telefono;
+        return telefono;
     }
 
     public void setTelefono(String telefono) {
@@ -284,7 +259,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getCelular() {
-        return this.celular;
+        return celular;
     }
 
     public void setCelular(String celular) {
@@ -292,7 +267,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getOcupacion() {
-        return this.ocupacion;
+        return ocupacion;
     }
 
     public void setOcupacion(String ocupacion) {
@@ -300,7 +275,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getDireccion() {
-        return this.direccion;
+        return direccion;
     }
 
     public void setDireccion(String direccion) {
@@ -308,7 +283,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getEmail() {
-        return this.email;
+        return email;
     }
 
     public void setEmail(String email) {
@@ -316,7 +291,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getEstado() {
-        return this.estado;
+        return estado;
     }
 
     public void setEstado(String estado) {
@@ -324,7 +299,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getUsuarioIngreso() {
-        return this.usuarioIngreso;
+        return usuarioIngreso;
     }
 
     public void setUsuarioIngreso(String usuarioIngreso) {
@@ -332,7 +307,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public Date getFechaIngreso() {
-        return this.fechaIngreso;
+        return fechaIngreso;
     }
 
     public void setFechaIngreso(Date fechaIngreso) {
@@ -340,7 +315,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public String getUsuarioModificacion() {
-        return this.usuarioModificacion;
+        return usuarioModificacion;
     }
 
     public void setUsuarioModificacion(String usuarioModificacion) {
@@ -348,7 +323,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public Date getFechaModificacion() {
-        return this.fechaModificacion;
+        return fechaModificacion;
     }
 
     public void setFechaModificacion(Date fechaModificacion) {
@@ -356,7 +331,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public IsCiudad getIdCiudad() {
-        return this.idCiudad;
+        return idCiudad;
     }
 
     public void setIdCiudad(IsCiudad idCiudad) {
@@ -364,7 +339,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public IsEmpresa getIdEmpresa() {
-        return this.idEmpresa;
+        return idEmpresa;
     }
 
     public void setIdEmpresa(IsEmpresa idEmpresa) {
@@ -372,7 +347,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public IsSector getIdSector() {
-        return this.idSector;
+        return idSector;
     }
 
     public void setIdSector(IsSector idSector) {
@@ -380,7 +355,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public DispConsultorio getIdConsultorio() {
-        return this.idConsultorio;
+        return idConsultorio;
     }
 
     public void setIdConsultorio(DispConsultorio idConsultorio) {
@@ -388,7 +363,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public DispEspecialidad getIdEspecialidad() {
-        return this.idEspecialidad;
+        return idEspecialidad;
     }
 
     public void setIdEspecialidad(DispEspecialidad idEspecialidad) {
@@ -396,7 +371,7 @@ public class DispMedicoPersonal implements Serializable {
     }
 
     public IsUsuarios getIdUsuario() {
-        return this.idUsuario;
+        return idUsuario;
     }
 
     public void setIdUsuario(IsUsuarios idUsuario) {
@@ -406,12 +381,13 @@ public class DispMedicoPersonal implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (this.idMedicoPersonal != null) ? this.idMedicoPersonal.hashCode() : 0;
+        hash += (idMedicoPersonal != null ? idMedicoPersonal.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof DispMedicoPersonal)) {
             return false;
         }
@@ -424,24 +400,7 @@ public class DispMedicoPersonal implements Serializable {
 
     @Override
     public String toString() {
-        return "com.Entity.DispMedicoPersonal[ idMedicoPersonal=" + this.idMedicoPersonal + " ]";
+        return "com.Entity.DispMedicoPersonal[ idMedicoPersonal=" + idMedicoPersonal + " ]";
     }
-
-    @XmlTransient
-    public Collection<DispAgendamiento> getDispAgendamientoCollection() {
-        return this.dispAgendamientoCollection;
-    }
-
-    public void setDispAgendamientoCollection(Collection<DispAgendamiento> dispAgendamientoCollection) {
-        this.dispAgendamientoCollection = dispAgendamientoCollection;
-    }
-
-    @XmlTransient
-    public Collection<DispSolicitudExamen> getDispSolicitudExamenCollection() {
-        return this.dispSolicitudExamenCollection;
-    }
-
-    public void setDispSolicitudExamenCollection(Collection<DispSolicitudExamen> dispSolicitudExamenCollection) {
-        this.dispSolicitudExamenCollection = dispSolicitudExamenCollection;
-    }
+    
 }

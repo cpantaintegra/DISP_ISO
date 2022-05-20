@@ -378,6 +378,8 @@ public class RegistroDiagnosticoMB implements Serializable {
                             }
                             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Se realizo la transaccion con exito.");
                             this.userTransaction.commit();
+                            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("plantillaDetalleDiagnostico", null);
+                            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("dispAgendamiento", null);
                             redireccionarTriajeMedico();
                         }
                     } else {
@@ -532,8 +534,7 @@ public class RegistroDiagnosticoMB implements Serializable {
                 DispSolicitudExamen dispSolicitudExamen = new DispSolicitudExamen();
                 dispSolicitudExamen.setFecha(objSDF.parse(objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
                 dispSolicitudExamen.setEstado("A");
-                dispSolicitudExamen.setIdCliente(dispAgendamiento.getIdCliente());
-                dispSolicitudExamen.setIdMedicoPersonal(dispAgendamiento.getIdMedicoPersonal());
+                dispSolicitudExamen.setIdAgendamiento(dispAgendamiento);
                 dispSolicitudExamen.setIdExamen(listDispExamenesSeleccionados.get(i));
                 dispSolicitudExamen.setIdEmpresa(this.usuario.getIdEmpresa());
                 dispSolicitudExamen.setIdCiudad(this.usuario.getIdCiudad());
@@ -542,8 +543,8 @@ public class RegistroDiagnosticoMB implements Serializable {
                 dispSolicitudExamen.setFechaIngreso(objSDF.parse(objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
                 dispSolicitudExamenFacade.createWithValidator(dispSolicitudExamen);
                 dispSolicitudExamenFacade.flush();
-                printSolicitudExamen(dispSolicitudExamen.getIdSolicitudExamen());
             }
+            printSolicitudExamen(dispAgendamiento.getIdAgendamiento());
             userTransaction.commit();
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Se realizo la transaccion con exito.");
         } catch (Exception e) {
@@ -556,11 +557,11 @@ public class RegistroDiagnosticoMB implements Serializable {
         }
     }
     
-    public void printSolicitudExamen(int idSolicitud) {
+    public void printSolicitudExamen(int idAgendamiento) {
         FacesMessage msg = null;
         try {
-            if (idSolicitud > 0) {
-                PrimeFaces.current().executeScript("window.open('../ServletOrden?solicitudID=" + idSolicitud + "');");
+            if (idAgendamiento > 0) {
+                PrimeFaces.current().executeScript("window.open('../ServletOrden?agendamientoID=" + idAgendamiento + "');");
             } else {
                 msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ImpresiFallido", "Favor comunicarse con el administrador del Sistema.");
             }

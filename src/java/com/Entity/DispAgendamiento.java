@@ -67,6 +67,9 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "DispAgendamiento.findByFechaModificacion", query = "SELECT d FROM DispAgendamiento d WHERE d.fechaModificacion = :fechaModificacion")})
 public class DispAgendamiento implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAgendamiento")
+    private Collection<DispSolicitudExamen> dispSolicitudExamenCollection;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 1)
@@ -488,5 +491,14 @@ public class DispAgendamiento implements Serializable {
 
     public void setEnTiempoPasado(String enTiempoPasado) {
         this.enTiempoPasado = enTiempoPasado;
+    }
+
+    @XmlTransient
+    public Collection<DispSolicitudExamen> getDispSolicitudExamenCollection() {
+        return dispSolicitudExamenCollection;
+    }
+
+    public void setDispSolicitudExamenCollection(Collection<DispSolicitudExamen> dispSolicitudExamenCollection) {
+        this.dispSolicitudExamenCollection = dispSolicitudExamenCollection;
     }
 }

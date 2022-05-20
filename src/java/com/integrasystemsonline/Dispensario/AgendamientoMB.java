@@ -2,20 +2,26 @@ package com.integrasystemsonline.Dispensario;
 
 import com.Entity.DispAgendamiento;
 import com.Entity.DispCliente;
+import com.Entity.DispDetalleDiagnostico;
+import com.Entity.DispDiagnostico;
 import com.Entity.DispEspecialidad;
 import com.Entity.DispMedicoPersonal;
 import com.Entity.DispOrigen;
 import com.Entity.DispPrecio;
+import com.Entity.DispResultado;
 import com.Entity.DispServicio;
 import com.Entity.IsParametros;
 import com.Entity.IsRolesPermisos;
 import com.Entity.IsUsuarios;
 import com.Session.DispAgendamientoFacade;
 import com.Session.DispClienteFacade;
+import com.Session.DispDetalleDiagnosticoFacade;
+import com.Session.DispDiagnosticoFacade;
 import com.Session.DispEspecialidadFacade;
 import com.Session.DispMedicoPersonalFacade;
 import com.Session.DispOrigenFacade;
 import com.Session.DispPrecioFacade;
+import com.Session.DispResultadoFacade;
 import com.Session.DispServicioFacade;
 import com.Session.IsCiudadFacade;
 import com.Session.IsEmpresaFacade;
@@ -103,6 +109,15 @@ public class AgendamientoMB implements Serializable {
     @EJB
     IsParametrosFacade isParametrosFacade;
 
+    @EJB
+    DispDiagnosticoFacade dispDiagnosticoFacade;
+    
+    @EJB
+    DispDetalleDiagnosticoFacade dispDetalleDiagnosticoFacade;
+    
+    @EJB
+    DispResultadoFacade dispResultadoFacade;
+    
     private SimpleDateFormat objSDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private SimpleDateFormat objSDFReserva = new SimpleDateFormat("yyyy-MM-dd");
@@ -601,6 +616,47 @@ public class AgendamientoMB implements Serializable {
                                     this.dispAgendamiento.setFechaIngreso(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone));
                                     this.dispAgendamientoFacade.createWithValidator(this.dispAgendamiento);
                                     this.dispAgendamientoFacade.flush();
+                                    
+                                    DispResultado resultado = new DispResultado();
+                                    resultado.setIdAgendamiento(dispAgendamiento);
+                                    resultado.setMotivoConsulta("n/a");
+                                    resultado.setEstado("A");
+                                    resultado.setIdEmpresa(this.usuario.getIdEmpresa());
+                                    resultado.setIdCiudad(this.usuario.getIdCiudad());
+                                    resultado.setIdSector(this.usuario.getIdSector());
+                                    resultado.setUsuarioIngreso(this.usuario.getUsuario());
+                                    resultado.setFechaIngreso(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone));
+                                    dispResultadoFacade.createWithValidator(resultado);
+                                    dispResultadoFacade.flush();
+                                    
+                                    DispDiagnostico diagnostico = new DispDiagnostico();
+                                    diagnostico.setEnfermedad("n/a");
+                                    String codigo = dispAgendamiento.getIdMedicoPersonal().getIdEspecialidad().getCodigo() + dispAgendamiento.getIdMedicoPersonal().getApaterno().substring(0, 2).toUpperCase() + dispAgendamiento.getIdMedicoPersonal().getAmaterno().substring(0, 2).toUpperCase() + dispAgendamiento.getIdMedicoPersonal().getNombre().substring(0, 2).toUpperCase();
+                                    diagnostico.setCodigo(codigo);
+                                    diagnostico.setEstado("A");
+                                    diagnostico.setIdEmpresa(this.usuario.getIdEmpresa());
+                                    diagnostico.setIdCiudad(this.usuario.getIdCiudad());
+                                    diagnostico.setIdSector(this.usuario.getIdSector());
+                                    diagnostico.setUsuarioIngreso(this.usuario.getUsuario());
+                                    diagnostico.setFechaIngreso(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone));
+                                    dispDiagnosticoFacade.createWithValidator(diagnostico);
+                                    dispDiagnosticoFacade.flush();
+                                    
+                                    DispDetalleDiagnostico detalleDiagnostico = new DispDetalleDiagnostico();
+                                    detalleDiagnostico.setTipo("N");
+                                    detalleDiagnostico.setIdResultado(resultado);
+                                    detalleDiagnostico.setIdDiagnostico(diagnostico);
+                                    detalleDiagnostico.setIdCliente(dispAgendamiento.getIdCliente());
+                                    detalleDiagnostico.setIdMedicoPersonal(dispAgendamiento.getIdMedicoPersonal());
+                                    detalleDiagnostico.setEstado("A");
+                                    detalleDiagnostico.setIdEmpresa(this.usuario.getIdEmpresa());
+                                    detalleDiagnostico.setIdCiudad(this.usuario.getIdCiudad());
+                                    detalleDiagnostico.setIdSector(this.usuario.getIdSector());
+                                    detalleDiagnostico.setUsuarioIngreso(this.usuario.getUsuario());
+                                    detalleDiagnostico.setFechaIngreso(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone));
+                                    dispDetalleDiagnosticoFacade.createWithValidator(detalleDiagnostico);
+                                    dispDetalleDiagnosticoFacade.flush();
+
                                     cargarInfoAgendamiento();
                                     PrimeFaces.current().executeScript("PF('myschedule').update();PF('eventDialog').hide();PF('dlgAgendamiento').show()");
                                     msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Se realizo la transaccion con exito.");

@@ -6,8 +6,10 @@
 package com.Entity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,12 +19,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -46,6 +50,17 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "DispEspecialidad.findByUsuarioModificacion", query = "SELECT d FROM DispEspecialidad d WHERE d.usuarioModificacion = :usuarioModificacion")
     , @NamedQuery(name = "DispEspecialidad.findByFechaModificacion", query = "SELECT d FROM DispEspecialidad d WHERE d.fechaModificacion = :fechaModificacion")})
 public class DispEspecialidad implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEspecialidad")
+    private Collection<DispAgendamiento> dispAgendamientoCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEspecialidad")
+    private Collection<DispEstudiosMedicos> dispEstudiosMedicosCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEspecialidad")
+    private Collection<DispServicio> dispServicioCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEspecialidad")
+    private Collection<DispConsultorio> dispConsultorioCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEspecialidad")
+    private Collection<DispMedicoPersonal> dispMedicoPersonalCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -232,6 +247,51 @@ public class DispEspecialidad implements Serializable {
     @Override
     public String toString() {
         return "com.Entity.DispEspecialidad[ idEspecialidad=" + idEspecialidad + " ]";
+    }
+
+    @XmlTransient
+    public Collection<DispAgendamiento> getDispAgendamientoCollection() {
+        return dispAgendamientoCollection;
+    }
+
+    public void setDispAgendamientoCollection(Collection<DispAgendamiento> dispAgendamientoCollection) {
+        this.dispAgendamientoCollection = dispAgendamientoCollection;
+    }
+
+    @XmlTransient
+    public Collection<DispEstudiosMedicos> getDispEstudiosMedicosCollection() {
+        return dispEstudiosMedicosCollection;
+    }
+
+    public void setDispEstudiosMedicosCollection(Collection<DispEstudiosMedicos> dispEstudiosMedicosCollection) {
+        this.dispEstudiosMedicosCollection = dispEstudiosMedicosCollection;
+    }
+
+    @XmlTransient
+    public Collection<DispServicio> getDispServicioCollection() {
+        return dispServicioCollection;
+    }
+
+    public void setDispServicioCollection(Collection<DispServicio> dispServicioCollection) {
+        this.dispServicioCollection = dispServicioCollection;
+    }
+
+    @XmlTransient
+    public Collection<DispConsultorio> getDispConsultorioCollection() {
+        return dispConsultorioCollection;
+    }
+
+    public void setDispConsultorioCollection(Collection<DispConsultorio> dispConsultorioCollection) {
+        this.dispConsultorioCollection = dispConsultorioCollection;
+    }
+
+    @XmlTransient
+    public Collection<DispMedicoPersonal> getDispMedicoPersonalCollection() {
+        return dispMedicoPersonalCollection;
+    }
+
+    public void setDispMedicoPersonalCollection(Collection<DispMedicoPersonal> dispMedicoPersonalCollection) {
+        this.dispMedicoPersonalCollection = dispMedicoPersonalCollection;
     }
     
 }

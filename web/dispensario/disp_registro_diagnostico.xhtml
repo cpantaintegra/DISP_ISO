@@ -88,12 +88,9 @@
                     <br/>
                     <h:panelGrid columns="3" style="text-align: left;">
                         <p:commandButton value="Guardar" actionListener="#{registroDiagnosticoMB.guardar('T')}" update=":forma:mensajesGrowl"/>
-                        
                         <p:commandButton value="Nueva Receta" actionListener="#{registroDiagnosticoMB.redireccionarRecetas()}" update=":forma:mensajesGrowl"/>
-                        
                         <p:commandButton value="Solicitar estudios medicos" onclick="PF('wdlgOrdenes').show();" actionListener="#{registroDiagnosticoMB.cargarListaEstudiosMedicos()}" update=":frmOrden"/>
                     </h:panelGrid>
-                    
                     <br/>
                     <br/>
                 </h:panelGrid>
@@ -130,7 +127,7 @@
                     <p:outputLabel value="Desea generar receta?" style="font: 30px serif bold;text-transform: capitalize"/>
                     <br/>
                     <p:commandButton value="Si" actionListener="#{registroDiagnosticoMB.redireccionarRecetas()}" oncomplete="PF('wdlgConfirmacion').hide();"/>
-                    <p:commandButton value="No" immediate="true"  oncomplete="PF('wdlgConfirmacion').hide();"/>
+                    <p:commandButton value="No" immediate="true"  oncomplete="PF('wdlgConfirmacion').hide();PF('wdlgOrdenes').hide();"/>
                 </h:form>
             </p:dialog>
         </div>
