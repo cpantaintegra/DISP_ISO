@@ -162,10 +162,11 @@
                             <p:outputLabel value="Medicamento"/>
                             <p:spacer width="10"/>
                             <p:autoComplete id="txtMedicamento" value="#{historial.medicamento}" 
-                                            completeMethod="#{historial.completeText}" forceSelection="false" effect="fade" scrollHeight="250">
+                                            completeMethod="#{historial.completeText}" forceSelection="true" effect="fade" scrollHeight="250">
+                                <p:ajax event="itemSelect" listener="#{historial.onItemSelect}" update=":frmIng"/>
                             </p:autoComplete>
                             <p:spacer width="10"/>
-                            <p:commandButton value="Agregar" actionListener="#{historial.guardarMedicamento()}" update=":frmIng,:forma:mensajesGrowl"/>
+                            <p:commandButton value="Agregar" actionListener="#{historial.agregarMedicamento()}" update=":frmIng,:forma:mensajesGrowl"/>
                         </h:panelGrid>
 
                         <p:outputLabel value=""/>
@@ -266,7 +267,8 @@
                         </p:repeat>
                     </p:repeat>
                     <br/>
-                    <p:commandButton value="Generar orden" actionListener="#{historial.generarOrdenes()}" update=":forma:dtDatos,:forma:mensajesGrowl" oncomplete="PF('wdlgOrdenes').hide();"/>
+                    <p:commandButton value="Generar orden" actionListener="#{historial.generarOrdenes()}" update=":forma:dtDatos,:forma:mensajesGrowl" oncomplete="PF('wdlgOrdenes').hide();" rendered="#{historial.editarOrden(historial.lstDispSolicitudExamen)}"/>
+                    <p:commandButton value="Imprimir" actionListener="#{historial.imprimirOrden()}" update=":forma:dtDatos,:forma:mensajesGrowl" oncomplete="PF('wdlgOrdenes').hide();" rendered="#{historial.boolImprimirOrden}"/>
                 </h:form>
             </p:dialog>
             

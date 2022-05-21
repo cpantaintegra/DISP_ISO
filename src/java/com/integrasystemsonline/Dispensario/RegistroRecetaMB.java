@@ -180,7 +180,8 @@ public class RegistroRecetaMB implements Serializable {
     private Estado clienteFilter;
     private List<DispCliente> lstClienteFilter;
     private Estado medicoFilter;
-    
+    private List<String> medicamentosList = new ArrayList<>();
+    private int idDetalleRecetaTemp = 0;
     private List<DispMedicoPersonal> lstMedicoFilter;
     @PostConstruct
     public void ini() {
@@ -318,22 +319,61 @@ public class RegistroRecetaMB implements Serializable {
 
     public List<String> completeText(String query) {
         String queryLowerCase = query.toLowerCase();
-        List<String> medicamentosList = new ArrayList<>();
         List<DispMedicamento> medicamentos = this.dispMedicamentoFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
-        for (DispMedicamento medicamento : medicamentos) {
-            medicamentosList.add(medicamento.getNombre());
+        
+        for (DispDetalleReceta collDispDetalleReceta : lstDetalleReceta) {
+            medicamentos.remove(collDispDetalleReceta.getIdMedicamento());
         }
+        
+        for (DispMedicamento medicamento : medicamentos) {
+            if(!medicamentosList.contains(medicamento.getNombre().toUpperCase())){
+                medicamentosList.add(medicamento.getNombre().toUpperCase());
+            }
+        }
+        
         return (List<String>) medicamentosList.stream().filter(t -> t.toLowerCase().startsWith(queryLowerCase)).collect(Collectors.toList());
     }
 
-    public void onItemSelectOrAdd(SelectEvent event) {
+    public void onItemSelect(SelectEvent event) {
+        FacesMessage msg = null;
         try {
             this.medicamento = (String) event.getObject();
             this.dispMedicamento = this.dispMedicamentoFacade.findByNombre(this.medicamento.toUpperCase(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
         } catch (Exception exception) {
         }
+        
+        if(msg!=null){
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
     }
 
+    public void agregarMedicamento(){
+        FacesMessage msg = null;
+        try {
+            if(dispMedicamento!=null){
+                DispDetalleReceta detalleRecetaObj = new DispDetalleReceta();
+                dispMedicamento.setNombre(dispMedicamento.getNombre().toUpperCase());
+                if(detalleRecetaObj.getIdDetalleReceta()==null){
+                    detalleRecetaObj.setIdDetalleReceta(idDetalleRecetaTemp+1);
+                }
+                detalleRecetaObj.setIdMedicamento(dispMedicamento);
+                detalleRecetaObj.setDosis("");
+                detalleRecetaObj.setDuracion("");
+                detalleRecetaObj.setCantidad(0);
+                this.lstDetalleReceta.add(detalleRecetaObj);
+                this.medicamentosList.remove(dispMedicamento.getNombre().toUpperCase());
+                this.listDispMedicamento.remove(dispMedicamento);
+                this.medicamento = "";
+                dispMedicamento = null;
+                idDetalleRecetaTemp=idDetalleRecetaTemp+1;
+            }
+            else{
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "No se encontro el medicamento.");
+            }
+        } catch (Exception e) {
+        }
+    }
+    
     public void guardarMedicamento() throws SystemException {
         FacesMessage msg = null;
         try {
@@ -524,21 +564,28 @@ public class RegistroRecetaMB implements Serializable {
 
     public void onCarDrop(DragDropEvent ddEvent) {
         DispMedicamento car = (DispMedicamento) ddEvent.getData();
-        this.detalleRecetaObj = new DispDetalleReceta();
-        this.detalleRecetaObj.setIdMedicamento(car);
-        this.detalleRecetaObj.setDosis("");
-        this.detalleRecetaObj.setDuracion("");
-        this.detalleRecetaObj.setCantidad(0);
-        this.lstDetalleReceta.add(this.detalleRecetaObj);
+        DispDetalleReceta detalleRecetaObj = new DispDetalleReceta();
+        if(detalleRecetaObj.getIdDetalleReceta()==null){
+            detalleRecetaObj.setIdDetalleReceta(idDetalleRecetaTemp+1);
+        }
+        detalleRecetaObj.setIdMedicamento(car);
+        detalleRecetaObj.setDosis("");
+        detalleRecetaObj.setDuracion("");
+        detalleRecetaObj.setCantidad(0);
+        this.lstDetalleReceta.add(detalleRecetaObj);
+        this.medicamentosList.remove(car.getNombre().toUpperCase());
         this.listDispMedicamento.remove(car);
+        idDetalleRecetaTemp=idDetalleRecetaTemp+1;
     }
-
+    
     public void onCarDrop1(DragDropEvent ddEvent) {
         DispDetalleReceta car = (DispDetalleReceta) ddEvent.getData();
         this.listDispMedicamento.add(car.getIdMedicamento());
+        this.medicamentosList.add(car.getIdMedicamento().getNombre());
         this.lstDetalleReceta.remove(car);
     }
 
+     
     public void onRowDblClckSelect(SelectEvent event) {
         try {
             this.labelMant = "Actualizar";
@@ -555,27 +602,6 @@ public class RegistroRecetaMB implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void agregarMedicamento() {
-        try {
-            this.dispDetalleReceta = new DispDetalleReceta();
-            this.dispDetalleReceta.setIdMedicamento(this.dispMedicamento);
-            this.dispDetalleReceta.setIdReceta(this.dispReceta);
-            this.dispDetalleReceta.setEstado("A");
-            this.dispDetalleReceta.setIdEmpresa(this.usuario.getIdEmpresa());
-            this.dispDetalleReceta.setIdCiudad(this.usuario.getIdCiudad());
-            this.dispDetalleReceta.setIdSector(this.usuario.getIdSector());
-            this.dispDetalleReceta.setUsuarioIngreso(this.usuario.getUsuario());
-            this.dispDetalleReceta.setFechaIngreso(this.objSDF.parse(this.objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void onItemSelect(SelectEvent event) {
-        if (this.dispMedicamento == null
-                || this.dispMedicamento.getIdMedicamento() != null);
     }
 
     public void agregarObservacion(DispDetalleReceta mr) {

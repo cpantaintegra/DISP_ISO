@@ -34,7 +34,7 @@
                 <p:commandButton value="REGRESAR" actionListener="#{registroRecetaMB.redireccionarRegistroDiagnostico()}" style="font: 24px bold;font-family: sans-serif"/> 
                 <br/>
                 <br/>
-                <p:commandButton value="Nueva Receta" actionListener="#{registroRecetaMB.redireccionar()}" update=":frmIng" process="frmIng" onclick="PF('wdlgIngresar').show()" rendered="#{!registroRecetaMB.consultar}"/>
+                <p:commandButton value="Nueva Receta" actionListener="#{registroRecetaMB.redireccionar()}" update=":frmIng" onclick="PF('wdlgIngresar').show()" rendered="#{!registroRecetaMB.consultar}"/>
 
                 <p:dataTable id="dtDatos" widgetVar="consultaWidget" value="#{registroRecetaMB.all}" selectionMode="single" reflow="true" lazy="true" resizableColumns="true"
                              var="rece" rowKey="#{rece.idReceta}" paginator="true" paginatorPosition="both" scrollable="true" 
@@ -85,11 +85,11 @@
                             <p:outputLabel value="Medicamento"/>
                             <p:spacer width="10"/>
                             <p:autoComplete id="txtMedicamento" value="#{registroRecetaMB.medicamento}" 
-                                            completeMethod="#{registroRecetaMB.completeText}" forceSelection="false" effect="fade" scrollHeight="250">
-                                <p:ajax event="itemSelect" listener="#{registroRecetaMB.onItemSelectOrAdd}" update=":frmIng" disabled="true"/>
+                                            completeMethod="#{registroRecetaMB.completeText}" forceSelection="true" effect="fade" scrollHeight="250">
+                                <p:ajax event="itemSelect" listener="#{registroRecetaMB.onItemSelect}" update=":frmIng"/>
                             </p:autoComplete>
                             <p:spacer width="10"/>
-                            <p:commandButton value="Agregar" actionListener="#{registroRecetaMB.guardarMedicamento()}" update=":frmIng,:forma:mensajesGrowl"/>
+                            <p:commandButton value="Agregar" actionListener="#{registroRecetaMB.agregarMedicamento()}" update=":frmIng,:forma:mensajesGrowl"/>
                         </h:panelGrid>
 
                         <p:outputLabel value=""/>

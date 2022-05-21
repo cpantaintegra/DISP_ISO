@@ -179,6 +179,9 @@ public class HistorialMB implements Serializable {
     List<DispExamen> listDispExamenesSeleccionados = new ArrayList<>();
     DispSolicitudExamen dispSolicitudExamen = new DispSolicitudExamen();
     List<DispSolicitudExamen> lstDispSolicitudExamen = new ArrayList<>();
+    List<String> medicamentosList = new ArrayList<>();
+    private int idDetalleRecetaTemp = 0;
+    private boolean boolImprimirOrden = false;
     
     @PostConstruct
     public void ini() {
@@ -315,6 +318,7 @@ public class HistorialMB implements Serializable {
     
     public void nuevaOrden(DispDetalleDiagnostico detalleDiagnostico){
         try {
+            boolImprimirOrden = false;
             dispSolicitudExamen = new DispSolicitudExamen();
             dispAgendamiento = detalleDiagnostico.getIdResultado().getIdAgendamiento();
             listDispEstudiosMedicos = dispEstudiosMedicosFacade.findByIdEspecialidad(dispAgendamiento.getIdEspecialidad().getIdEspecialidad());
@@ -339,10 +343,20 @@ public class HistorialMB implements Serializable {
                     }
                 }
                 //listDispEstudiosMedicos = dispEstudiosMedicosFacade.findByIdEspecialidad(dispAgendamiento.getIdEspecialidad().getIdEspecialidad());
-                
-                
             }
+            boolImprimirOrden = true;
         } catch (Exception exception) {
+        }
+    }
+    
+    public void imprimirOrden(){
+        try {
+            if(dispAgendamiento!=null){
+                if(dispAgendamiento.getIdAgendamiento()!=null){
+                    printSolicitudExamen(dispAgendamiento.getIdAgendamiento());
+                }
+            }
+        } catch (Exception e) {
         }
     }
     
@@ -399,6 +413,8 @@ public class HistorialMB implements Serializable {
             receta = new DispReceta();
             this.labelMant = "Ingresar";
             listDetalleReceta = new ArrayList<>();
+            medicamento = "";
+            dispMedicamento = null;
             dispAgendamiento = detalleDiagnostico.getIdResultado().getIdAgendamiento();
             this.listDispMedicamento = this.dispMedicamentoFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
         } catch (Exception e) {
@@ -632,6 +648,27 @@ public class HistorialMB implements Serializable {
         }
     }
     
+    public boolean editarOrden(List<DispSolicitudExamen> lstDispSolicitudExamen) {
+        Integer limite = 4;
+        Date hasta = Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone);
+        if (!lstDispSolicitudExamen.isEmpty()) {
+            Date fechaIngreso = Utilidades.obtenerFechaZonaHoraria(lstDispSolicitudExamen.get(0).getFechaIngreso(), "0", this.timeZone);
+            long diff = hasta.getTime() - fechaIngreso.getTime();
+            long diffHours = diff / 3600000;
+            if (limiteEdicion != null) {
+                limite = Integer.parseInt(limiteEdicion);
+            }
+
+            if (diffHours < limite) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+    
     public void guardar() throws SystemException {
         FacesMessage msg = null;
         boolean guardar = true;
@@ -675,10 +712,10 @@ public class HistorialMB implements Serializable {
             for (int i = 0; i < this.listDetalleReceta.size(); i++) {
                 DispDetalleReceta dispDetalleReceta = new DispDetalleReceta();
                 dispDetalleReceta.setEstado("A");
-                dispDetalleReceta.setIdMedicamento(((DispDetalleReceta) this.listDetalleReceta.get(i)).getIdMedicamento());
-                dispDetalleReceta.setCantidad(((DispDetalleReceta) this.listDetalleReceta.get(i)).getCantidad());
-                dispDetalleReceta.setDosis(((DispDetalleReceta) this.listDetalleReceta.get(i)).getDosis());
-                dispDetalleReceta.setDuracion(((DispDetalleReceta) this.listDetalleReceta.get(i)).getDuracion());
+                dispDetalleReceta.setIdMedicamento(this.listDetalleReceta.get(i).getIdMedicamento());
+                dispDetalleReceta.setCantidad(this.listDetalleReceta.get(i).getCantidad());
+                dispDetalleReceta.setDosis(this.listDetalleReceta.get(i).getDosis());
+                dispDetalleReceta.setDuracion( this.listDetalleReceta.get(i).getDuracion());
                 dispDetalleReceta.setIdReceta(this.receta);
                 dispDetalleReceta.setIdEmpresa(this.usuario.getIdEmpresa());
                 dispDetalleReceta.setIdCiudad(this.usuario.getIdCiudad());
@@ -748,20 +785,52 @@ public class HistorialMB implements Serializable {
     public void onCarDrop(DragDropEvent ddEvent) {
         DispMedicamento car = (DispMedicamento) ddEvent.getData();
         DispDetalleReceta detalleRecetaObj = new DispDetalleReceta();
+        if(detalleRecetaObj.getIdDetalleReceta()==null){
+            detalleRecetaObj.setIdDetalleReceta(idDetalleRecetaTemp+1);
+        }
         detalleRecetaObj.setIdMedicamento(car);
         detalleRecetaObj.setDosis("");
         detalleRecetaObj.setDuracion("");
-        detalleRecetaObj.setCantidad(Integer.valueOf(0));
+        detalleRecetaObj.setCantidad(0);
         this.listDetalleReceta.add(detalleRecetaObj);
+        this.medicamentosList.remove(car.getNombre());
         this.listDispMedicamento.remove(car);
+        idDetalleRecetaTemp=idDetalleRecetaTemp+1;
     }
 
     public void onCarDrop1(DragDropEvent ddEvent) {
         DispDetalleReceta car = (DispDetalleReceta) ddEvent.getData();
         this.listDispMedicamento.add(car.getIdMedicamento());
+        this.medicamentosList.add(car.getIdMedicamento().getNombre());
         this.listDetalleReceta.remove(car);
     }
 
+    public void agregarMedicamento(){
+        FacesMessage msg = null;
+        try {
+            if(dispMedicamento!=null){
+                DispDetalleReceta detalleRecetaObj = new DispDetalleReceta();
+                if(detalleRecetaObj.getIdDetalleReceta()==null){
+                    detalleRecetaObj.setIdDetalleReceta(idDetalleRecetaTemp+1);
+                }
+                detalleRecetaObj.setIdMedicamento(dispMedicamento);
+                detalleRecetaObj.setDosis("");
+                detalleRecetaObj.setDuracion("");
+                detalleRecetaObj.setCantidad(0);
+                this.listDetalleReceta.add(detalleRecetaObj);
+                this.medicamentosList.remove(dispMedicamento.getNombre());
+                this.listDispMedicamento.remove(dispMedicamento);
+                this.medicamento = "";
+                dispMedicamento = null;
+                idDetalleRecetaTemp=idDetalleRecetaTemp+1;
+            }
+            else{
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "No se encontro el medicamento.");
+            }
+        } catch (Exception e) {
+        }
+    }
+    
     public void guardarMedicamento() throws SystemException {
         FacesMessage msg = null;
         try {
@@ -828,14 +897,33 @@ public class HistorialMB implements Serializable {
     
     public List<String> completeText(String query) {
         String queryLowerCase = query.toLowerCase();
-        List<String> medicamentosList = new ArrayList<>();
         List<DispMedicamento> medicamentos = this.dispMedicamentoFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+        //listDetalleReceta = this.dispDetalleRecetaFacade.findByIdReceta(this.receta.getIdReceta());
+        for (DispDetalleReceta collDispDetalleReceta : listDetalleReceta) {
+            medicamentos.remove(collDispDetalleReceta.getIdMedicamento());
+        }
+        
         for (DispMedicamento medicamento : medicamentos) {
-            medicamentosList.add(medicamento.getNombre());
+            if(!medicamentosList.contains(medicamento.getNombre())){
+                medicamentosList.add(medicamento.getNombre());
+            }
         }
         return (List<String>) medicamentosList.stream().filter(t -> t.toLowerCase().startsWith(queryLowerCase)).collect(Collectors.toList());
     }
 
+    public void onItemSelect(SelectEvent event) {
+        FacesMessage msg = null;
+        try {
+            this.medicamento = (String) event.getObject();
+            this.dispMedicamento = this.dispMedicamentoFacade.findByNombre(this.medicamento.toUpperCase(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+        } catch (Exception exception) {
+        }
+        
+        if(msg!=null){
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
+    
     public void onItemSelectOrAdd(SelectEvent event) {
         try {
             this.medicamento = (String) event.getObject();
@@ -1212,6 +1300,22 @@ public class HistorialMB implements Serializable {
 
     public void setListDispEstudiosMedicos(List<DispEstudiosMedicos> listDispEstudiosMedicos) {
         this.listDispEstudiosMedicos = listDispEstudiosMedicos;
+    }
+
+    public List<DispSolicitudExamen> getLstDispSolicitudExamen() {
+        return lstDispSolicitudExamen;
+    }
+
+    public void setLstDispSolicitudExamen(List<DispSolicitudExamen> lstDispSolicitudExamen) {
+        this.lstDispSolicitudExamen = lstDispSolicitudExamen;
+    }
+
+    public boolean isBoolImprimirOrden() {
+        return boolImprimirOrden;
+    }
+
+    public void setBoolImprimirOrden(boolean boolImprimirOrden) {
+        this.boolImprimirOrden = boolImprimirOrden;
     }
 
 }

@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ordenEcografia" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="791fb2a3-4d3c-49a0-b78b-c8c6afb15c1d">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mysql"/>
+	<parameter name="agendamientoID" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT sol.fecha, UPPER(ex.nombre) AS examen, IF(ex.ayuno = TRUE,'Si','No') AS ayuno,IF(ex.vejiga_llena = TRUE,'Si','No') AS vejigaLLena,UPPER(es.nombre) AS estudios, ex.descripcion,
+emp.direccion, emp.telefono1, emp.nomb_comercial,emp.logo_ruta, sec.nombre AS sector, ciu.nombre AS ciudad,
+UPPER(CONCAT_WS(' ',cli.apaterno,cli.amaterno, cli.nombre)) AS nombPaciente,
+UPPER(CONCAT_WS(' ',med.apaterno,med.amaterno, med.nombre)) AS nombMedico,
+UPPER(CONCAT_WS(' ',TIMESTAMPDIFF(YEAR,cli.fecha_nacimiento,CURDATE()),'AÑOS')) AS edad,
+IF(cli.sexo = 'M','Masculino','Femenino') AS sexo 
+FROM disp_solicitud_examen sol, disp_examen ex, disp_estudios_medicos es, disp_cliente cli, disp_medico_personal med, 
+disp_agendamiento age, is_empresa emp, is_ciudad ciu, is_sector sec
+WHERE cli.id_cliente = age.id_cliente AND
+med.id_medico_personal = age.id_medico_personal AND
+es.id_especialidad = age.id_especialidad AND
+ex.id_estudios_medicos = es.id_estudios_medicos AND
+ex.id_examen = sol.id_examen AND
+sol.id_agendamiento = age.id_agendamiento AND
+sol.id_empresa = emp.id_empresa AND
+sol.id_sector = sec.id_sector AND
+sol.id_ciudad = ciu.id_ciudad AND
+age.id_agendamiento = $P{agendamientoID}]]>
+	</queryString>
+	<field name="fecha" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="fecha"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_solicitud_examen"/>
+	</field>
+	<field name="examen" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="examen"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_examen"/>
+	</field>
+	<field name="ayuno" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ayuno"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_examen"/>
+	</field>
+	<field name="vejigaLLena" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="vejigaLLena"/>
+	</field>
+	<field name="estudios" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="estudios"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_estudios_medicos"/>
+	</field>
+	<field name="descripcion" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descripcion"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_examen"/>
+	</field>
+	<field name="direccion" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="direccion"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_empresa"/>
+	</field>
+	<field name="telefono1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="telefono1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_empresa"/>
+	</field>
+	<field name="nomb_comercial" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomb_comercial"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_empresa"/>
+	</field>
+	<field name="logo_ruta" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="logo_ruta"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_empresa"/>
+	</field>
+	<field name="sector" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="sector"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_sector"/>
+	</field>
+	<field name="ciudad" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ciudad"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="is_ciudad"/>
+	</field>
+	<field name="nombPaciente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nombPaciente"/>
+	</field>
+	<field name="nombMedico" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nombMedico"/>
+	</field>
+	<field name="edad" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="edad"/>
+	</field>
+	<field name="sexo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="sexo"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="105" splitType="Stretch">
+			<image hAlign="Center" vAlign="Middle" onErrorType="Icon">
+				<reportElement x="171" y="0" width="220" height="105" uuid="1d3105f0-f7ab-41a3-a30c-7b1423ddc57f"/>
+				<imageExpression><![CDATA[$F{logo_ruta}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="148" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="100" width="550" height="20" backcolor="#2828B5" uuid="abd62904-68df-45e2-86e9-69d88a86a632"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="50" height="20" uuid="7f700244-8d41-4d13-87e3-246973196e07">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="50" height="20" uuid="4457a147-7975-4cc5-a6c8-02132d24c6ba">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Paciente:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="40" width="50" height="20" uuid="9bc5d194-8aff-4f58-82f5-88b73d8fb728">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Edad:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="110" height="20" uuid="4f904d68-9980-4c56-8921-fd495e296e48">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Medico Solicitante:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="80" width="110" height="20" uuid="041c341f-c45f-4d4e-99eb-765e6904b4f5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Comentarios:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="40" width="50" height="20" uuid="4b2ab277-e850-4072-9375-0a5e502e0f1b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Sexo:]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="50" y="0" width="500" height="20" uuid="bc86090a-5cc7-41b1-a3f3-152ff7ad5063">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box bottomPadding="1">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="50" y="20" width="500" height="20" uuid="1c7e5b50-59af-4c12-9559-1ffbb6db9ef1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box bottomPadding="1">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombPaciente}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="50" y="40" width="230" height="20" uuid="b2ff4bf8-8709-48f8-ab6d-85953d55c6b9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box bottomPadding="1">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{edad}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="330" y="40" width="220" height="20" uuid="83fbffd6-9416-4c27-a11e-966170788248">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box bottomPadding="1">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sexo}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="110" y="60" width="440" height="20" uuid="aa885dba-bccf-4da6-8975-92ee6e696a2e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box bottomPadding="1">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombMedico}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="110" y="80" width="440" height="20" uuid="16c61179-82da-4aaa-8af8-e847c658b474"/>
+				<box bottomPadding="1">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="100" width="50" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="0ddc5c75-3996-492b-b4b5-f9ea4e25f667">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Ayuno:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="127" width="280" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="e06fad61-abcc-4aad-81ea-d8afd1169b0d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ Lista de Estudios]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="50" y="100" width="50" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="672cfd74-900e-46a8-976d-4d5a7206d4cd">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ayuno}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="180" y="100" width="50" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="b90b1145-927f-4232-8158-2b9b1461a9eb">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Vejiga Llena:]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="230" y="100" width="50" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="9f6fff12-3f59-467d-8a06-2f607a799580">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{vejigaLLena}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20">
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="0" y="0" width="280" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="89885305-2e13-44cf-96a8-33f864ac221e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.spacingAfter" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
+				</reportElement>
+				<textElement markup="none">
+					<font size="12" isBold="true"/>
+					<paragraph spacingBefore="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{estudios}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="240" height="20" uuid="b6d8001d-81ab-4290-a658-bb1188b86d5c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3cd2fa02-036d-45c6-b0f5-6a7f36978150"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{examen}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="250" y="0" width="20" height="20" uuid="dd3824ff-8bb0-48e7-a6a9-bdc6c198bdaf">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[x]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="85" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="50" height="20" uuid="c6ee20c4-9b5b-4db2-89a0-6b7125223706">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Otros:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="0" width="500" height="20" uuid="96330a21-fd2e-475f-a6a8-a6f8366876d5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box bottomPadding="0">
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[_______________________________________________________________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="25" width="550" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="256fb680-ca3d-4fcf-9fd6-852ef09d1eb5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[EDIFICIO CITY OFFICE - BUSINESS (PLANTA BAJA - LOCAL L002 ) AV. DR. EMILIO ROMERO ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="45" width="550" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="d8c9e7d6-d029-48c8-ac6e-8322ae2fdb16">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[AV. BENJAMIN CARRION M. AL LADO DEL CITY MALL TELEFONO: 0978802434 ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="65" width="550" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="e438b635-f116-4c32-a223-b4a8585d86cd">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[HORARIOS DE ATENCION:LUNES A VIERNES DE 08h00 a 18h00 sabados de 08h00 a 13h00]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>
