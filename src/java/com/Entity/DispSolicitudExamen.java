@@ -43,6 +43,18 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "DispSolicitudExamen.findByFechaModificacion", query = "SELECT d FROM DispSolicitudExamen d WHERE d.fechaModificacion = :fechaModificacion")})
 public class DispSolicitudExamen implements Serializable {
 
+    @Size(max = 10000)
+    @Column(name = "comentario")
+    private String comentario;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ayuno")
+    private boolean ayuno;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "vejiga_llena")
+    private boolean vejigaLlena;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -222,6 +234,30 @@ public class DispSolicitudExamen implements Serializable {
     @Override
     public String toString() {
         return "com.Entity.DispSolicitudExamen[ idSolicitudExamen=" + idSolicitudExamen + " ]";
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
+    }
+
+    public boolean getAyuno() {
+        return ayuno;
+    }
+
+    public void setAyuno(boolean ayuno) {
+        this.ayuno = ayuno;
+    }
+
+    public boolean getVejigaLlena() {
+        return vejigaLlena;
+    }
+
+    public void setVejigaLlena(boolean vejigaLlena) {
+        this.vejigaLlena = vejigaLlena;
     }
     
 }

@@ -174,6 +174,8 @@ public class RegistroDiagnosticoMB implements Serializable {
     
     private boolean vejigaLlena = false;
     
+    private String comentario = "";
+    
     @PostConstruct
     public void init() {
         try {
@@ -532,6 +534,9 @@ public class RegistroDiagnosticoMB implements Serializable {
             userTransaction.begin();
             for (int i = 0; i < listDispExamenesSeleccionados.size(); i++) {
                 DispSolicitudExamen dispSolicitudExamen = new DispSolicitudExamen();
+                dispSolicitudExamen.setAyuno(ayuno);
+                dispSolicitudExamen.setVejigaLlena(vejigaLlena);
+                dispSolicitudExamen.setComentario(comentario);
                 dispSolicitudExamen.setFecha(objSDF.parse(objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
                 dispSolicitudExamen.setEstado("A");
                 dispSolicitudExamen.setIdAgendamiento(dispAgendamiento);
@@ -740,6 +745,14 @@ public class RegistroDiagnosticoMB implements Serializable {
 
     public void setVejigaLlena(boolean vejigaLlena) {
         this.vejigaLlena = vejigaLlena;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
     }
     
     

@@ -182,6 +182,7 @@ public class HistorialMB implements Serializable {
     List<String> medicamentosList = new ArrayList<>();
     private int idDetalleRecetaTemp = 0;
     private boolean boolImprimirOrden = false;
+    private String comentario = "";
     
     @PostConstruct
     public void ini() {
@@ -295,6 +296,16 @@ public class HistorialMB implements Serializable {
         listDispExamen = new ArrayList<>();
         try {
             listDispExamen = dispExamenFacade.findByIdEstudiosMedicos(estudios.getIdEstudiosMedicos());
+            if(!listDispExamenesSeleccionados.isEmpty()){
+                for (int i = 0; i <listDispExamen.size(); i++) {
+                    if(listDispExamenesSeleccionados.contains(listDispExamen.get(i))){
+                        listDispExamen.get(i).setExamenAgregado(true);
+                    }
+                    else{
+                        listDispExamen.get(i).setExamenAgregado(false);
+                    }
+                }
+            }
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -318,12 +329,29 @@ public class HistorialMB implements Serializable {
     
     public void nuevaOrden(DispDetalleDiagnostico detalleDiagnostico){
         try {
+            comentario = "";
+            ayuno = false;
+            vejigaLlena = false;
             boolImprimirOrden = false;
             dispSolicitudExamen = new DispSolicitudExamen();
+            listDispExamenesSeleccionados = new ArrayList<>();
             dispAgendamiento = detalleDiagnostico.getIdResultado().getIdAgendamiento();
             listDispEstudiosMedicos = dispEstudiosMedicosFacade.findByIdEspecialidad(dispAgendamiento.getIdEspecialidad().getIdEspecialidad());
         } catch (Exception e) {
             System.out.println(e.toString());
+        }
+    }
+    
+    public boolean ordenAgregada(DispExamen examen){
+        try {
+            if(listDispExamenesSeleccionados.contains(examen)){
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
         }
     }
     
@@ -334,14 +362,21 @@ public class HistorialMB implements Serializable {
             if (detalleDiagnostico.getIdDetalleDiagnostico() != null) {
                 dispAgendamiento = detalleDiagnostico.getIdResultado().getIdAgendamiento();
                 this.lstDispSolicitudExamen = this.dispSolicitudExamenFacade.findByIdAgendamiento(dispAgendamiento.getIdAgendamiento());
-                
-                listDispEstudiosMedicos = new ArrayList<>();
-                for (int i = 0; i < lstDispSolicitudExamen.size(); i++) {
-                    DispEstudiosMedicos estudiosObj = lstDispSolicitudExamen.get(i).getIdExamen().getIdEstudiosMedicos();
-                    if(!listDispEstudiosMedicos.contains(estudiosObj)){
-                        listDispEstudiosMedicos.add(estudiosObj);
-                    }
+                if(!lstDispSolicitudExamen.isEmpty()){
+                    comentario = lstDispSolicitudExamen.get(0).getComentario();
+                    ayuno = lstDispSolicitudExamen.get(0).getAyuno();
+                    vejigaLlena = lstDispSolicitudExamen.get(0).getVejigaLlena();
                 }
+                listDispExamenesSeleccionados = new ArrayList<>();
+                for (int i = 0; i < lstDispSolicitudExamen.size(); i++) {
+                    agregarExamenesSeleccionados(lstDispSolicitudExamen.get(i).getIdExamen());
+                }
+                listDispEstudiosMedicos = new ArrayList<>();
+                listDispEstudiosMedicos = dispEstudiosMedicosFacade.findByIdEspecialidad(dispAgendamiento.getIdEspecialidad().getIdEspecialidad());
+                //listDispEstudiosMedicos = dispEstudiosMedicosFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+                
+                
+                
                 //listDispEstudiosMedicos = dispEstudiosMedicosFacade.findByIdEspecialidad(dispAgendamiento.getIdEspecialidad().getIdEspecialidad());
             }
             boolImprimirOrden = true;
@@ -365,8 +400,16 @@ public class HistorialMB implements Serializable {
         try {
             userTransaction.begin();
             List<DispSolicitudExamen> lstSolicitud = dispSolicitudExamenFacade.findByIdAgendamiento(dispAgendamiento.getIdAgendamiento());
+            for (int i = 0; i < lstSolicitud.size(); i++) {
+                dispSolicitudExamenFacade.remove(lstSolicitud.get(i));
+                dispSolicitudExamenFacade.flush();
+            }
+            
             for (int i = 0; i < listDispExamenesSeleccionados.size(); i++) {
                 dispSolicitudExamen = new DispSolicitudExamen();
+                dispSolicitudExamen.setAyuno(ayuno);
+                dispSolicitudExamen.setVejigaLlena(vejigaLlena);
+                dispSolicitudExamen.setComentario(comentario);
                 dispSolicitudExamen.setFecha(objSDF.parse(objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
                 dispSolicitudExamen.setEstado("A");
                 dispSolicitudExamen.setIdAgendamiento(dispAgendamiento);
@@ -416,6 +459,7 @@ public class HistorialMB implements Serializable {
             medicamento = "";
             dispMedicamento = null;
             dispAgendamiento = detalleDiagnostico.getIdResultado().getIdAgendamiento();
+            listDispExamenesSeleccionados = new ArrayList<>();
             this.listDispMedicamento = this.dispMedicamentoFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
         } catch (Exception e) {
         }
@@ -1316,6 +1360,14 @@ public class HistorialMB implements Serializable {
 
     public void setBoolImprimirOrden(boolean boolImprimirOrden) {
         this.boolImprimirOrden = boolImprimirOrden;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
     }
 
 }

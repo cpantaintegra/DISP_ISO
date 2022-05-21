@@ -103,7 +103,11 @@
                         <p:selectBooleanCheckbox value="#{registroDiagnosticoMB.ayuno}" />
                         <p:outputLabel value="Vejiga LLena: "/>
                         <p:selectBooleanCheckbox value="#{registroDiagnosticoMB.vejigaLlena}"/>
-                    </p:panelGrid> 
+                    </p:panelGrid>
+                    <h:panelGrid columns="2" style="text-align: left;width: 100%;">
+                        <p:outputLabel value="Comentario" style="width: 20%;"/>
+                        <p:inputTextarea value="#{registroDiagnosticoMB.comentario}" style="width: 80%;"/>
+                    </h:panelGrid>
                     
                     <p:repeat value="#{registroDiagnosticoMB.listDispEstudiosMedicos}" var="estudios" >
                         <p:outputLabel value="#{estudios.nombre}" style="width: 100%;background-color: #2aabd2;font: 30px serif bold;color: white;text-transform: uppercase"/>

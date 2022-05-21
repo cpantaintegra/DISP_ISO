@@ -5,7 +5,7 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mysql"/>
 	<parameter name="agendamientoID" class="java.lang.String"/>
 	<queryString language="SQL">
-		<![CDATA[SELECT sol.fecha, UPPER(ex.nombre) AS examen, IF(ex.ayuno = TRUE,'Si','No') AS ayuno,IF(ex.vejiga_llena = TRUE,'Si','No') AS vejigaLLena,UPPER(es.nombre) AS estudios, ex.descripcion,
+		<![CDATA[SELECT sol.fecha, UPPER(ex.nombre) AS examen, IF(sol.ayuno = TRUE,'Si','No') AS ayuno,IF(sol.vejiga_llena = TRUE,'Si','No') AS vejigaLLena,UPPER(es.nombre) AS estudios, sol.comentario,
 emp.direccion, emp.telefono1, emp.nomb_comercial,emp.logo_ruta, sec.nombre AS sector, ciu.nombre AS ciudad,
 UPPER(CONCAT_WS(' ',cli.apaterno,cli.amaterno, cli.nombre)) AS nombPaciente,
 UPPER(CONCAT_WS(' ',med.apaterno,med.amaterno, med.nombre)) AS nombMedico,
@@ -43,9 +43,9 @@ age.id_agendamiento = $P{agendamientoID}]]>
 		<property name="com.jaspersoft.studio.field.label" value="estudios"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="disp_estudios_medicos"/>
 	</field>
-	<field name="descripcion" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="descripcion"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="disp_examen"/>
+	<field name="comentario" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="comentario"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="disp_solicitud_examen"/>
 	</field>
 	<field name="direccion" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="direccion"/>
@@ -97,7 +97,7 @@ age.id_agendamiento = $P{agendamientoID}]]>
 	<pageHeader>
 		<band height="148" splitType="Stretch">
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="100" width="550" height="20" backcolor="#2828B5" uuid="abd62904-68df-45e2-86e9-69d88a86a632"/>
+				<reportElement mode="Opaque" x="0" y="103" width="550" height="20" backcolor="#2828B5" uuid="abd62904-68df-45e2-86e9-69d88a86a632"/>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
@@ -214,18 +214,8 @@ age.id_agendamiento = $P{agendamientoID}]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombMedico}]]></textFieldExpression>
 			</textField>
-			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
-				<reportElement x="110" y="80" width="440" height="20" uuid="16c61179-82da-4aaa-8af8-e847c658b474"/>
-				<box bottomPadding="1">
-					<bottomPen lineWidth="1.0"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font isUnderline="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
-			</textField>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="100" width="50" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="0ddc5c75-3996-492b-b4b5-f9ea4e25f667">
+				<reportElement mode="Opaque" x="0" y="103" width="50" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="0ddc5c75-3996-492b-b4b5-f9ea4e25f667">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -243,7 +233,7 @@ age.id_agendamiento = $P{agendamientoID}]]>
 				<text><![CDATA[ Lista de Estudios]]></text>
 			</staticText>
 			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
-				<reportElement mode="Opaque" x="50" y="100" width="50" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="672cfd74-900e-46a8-976d-4d5a7206d4cd">
+				<reportElement mode="Opaque" x="50" y="103" width="50" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="672cfd74-900e-46a8-976d-4d5a7206d4cd">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -251,7 +241,7 @@ age.id_agendamiento = $P{agendamientoID}]]>
 				<textFieldExpression><![CDATA[$F{ayuno}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement mode="Opaque" x="180" y="100" width="50" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="b90b1145-927f-4232-8158-2b9b1461a9eb">
+				<reportElement mode="Opaque" x="180" y="103" width="50" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="b90b1145-927f-4232-8158-2b9b1461a9eb">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -260,12 +250,22 @@ age.id_agendamiento = $P{agendamientoID}]]>
 				<text><![CDATA[Vejiga Llena:]]></text>
 			</staticText>
 			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
-				<reportElement mode="Opaque" x="230" y="100" width="50" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="9f6fff12-3f59-467d-8a06-2f607a799580">
+				<reportElement mode="Opaque" x="230" y="103" width="50" height="20" forecolor="#FFFFFF" backcolor="#2828B5" uuid="9f6fff12-3f59-467d-8a06-2f607a799580">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{vejigaLLena}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="80" y="80" width="470" height="20" uuid="f40044ec-537b-45f5-940b-02455d43e4c8">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box bottomPadding="1">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{comentario}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

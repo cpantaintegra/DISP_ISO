@@ -245,7 +245,7 @@
                 </h:form>
             </p:dialog>
             
-            <p:dialog id="dlgOrdenes" header="Orden de Examen" position="center" widgetVar="wdlgOrdenes" width="800" modal="true">
+            <p:dialog id="dlgOrdenes" header="Orden de Examen" position="center" widgetVar="wdlgOrdenes" height="600" width="800" modal="true">
                 <h:form id="frmOrden" style="text-align: left" >
                     <p:panelGrid columns="4" style="text-align: left; width: 100%">
                         <p:outputLabel value="Ayuno: "/>
@@ -253,14 +253,18 @@
                         <p:outputLabel value="Vejiga LLena: "/>
                         <p:selectBooleanCheckbox value="#{historial.vejigaLlena}"/>
                     </p:panelGrid> 
-                    
+                    <h:panelGrid columns="2" style="text-align: left;width: 100%;">
+                        <p:outputLabel value="Comentario" style="width: 20%;"/>
+                        <p:inputTextarea value="#{historial.comentario}" style="width: 80%;"/>
+                    </h:panelGrid>
+                    <br/>
                     <p:repeat value="#{historial.listDispEstudiosMedicos}" var="estudios" >
                         <p:outputLabel value="#{estudios.nombre}" style="width: 100%;background-color: #2aabd2;font: 30px serif bold;color: white;text-transform: uppercase"/>
                         <br/>
                         <p:repeat value="#{historial.cargarListaExamen(estudios)}" var="examen">
                             <p:outputLabel value="#{examen.nombre}" style="background-color: white;font: 24px serif;color: black;text-transform: capitalize"/>
                             <p:spacer width="20" height="0"/>
-                            <p:selectBooleanCheckbox>
+                            <p:selectBooleanCheckbox value="#{examen.examenAgregado}">
                                 <p:ajax event="change" listener="#{historial.agregarExamenesSeleccionados(examen)}"/>                          
                             </p:selectBooleanCheckbox>
                             <br/>

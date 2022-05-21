@@ -65,10 +65,10 @@ public class DispExamen implements Serializable {
     private Integer idExamen;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 30)
+    @Size(min = 1, max = 1000)
     @Column(name = "nombre")
     private String nombre;
-    @Size(max = 30)
+    @Size(max = 10000)
     @Column(name = "descripcion")
     private String descripcion;
     @Column(name = "tiempo_hora")
@@ -122,6 +122,9 @@ public class DispExamen implements Serializable {
     @ManyToOne(optional = false)
     private IsSector idSector;
 
+    @Transient
+    private boolean examenAgregado;
+    
     public DispExamen() {
     }
 
@@ -273,6 +276,14 @@ public class DispExamen implements Serializable {
 
     public void setIdSector(IsSector idSector) {
         this.idSector = idSector;
+    }
+
+    public boolean isExamenAgregado() {
+        return examenAgregado;
+    }
+
+    public void setExamenAgregado(boolean examenAgregado) {
+        this.examenAgregado = examenAgregado;
     }
 
     @Override
