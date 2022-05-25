@@ -122,7 +122,25 @@
                     </h:panelGrid>
                     <p:commandButton value="#{serviciosMB.labelMant}" actionListener="#{serviciosMB.guardar()}" update=":forma:mensajesGrowl,:frmIng,:forma:dtDatos" process=":frmIng"/>
                 </h:form>
-            </p:dialog>            
+            </p:dialog>
+
+            <p:dialog id="dlgIngresarPrecio" header="Precios" widgetVar="wdlgIngresarPrecios" modal="true">
+                <h:form id="frmIngPrecios" style="text-align: center">
+                    <p:panelGrid columns="2" style="text-align: left">
+                        <p:outputLabel value="Servicio"/>
+                        <p:outputLabel value="#{serviciosMB.dispServicio.nombre}"/>
+
+                        <p:outputLabel value="Origen"/>
+                        <p:selectOneMenu style="width:190px" value="#{serviciosMB.origenObj}" id="ingOrigen" converter="ConverterGeneric" >
+                            <f:selectItems value="#{serviciosMB.listDispOrigen}" var="orig" itemLabel="#{orig.nombre}" itemValue="#{orig}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Precio"/>
+                        <p:inputText value="#{serviciosMB.precioObj.valor}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{serviciosMB.labelMantPrecio}" actionListener="#{serviciosMB.agregarPrecios()}" update=":frmIng:dtDatosPrecio,:forma:mensajesGrowl" process=":frmIngPrecios" onclick="PF('wdlgIngresarPrecios').hide();"/>
+                </h:form>
+            </p:dialog>
         </div>
     </ui:define>
 </ui:composition>

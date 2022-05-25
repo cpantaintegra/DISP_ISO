@@ -406,7 +406,7 @@ public class AgendamientoMB implements Serializable {
         this.evento.setDateFin(dataSelecionadaJoda.plusMinutes(Integer.parseInt(this.timePlus)).toDate());
         this.event = (ScheduleEvent) new DefaultScheduleEvent(this.evento.getTitulo(), this.evento.getDateInicio(), this.evento.getDateFin(), this.evento);
         this.labelMant = "Guardar";
-        resetCombos();
+        //resetCombos();
 ////        if(event.getId()==null){
 ////            this.clienteObj = null;
 ////            this.cliente = "";

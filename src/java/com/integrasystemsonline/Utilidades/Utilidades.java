@@ -26,7 +26,7 @@ public class Utilidades {
     Properties prop = new Properties();
     FileInputStream id = null;
     try {
-      //id = new FileInputStream("/home/DispConfig/"+propName);//servidor a la nube 
+        //id = new FileInputStream("/home/DispConfig/"+propName);//servidor a la nube 
         id = new FileInputStream("C:/DispConfig/"+propName);//servidor local
         prop.load(id);
     } catch (Exception exception) {
