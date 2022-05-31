@@ -371,7 +371,7 @@ public class RecetaMB implements Serializable {
     }
 
     public List<String> completeText(String query) {
-        String queryLowerCase = query.toLowerCase();
+        String queryUpperrCase = query.toUpperCase();
         
         List<DispMedicamento> medicamentos = this.dispMedicamentoFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
         
@@ -384,7 +384,7 @@ public class RecetaMB implements Serializable {
                 medicamentosList.add(medicamento.getNombre());
             }
         }
-        return (List<String>) medicamentosList.stream().filter(t -> t.toLowerCase().startsWith(queryLowerCase)).collect(Collectors.toList());
+        return (List<String>) medicamentosList.stream().filter(t -> t.toUpperCase().startsWith(queryUpperrCase)).collect(Collectors.toList());
     }
 
     public void onItemSelect(SelectEvent event) {
@@ -392,6 +392,7 @@ public class RecetaMB implements Serializable {
         try {
             this.medicamento = (String) event.getObject();
             this.dispMedicamento = this.dispMedicamentoFacade.findByNombre(this.medicamento.toUpperCase(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+            
         } catch (Exception exception) {
         }
         
@@ -400,9 +401,25 @@ public class RecetaMB implements Serializable {
         }
     }
 
-    public void agregarMedicamento(){
+    public void agregarMedicamento() throws SystemException{
         FacesMessage msg = null;
         try {
+            userTransaction.begin();
+            if(dispMedicamento==null || dispMedicamento.getIdMedicamento()==null){
+                dispMedicamento = new DispMedicamento();
+                dispMedicamento.setNombre(medicamento.toUpperCase());
+                dispMedicamento.setDescripcion("medicamento " + medicamento);
+                dispMedicamento.setEstado("A");
+                dispMedicamento.setIdEmpresa(this.usuario.getIdEmpresa());
+                dispMedicamento.setIdCiudad(this.usuario.getIdCiudad());
+                dispMedicamento.setIdSector(this.usuario.getIdSector());
+                dispMedicamento.setIdEmpresa(this.usuario.getIdEmpresa());
+                dispMedicamento.setUsuarioIngreso(this.usuario.getUsuario());
+                dispMedicamento.setFechaIngreso(this.objSDF.parse(this.objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
+                dispMedicamentoFacade.createWithValidator(this.dispMedicamento);
+                dispMedicamentoFacade.flush();
+            }
+            userTransaction.commit();
             if(dispMedicamento!=null){
                 DispDetalleReceta detalleRecetaObj = new DispDetalleReceta();
                 if(detalleRecetaObj.getIdDetalleReceta()==null){
@@ -423,6 +440,7 @@ public class RecetaMB implements Serializable {
                 msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "No se encontro el medicamento.");
             }
         } catch (Exception e) {
+            userTransaction.rollback();
         }
     }
     

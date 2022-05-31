@@ -103,7 +103,7 @@
                             <p:outputLabel value="Medicamento"/>
                             <p:spacer width="10"/>
                             <p:autoComplete id="txtMedicamento" value="#{recetaMB.medicamento}" 
-                                            completeMethod="#{recetaMB.completeText}" forceSelection="true" effect="fade" scrollHeight="250">
+                                            completeMethod="#{recetaMB.completeText}" forceSelection="false" effect="fade" scrollHeight="250" style="text-transform: uppercase;">
                                 <p:ajax event="itemSelect" listener="#{recetaMB.onItemSelect}" update=":frmIng"/>
                             </p:autoComplete>
                             <p:spacer width="10"/>

@@ -236,11 +236,11 @@ public class RegistroRecetaMB implements Serializable {
             }
             this.listDispMedicamento = this.dispMedicamentoFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
             for (int i = 0; i < this.listDispMedicamento.size(); i++) {
-                ((DispMedicamento) this.listDispMedicamento.get(i)).setNombre(((DispMedicamento) this.listDispMedicamento.get(i)).getNombre().toUpperCase());
+                (this.listDispMedicamento.get(i)).setNombre(this.listDispMedicamento.get(i).getNombre().toUpperCase());
             }
-            if (!this.listDispMedicamento.isEmpty()) {
-                this.dispMedicamento = this.listDispMedicamento.get(0);
-            }
+//            if (!this.listDispMedicamento.isEmpty()) {
+//                this.dispMedicamento = this.listDispMedicamento.get(0);
+//            }
             this.fechaActual = Utilidades.obtenerFechaZonaHoraria(this.fechaActual, "0", this.timeZone);
             IsParametros parametros = null;
             parametros = this.isParametrosFacade.findByCodigo("minTime", this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
@@ -318,7 +318,7 @@ public class RegistroRecetaMB implements Serializable {
     }
 
     public List<String> completeText(String query) {
-        String queryLowerCase = query.toLowerCase();
+        String queryUpperrCase = query.toUpperCase();
         List<DispMedicamento> medicamentos = this.dispMedicamentoFacade.findAllActivos(this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
         
         for (DispDetalleReceta collDispDetalleReceta : lstDetalleReceta) {
@@ -331,7 +331,7 @@ public class RegistroRecetaMB implements Serializable {
             }
         }
         
-        return (List<String>) medicamentosList.stream().filter(t -> t.toLowerCase().startsWith(queryLowerCase)).collect(Collectors.toList());
+        return (List<String>) medicamentosList.stream().filter(t -> t.toUpperCase().startsWith(queryUpperrCase)).collect(Collectors.toList());
     }
 
     public void onItemSelect(SelectEvent event) {
@@ -350,6 +350,23 @@ public class RegistroRecetaMB implements Serializable {
     public void agregarMedicamento(){
         FacesMessage msg = null;
         try {
+            userTransaction.begin();
+            if(dispMedicamento==null || dispMedicamento.getIdMedicamento()==null){
+                dispMedicamento = new DispMedicamento();
+                dispMedicamento.setNombre(medicamento.toUpperCase());
+                dispMedicamento.setDescripcion("medicamento " + medicamento);
+                dispMedicamento.setEstado("A");
+                dispMedicamento.setIdEmpresa(this.usuario.getIdEmpresa());
+                dispMedicamento.setIdCiudad(this.usuario.getIdCiudad());
+                dispMedicamento.setIdSector(this.usuario.getIdSector());
+                dispMedicamento.setIdEmpresa(this.usuario.getIdEmpresa());
+                dispMedicamento.setUsuarioIngreso(this.usuario.getUsuario());
+                dispMedicamento.setFechaIngreso(this.objSDF.parse(this.objSDF.format(Utilidades.obtenerFechaZonaHoraria(new Date(), "0", this.timeZone))));
+                dispMedicamentoFacade.createWithValidator(this.dispMedicamento);
+                dispMedicamentoFacade.flush();
+            }
+            userTransaction.commit();
+            
             if(dispMedicamento!=null){
                 DispDetalleReceta detalleRecetaObj = new DispDetalleReceta();
                 dispMedicamento.setNombre(dispMedicamento.getNombre().toUpperCase());
