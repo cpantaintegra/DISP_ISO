@@ -852,6 +852,7 @@ public class HistorialMB implements Serializable {
     public void agregarMedicamento(){
         FacesMessage msg = null;
         try {
+            dispMedicamento = this.dispMedicamentoFacade.findByNombre(this.medicamento.toUpperCase(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
             userTransaction.begin();
             if(dispMedicamento==null || dispMedicamento.getIdMedicamento()==null){
                 dispMedicamento = new DispMedicamento();
@@ -976,7 +977,7 @@ public class HistorialMB implements Serializable {
         FacesMessage msg = null;
         try {
             this.medicamento = (String) event.getObject();
-            this.dispMedicamento = this.dispMedicamentoFacade.findByNombre(this.medicamento.toUpperCase(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+            //this.dispMedicamento = this.dispMedicamentoFacade.findByNombre(this.medicamento.toUpperCase(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
         } catch (Exception exception) {
         }
         

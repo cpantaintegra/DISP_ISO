@@ -391,8 +391,7 @@ public class RecetaMB implements Serializable {
         FacesMessage msg = null;
         try {
             this.medicamento = (String) event.getObject();
-            this.dispMedicamento = this.dispMedicamentoFacade.findByNombre(this.medicamento.toUpperCase(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
-            
+            //this.dispMedicamento = this.dispMedicamentoFacade.findByNombre(this.medicamento.toUpperCase(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
         } catch (Exception exception) {
         }
         
@@ -404,6 +403,7 @@ public class RecetaMB implements Serializable {
     public void agregarMedicamento() throws SystemException{
         FacesMessage msg = null;
         try {
+            dispMedicamento = this.dispMedicamentoFacade.findByNombre(this.medicamento.toUpperCase(), this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
             userTransaction.begin();
             if(dispMedicamento==null || dispMedicamento.getIdMedicamento()==null){
                 dispMedicamento = new DispMedicamento();
