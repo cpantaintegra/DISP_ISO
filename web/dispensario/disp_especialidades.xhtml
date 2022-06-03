@@ -64,7 +64,7 @@
                         <h:outputText value="#{a.fechaIngreso.toLocaleString()}" style="#{(a.estado=='A'?'':'color: red')}"/>
                     </p:column>
                     <p:column headerText="Usuario Modificación" filterMatchMode="contains" filterStyle="display:none" width="200">
-                        <h:outputText value="#{a.usuarioModificacion}" title="#{a.usuarioModificacion.toLocaleString()}" style="#{(a.estado=='A'?'':'color: red')}"/>
+                        <h:outputText value="#{a.usuarioModificacion}" title="#{a.usuarioModificacion}" style="#{(a.estado=='A'?'':'color: red')}"/>
                     </p:column>
                     <p:column headerText="Fecha Modificación" filterMatchMode="contains" filterStyle="display:none" width="300">
                         <h:outputText value="#{a.fechaModificacion.toLocaleString()}" title="#{a.fechaModificacion.toLocaleString()}" style="#{(a.estado=='A'?'':'color: red')}"/>
