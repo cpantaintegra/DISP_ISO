@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="recetaReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a6eb2215-4335-4950-aef2-1c87156eaeac">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySQLDISP"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mysql"/>
 	<parameter name="recetaID" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT r.id_receta AS recetaNum,r.observaciones, m.descripcion,dr.dosis,dr.duracion,dr.cantidad, m.nombre AS nombMedicamento,
@@ -209,16 +209,18 @@ r.id_receta = $P{recetaID}]]>
 		<band height="20" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="0" y="0" width="140" height="20" uuid="b8b789e1-2a34-42ac-8002-e4a03cc2a9bc">
+				<reportElement x="0" y="0" width="160" height="20" uuid="b8b789e1-2a34-42ac-8002-e4a03cc2a9bc">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[MOTIVO DE LA CONSULTA:]]></text>
 			</staticText>
 			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-				<reportElement x="140" y="0" width="410" height="20" uuid="005b0dd1-2da8-42b5-84d7-acc9c744d771">
+				<reportElement x="160" y="0" width="390" height="20" uuid="005b0dd1-2da8-42b5-84d7-acc9c744d771">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
@@ -230,7 +232,7 @@ r.id_receta = $P{recetaID}]]>
 		<band height="20" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="0" y="0" width="330" height="20" uuid="74e68ca1-bac0-4b28-8599-6d281cd233db">
+				<reportElement x="0" y="0" width="280" height="20" uuid="74e68ca1-bac0-4b28-8599-6d281cd233db">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="39eef356-b49b-4c84-9a18-061e831c11da"/>
 				</reportElement>
 				<box>
@@ -245,8 +247,9 @@ r.id_receta = $P{recetaID}]]>
 				<text><![CDATA[Medicamento]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="330" y="0" width="60" height="20" uuid="cf4322b5-507a-4275-8253-7fd05a2cdc9f">
+				<reportElement x="280" y="0" width="60" height="20" uuid="cf4322b5-507a-4275-8253-7fd05a2cdc9f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7ceb43e0-bb4b-42ea-af68-0a1bb078fd76"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -260,7 +263,7 @@ r.id_receta = $P{recetaID}]]>
 				<text><![CDATA[cantidad]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="390" y="0" width="90" height="20" uuid="75be7de8-a1be-491a-81f2-4b3ce61f17ad">
+				<reportElement x="340" y="0" width="140" height="20" uuid="75be7de8-a1be-491a-81f2-4b3ce61f17ad">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="126596bc-9487-4f50-9fb2-172bcdb027f1"/>
 				</reportElement>
 				<box>
@@ -286,12 +289,11 @@ r.id_receta = $P{recetaID}]]>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="30" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
-				<reportElement x="330" y="0" width="60" height="20" uuid="2c686e62-6670-4e40-85c2-0c35c5d0e3d7">
+				<reportElement x="280" y="0" width="60" height="30" uuid="2c686e62-6670-4e40-85c2-0c35c5d0e3d7">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7ceb43e0-bb4b-42ea-af68-0a1bb078fd76"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -302,10 +304,9 @@ r.id_receta = $P{recetaID}]]>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
 			</textField>
-			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
-				<reportElement x="390" y="0" width="90" height="20" uuid="e717f2ca-64f9-44d4-9c64-50c8dc2bcb4a">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="340" y="0" width="140" height="30" uuid="e717f2ca-64f9-44d4-9c64-50c8dc2bcb4a">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="126596bc-9487-4f50-9fb2-172bcdb027f1"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -317,16 +318,16 @@ r.id_receta = $P{recetaID}]]>
 				<textFieldExpression><![CDATA[$F{dosis}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
-				<reportElement x="480" y="0" width="70" height="20" uuid="0922890e-b86a-4a2e-a73e-ea1ae41970cc">
+				<reportElement x="480" y="0" width="70" height="30" uuid="0922890e-b86a-4a2e-a73e-ea1ae41970cc">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f984a214-7b77-4a19-b442-2d41dcf7e37b"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{duracion}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
-				<reportElement x="0" y="0" width="330" height="20" uuid="a9cd0f20-488e-4705-b0ab-99b66b335c7b">
+				<reportElement x="0" y="0" width="280" height="30" uuid="a9cd0f20-488e-4705-b0ab-99b66b335c7b">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="10d95391-0e08-4d5d-879c-09a640395f79"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{nombMedicamento}]]></textFieldExpression>
