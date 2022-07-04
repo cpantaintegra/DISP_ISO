@@ -705,6 +705,7 @@ public class ClienteMB implements Serializable {
         try {
             this.userTransaction.begin();
             this.dispCliente.setIdOrigen(this.origenObj);
+            this.dispCliente.setApellsNomb(dispCliente.getApaterno().concat(" ").concat(dispCliente.getAmaterno()).concat(" ").concat(dispCliente.getNombre()));
             if (guardar) {
                 this.dispCliente.setIdEmpresa(this.usuario.getIdEmpresa());
                 this.dispCliente.setIdCiudad(this.usuario.getIdCiudad());

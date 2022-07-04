@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "DispCliente.findAll", query = "SELECT d FROM DispCliente d")
     , @NamedQuery(name = "DispCliente.findByNumDocumentoByIDs", query = "SELECT d FROM DispCliente d where d.numDocumento = :numDocumento AND d.estado = 'A' AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
-    , @NamedQuery(name = "DispCliente.findByNames", query = "SELECT d FROM DispCliente d where d.apaterno = :apaterno AND d.amaterno = :amaterno AND d.nombre LIKE :nombre AND d.estado = 'A' AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
+    , @NamedQuery(name = "DispCliente.findByNames", query = "SELECT d FROM DispCliente d where d.apellsNomb = :nombres AND d.estado = 'A' AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
     , @NamedQuery(name = "DispCliente.findAllActivos", query = "SELECT d FROM DispCliente d where d.estado = 'A' And d.idCliente !=1 AND d.idEmpresa.idEmpresa = :empresa AND d.idCiudad.idCiudad = :ciudad AND d.idSector.idSector = :sector")
     , @NamedQuery(name = "DispCliente.findByIdCliente", query = "SELECT d FROM DispCliente d WHERE d.idCliente = :idCliente")
     , @NamedQuery(name = "DispCliente.findByTipoDocumento", query = "SELECT d FROM DispCliente d WHERE d.tipoDocumento = :tipoDocumento")
@@ -61,6 +61,12 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "DispCliente.findByUsuarioModificacion", query = "SELECT d FROM DispCliente d WHERE d.usuarioModificacion = :usuarioModificacion")
     , @NamedQuery(name = "DispCliente.findByFechaModificacion", query = "SELECT d FROM DispCliente d WHERE d.fechaModificacion = :fechaModificacion")})
 public class DispCliente implements Serializable {
+
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 500)
+    @Column(name = "apells_nomb")
+    private String apellsNomb;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCliente")
     private Collection<DispAgendamiento> dispAgendamientoCollection;
@@ -407,6 +413,14 @@ public class DispCliente implements Serializable {
 
     public void setDispAgendamientoCollection(Collection<DispAgendamiento> dispAgendamientoCollection) {
         this.dispAgendamientoCollection = dispAgendamientoCollection;
+    }
+
+    public String getApellsNomb() {
+        return apellsNomb;
+    }
+
+    public void setApellsNomb(String apellsNomb) {
+        this.apellsNomb = apellsNomb;
     }
     
 }

@@ -118,11 +118,9 @@ public class DispClienteFacade extends AbstractFacade<DispCliente> {
         return Cliente;
     }
 
-    public DispCliente findByNames(String aPaterno, String aMaterno, String nombre, Integer empresa, Integer ciudad, Integer sector) {
+    public DispCliente findByNames(String nombres, Integer empresa, Integer ciudad, Integer sector) {
         Query q = this.em.createNamedQuery("DispCliente.findByNames");
-        q.setParameter("apaterno", aPaterno);
-        q.setParameter("amaterno", aMaterno);
-        q.setParameter("nombre", "%" + nombre + "%");
+        q.setParameter("nombres", nombres);
         q.setParameter("empresa", empresa);
         q.setParameter("ciudad", ciudad);
         q.setParameter("sector", sector);

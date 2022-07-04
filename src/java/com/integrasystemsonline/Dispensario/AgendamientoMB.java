@@ -487,12 +487,13 @@ public class AgendamientoMB implements Serializable {
 
     public void onItemSelect(SelectEvent event) {
         this.cliente = (String) event.getObject();
-        String[] subCliente = this.cliente.split(" ");
-        if (subCliente.length == 3) {
-            this.clienteObj = this.dispClienteFacade.findByNames(subCliente[0], subCliente[1], subCliente[2], this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
-        } else {
-            this.clienteObj = this.dispClienteFacade.findByNames(subCliente[0], subCliente[1], subCliente[2] + " " + subCliente[3], this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
-        }
+        this.clienteObj = this.dispClienteFacade.findByNames(cliente, this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+//        String[] subCliente = this.cliente.split(" ");
+//        if (subCliente.length == 3) {
+//            this.clienteObj = this.dispClienteFacade.findByNames(subCliente[0], subCliente[1], subCliente[2], this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+//        } else {
+//            this.clienteObj = this.dispClienteFacade.findByNames(subCliente[0], subCliente[1], subCliente[2] + " " + subCliente[3], this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+//        }
     }
 
     public void agregarCliente() {
@@ -500,11 +501,12 @@ public class AgendamientoMB implements Serializable {
         try {
             if (!this.cliente.isEmpty()) {
                 String[] subCliente = this.cliente.split(" ");
-                if (subCliente.length == 3) {
-                    this.clienteObj = this.dispClienteFacade.findByNames(subCliente[0], subCliente[1], subCliente[2], this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
-                } else {
-                    this.clienteObj = this.dispClienteFacade.findByNames(subCliente[0], subCliente[1], subCliente[2] + " " + subCliente[3], this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
-                }
+                this.clienteObj = this.dispClienteFacade.findByNames(cliente, this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+//                if (subCliente.length == 3) {
+//                    this.clienteObj = this.dispClienteFacade.findByNames(subCliente[0], subCliente[1], subCliente[2], this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+//                } else {
+//                    this.clienteObj = this.dispClienteFacade.findByNames(subCliente[0], subCliente[1], subCliente[2] + " " + subCliente[3], this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+//                }
                 if (this.clienteObj == null) {
                     guardarCliente();
                 }
@@ -849,22 +851,30 @@ public class AgendamientoMB implements Serializable {
                 this.estado = "A";
             } else {
                 String[] subCliente = this.cliente.split(" ");
-                if (subCliente.length == 3) {
-                    this.clienteObj = this.dispClienteFacade.findByNames(subCliente[0], subCliente[1], subCliente[2], this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+//                if (subCliente.length == 3) {
+                    this.clienteObj = this.dispClienteFacade.findByNames(cliente, this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
+                    //this.clienteObj = this.dispClienteFacade.findByNames(subCliente[0], subCliente[1], subCliente[2], this.usuario.getIdEmpresa().getIdEmpresa(), this.usuario.getIdCiudad().getIdCiudad(), this.usuario.getIdSector().getIdSector());
                     if (this.clienteObj == null) {
-                        this.clienteObj = new DispCliente();
-                        this.clienteObj.setApaterno(subCliente[0]);
-                        this.clienteObj.setAmaterno(subCliente[1]);
-                        this.clienteObj.setNombre(subCliente[2]);
                         this.labelMantCliente = "Ingresar";
+                        this.clienteObj = new DispCliente();
+                        if(subCliente.length>=3){
+                            this.clienteObj.setApaterno(subCliente[subCliente.length-3]);
+                            this.clienteObj.setAmaterno(subCliente[subCliente.length-2]);
+                        }
+                        
+                        if(subCliente.length==2){
+                            this.clienteObj.setApaterno(subCliente[subCliente.length-2]);
+                        }
+                        
+                        this.clienteObj.setNombre(subCliente[subCliente.length-1]);
                     } else {
                         this.labelMantCliente = "Actualizar";
                     }
                     this.estado = "A";
-                } else {
-                    msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La informacion ingresada no es correcta debe constar Apellido Paterno, Apellido Materno y nombre");
-                    PrimeFaces.current().executeScript("PF('wdlgIngresarCliente').hide();");
-                }
+//                } else {
+//                    msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La informacion ingresada no es correcta debe constar Apellido Paterno, Apellido Materno y nombre");
+//                    PrimeFaces.current().executeScript("PF('wdlgIngresarCliente').hide();");
+//                }
             }
         } catch (Exception exception) {
         }
