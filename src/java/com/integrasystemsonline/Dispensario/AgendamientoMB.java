@@ -526,6 +526,7 @@ public class AgendamientoMB implements Serializable {
         try {
             this.userTransaction.begin();
             this.clienteObj.setIdOrigen(this.origenObj);
+            this.clienteObj.setApellsNomb(clienteObj.getApaterno().concat(" ").concat(clienteObj.getAmaterno()).concat(" ").concat(clienteObj.getNombre()));
             if (guardar) {
                 this.clienteObj.setIdEmpresa(this.usuario.getIdEmpresa());
                 this.clienteObj.setIdCiudad(this.usuario.getIdCiudad());
